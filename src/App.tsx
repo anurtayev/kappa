@@ -1,58 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
-}
+import { FolderScreen } from "features/folderScreen";
+import { ImageScreen } from "features/imageScreen";
+import { MetaScreen } from "features/metaScreen";
+import { SearchScreen } from "features/searchScreen";
+import { Nav } from "features/nav";
+import { appRoutes } from "lib";
 
-export default App;
+export const App = () => (
+  <>
+    <Nav />
+    <Routes>
+      <Route path={appRoutes.folder}>
+        <FolderScreen />
+      </Route>
+      <Route path={appRoutes.image + "/:id+"}>
+        <ImageScreen />
+      </Route>
+      <Route path={appRoutes.meta}>
+        <MetaScreen />
+      </Route>
+      <Route path={appRoutes.search}>
+        <SearchScreen />
+      </Route>
+    </Routes>
+  </>
+);

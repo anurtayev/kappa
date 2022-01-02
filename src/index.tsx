@@ -1,21 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import { store } from './app/store';
-import { Provider } from 'react-redux';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ThemeProvider } from "styled-components";
+import { BrowserRouter as Router } from "react-router-dom";
+
+import "./index.css";
+import { App } from "./App";
+import { defaultTheme, appRoutes } from "lib";
+
+if (window.location.pathname === "/")
+  window.location.assign(`${appRoutes.folder}/`);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  <ApolloProvider
+    client={
+      new ApolloClient({
+        uri: process.env.REACT_APP_GRAPHQL_SERVER_URL,
+        cache: new InMemoryCache(),
+      })
+    }
+  >
+    <ThemeProvider theme={defaultTheme}>
+      <Router>
+        <App />
+      </Router>
+    </ThemeProvider>
+  </ApolloProvider>,
+  document.getElementById("root")
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
