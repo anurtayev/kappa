@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Form, Formik } from "formik";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import {
@@ -18,8 +18,6 @@ import {
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
 
 export const MetaScreen = () => {
-  const history = useNavigate();
-  const { imagePathname, folderPathname, search } = useContext(StateContext);
   const { pathname } = useLocation();
   const id = getId(pathname);
 
@@ -51,8 +49,6 @@ export const MetaScreen = () => {
     newValue: "",
   };
 
-  const goBack = () => history.push(imagePathname || folderPathname + search);
-
   return (
     <Formik
       initialValues={initialValues}
@@ -68,7 +64,6 @@ export const MetaScreen = () => {
           },
         });
         setSubmitting(false);
-        goBack();
       }}
     >
       {({ isSubmitting }) => (
@@ -89,9 +84,7 @@ export const MetaScreen = () => {
             <SubmitButton type="submit" disabled={isSubmitting}>
               Submit
             </SubmitButton>
-            <button type="button" onClick={goBack}>
-              Cancel
-            </button>
+            <button type="button">Cancel</button>
           </ButtonContainer>
         </FlexForm>
       )}

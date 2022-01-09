@@ -1,0 +1,37 @@
+query Slides($id: String) {
+  listFolder(id: $id) {
+    items {
+      attributes
+      id
+      tags
+    }
+    nextToken
+  }
+}
+
+mutation SetMetaData($id: String!, $metaDataInput: MetaDataInput!) {
+  setMetaData(id: $id, metaDataInput: $metaDataInput) {
+    tags
+    attributes
+  }
+}
+
+query GetMetaData($id: String!) {
+  entry(id: $id) {
+    __typename
+    id
+    metaData {
+      tags
+      attributes
+    }
+  }
+
+  tags
+
+  attributes
+}
+
+query GetRepoMetaData {
+  tags
+  attributes
+}

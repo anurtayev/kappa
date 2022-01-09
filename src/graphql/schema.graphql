@@ -1,0 +1,18 @@
+schema {
+  query: Query
+}
+
+type Entry {
+  attributes: [[String!]!]
+  id: String!
+  tags: [String!]
+}
+
+type EntryConnection {
+  items: [Entry!]!
+  nextToken: String
+}
+
+type Query {
+  listFolder(id: String, nextToken: String): EntryConnection
+}
