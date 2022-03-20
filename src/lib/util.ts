@@ -8,7 +8,7 @@ export enum entryType {
 export enum appRoutes {
   browse = "/browse",
   search = "/search",
-  slides = "/slides",
+  image = "/image",
 }
 
 export enum systemAttributes {
@@ -36,17 +36,4 @@ export type MetaDataForm = MetaDataInput & {
   newTag: string;
   newKey: string;
   newValue: string;
-};
-
-const parseQueryString = (queryString: string): MetaDataInput | undefined => {
-  const params = new URLSearchParams(queryString);
-  const tags = params.getAll("tags");
-  const attributes = params.getAll("attributes").map((elem) => elem.split(","));
-
-  return tags.length || attributes.length
-    ? {
-        tags: params.getAll("tags"),
-        attributes: params.getAll("attributes").map((elem) => elem.split(",")),
-      }
-    : undefined;
 };
