@@ -1,37 +1,29 @@
-query Slides($id: String) {
-  listFolder(id: $id) {
-    items {
-      attributes
-      id
-      tags
-    }
+query Slides($id: String, $pageSize: Int!, $nextToken: String) {
+  listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
+    items
     nextToken
   }
 }
 
-mutation SetMetaData($id: String!, $metaDataInput: MetaDataInput!) {
-  setMetaData(id: $id, metaDataInput: $metaDataInput) {
+mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
+  updateMetaData(id: $id, metaDataInput: $metaDataInput) {
     tags
-    attributes
+    attributes {
+      attribute
+      value
+      type
+    }
   }
 }
 
 query GetMetaData($id: String!) {
-  entry(id: $id) {
-    __typename
-    id
-    metaData {
-      tags
-      attributes
+  getMeta(id: $id) {
+    attributes {
+      attribute
+      value
+      type
     }
+    id
+    tags
   }
-
-  tags
-
-  attributes
-}
-
-query GetRepoMetaData {
-  tags
-  attributes
 }

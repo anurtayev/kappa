@@ -8,11 +8,11 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.0",
     "styled-components": "^5.3.3"
   },
   "scripts": {
-    "codegen:downloadSchema": "dotenv -- bash -c 'aws appsync get-introspection-schema --api-id $APPSYNC_API_ID --format SDL src/lib/graphql/schema.graphql'",
+    "codegen:downloadSchema": "dotenv -- bash -c 'aws appsync get-introspection-schema --api-id $APPSYNC_API_ID --format SDL src/graphql/schema.graphql'",
     "codegen:generate": "graphql-codegen --config codegen.yml",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -35,12 +35,12 @@
     ]
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.3.1",
+    "@graphql-codegen/cli": "^1.9.0",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.2",
     "@graphql-codegen/typescript-operations": "2.2.2",
     "@graphql-codegen/typescript-react-apollo": "3.2.3",
-    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@types/graphql": "^14.5.0",

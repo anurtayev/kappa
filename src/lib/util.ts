@@ -1,4 +1,4 @@
-import { MetaDataInput, SlidesVariables } from "./graphqlTypes";
+import { MetaDataInput, SlidesQueryVariables } from "graphql/graphqlTypes";
 
 export enum entryType {
   folder = "Folder",
@@ -6,15 +6,10 @@ export enum entryType {
 }
 
 export enum appRoutes {
-  folder = "/folder",
-  image = "/image",
-  meta = "/meta",
+  browse = "/browse",
   search = "/search",
+  slides = "/slides",
 }
-
-export const pathPrefixesRegExp = new RegExp(
-  `^(${appRoutes.folder}|${appRoutes.image}|${appRoutes.meta})`
-);
 
 export enum systemAttributes {
   favorite = "favorite",
@@ -43,40 +38,6 @@ export type MetaDataForm = MetaDataInput & {
   newValue: string;
 };
 
-export const getFolderPathname = (repoVariables: SlidesVariables) => {
-  const { id, metaDataInput } = repoVariables;
-
-  if (id) return `/${appRoutes.folder}/${id}`;
-
-  if (metaDataInput) {
-    const { tags, attributes } = metaDataInput;
-    let queryString = "";
-
-    const tagsPart =
-      tags && tags.length > 0
-        ? tags.map((tag: string) => "tags=" + tag).join("&")
-        : "";
-
-    const attributesPart =
-      attributes && attributes.length > 0
-        ? attributes
-            .map((attribute) => "attributes=" + attribute.join(","))
-            .join("&")
-        : "";
-
-    queryString =
-      tagsPart || attributesPart
-        ? "?" +
-          (tagsPart ? "&" + tagsPart : "") +
-          (attributesPart ? "&" + attributesPart : "")
-        : "";
-
-    return appRoutes.folder + queryString;
-  }
-
-  throw new Error("context error");
-};
-
 const parseQueryString = (queryString: string): MetaDataInput | undefined => {
   const params = new URLSearchParams(queryString);
   const tags = params.getAll("tags");
@@ -88,26 +49,4 @@ const parseQueryString = (queryString: string): MetaDataInput | undefined => {
         attributes: params.getAll("attributes").map((elem) => elem.split(",")),
       }
     : undefined;
-};
-
-export const getId = (pathname: string) =>
-  pathname.replace(pathPrefixesRegExp, "");
-
-export const getParent = (folderName: string) => {
-  const parts = folderName.split("/");
-
-  return parts.length === 2 ? "/" : parts.slice(0, -1).join("/");
-};
-
-export const getVariables = ({
-  pathname,
-  search,
-}: {
-  pathname: string;
-  search: string;
-}): SlidesVariables => {
-  return {
-    id: getId(pathname),
-    metaDataInput: parseQueryString(search),
-  };
 };

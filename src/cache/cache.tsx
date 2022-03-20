@@ -2,6 +2,8 @@ import { InMemoryCache, makeVar } from "@apollo/client";
 import { createRef } from "react";
 import * as H from "history";
 
+import { SearchInput } from "graphql";
+
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -21,9 +23,13 @@ export const cache: InMemoryCache = new InMemoryCache({
   },
 });
 
-export const folderPathnameVar = makeVar("");
-export const searchVar = makeVar("");
-export const imagePathnameVar = makeVar("");
+export type NavigationHistory = Array<string>;
+export type BrowseEntry = { id: string; pageSize: number; nextToken: string };
+export type SearchEntry = { id: string; pageSize: number; nextToken: string };
+
+export const folderPathnameVar = makeVar<string>("");
+export const searchVar = makeVar<string>("");
+export const imagePathnameVar = makeVar<string>("");
 
 export const imagesDivRef = createRef<HTMLDivElement>();
 export const imagesDivRefVar = makeVar(imagesDivRef);

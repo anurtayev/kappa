@@ -20,7 +20,7 @@ ReactDOM.render(
   <ApolloProvider
     client={
       new ApolloClient<NormalizedCacheObject>({
-        uri: process.env.REACT_APP_APPSYNC_URL,
+        uri: process.env.REACT_APP_CLOUDFRONT_URL + "/graphql",
         cache,
       })
     }
