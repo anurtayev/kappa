@@ -1,6 +1,16 @@
 query Slides($id: String, $pageSize: Int!, $nextToken: String) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
-    items
+    items {
+      id
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      tags
+    }
     nextToken
   }
 }
@@ -9,21 +19,11 @@ mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
   updateMetaData(id: $id, metaDataInput: $metaDataInput) {
     tags
     attributes {
-      attribute
+      attribute {
+        name
+        type
+      }
       value
-      type
     }
-  }
-}
-
-query GetMetaData($id: String!) {
-  getMeta(id: $id) {
-    attributes {
-      attribute
-      value
-      type
-    }
-    id
-    tags
   }
 }

@@ -14,7 +14,7 @@ import {
   SetMetaData,
   SetMetaDataVariables,
   getId,
-} from "lib";
+} from "@aspan/sigma";
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
 
 export const MetaScreen = () => {

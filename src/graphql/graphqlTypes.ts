@@ -5,7 +5,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -15,21 +15,30 @@ export type Scalars = {
   Float: number;
 };
 
+export type Attribute = {
+  __typename?: 'Attribute';
+  name: Scalars['String'];
+  type: InputType;
+};
+
+export type AttributeInput = {
+  name: Scalars['String'];
+  type: InputType;
+};
+
 export type AttributeSortTerm = {
   attribute: Scalars['String'];
   sortOrder: SortOrder;
 };
 
-export type AttributeValueTerm = {
-  __typename?: 'AttributeValueTerm';
-  attribute: Scalars['String'];
-  type: InputType;
+export type AttributeValue = {
+  __typename?: 'AttributeValue';
+  attribute: Attribute;
   value: Scalars['String'];
 };
 
-export type AttributeValueTermInput = {
-  attribute: Scalars['String'];
-  type: InputType;
+export type AttributeValueInput = {
+  attribute: AttributeInput;
   value: Scalars['String'];
 };
 
@@ -41,7 +50,7 @@ export type AttributesConnection = {
 
 export type FolderConnection = {
   __typename?: 'FolderConnection';
-  items?: Maybe<Array<Scalars['String']>>;
+  items?: Maybe<Array<MetaData>>;
   nextToken?: Maybe<Scalars['String']>;
 };
 
@@ -52,13 +61,13 @@ export enum InputType {
 
 export type MetaData = {
   __typename?: 'MetaData';
-  attributes?: Maybe<Array<AttributeValueTerm>>;
+  attributes?: Maybe<Array<AttributeValue>>;
   id: Scalars['String'];
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
 export type MetaDataInput = {
-  attributes?: InputMaybe<Array<AttributeValueTermInput>>;
+  attributes?: InputMaybe<Array<AttributeValueInput>>;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -76,7 +85,6 @@ export type MutationUpdateMetaDataArgs = {
 export type Query = {
   __typename?: 'Query';
   getAttributes?: Maybe<AttributesConnection>;
-  getMeta?: Maybe<MetaData>;
   getTags?: Maybe<TagsConnection>;
   listFolder?: Maybe<FolderConnection>;
   search?: Maybe<FolderConnection>;
@@ -85,11 +93,6 @@ export type Query = {
 
 export type QueryGetAttributesArgs = {
   nextToken?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetMetaArgs = {
-  id: Scalars['String'];
 };
 
 
@@ -134,7 +137,7 @@ export type SlidesQueryVariables = Exact<{
 }>;
 
 
-export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', items?: Array<string> | null | undefined, nextToken?: string | null | undefined } | null | undefined };
+export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, items?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 export type UpdateMetaDataMutationVariables = Exact<{
   id: Scalars['String'];
@@ -142,20 +145,31 @@ export type UpdateMetaDataMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?: { __typename?: 'MetaData', tags?: Array<string> | null | undefined, attributes?: Array<{ __typename?: 'AttributeValueTerm', attribute: string, value: string, type: InputType }> | null | undefined } | null | undefined };
+export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?: { __typename?: 'MetaData', tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null } | null };
 
-export type GetMetaDataQueryVariables = Exact<{
-  id: Scalars['String'];
+export type SearchQueryVariables = Exact<{
+  searchInput: SearchInput;
+  pageSize: Scalars['Int'];
 }>;
 
 
-export type GetMetaDataQuery = { __typename?: 'Query', getMeta?: { __typename?: 'MetaData', id: string, tags?: Array<string> | null | undefined, attributes?: Array<{ __typename?: 'AttributeValueTerm', attribute: string, value: string, type: InputType }> | null | undefined } | null | undefined };
+export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, items?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 
 export const SlidesDocument = gql`
     query Slides($id: String, $pageSize: Int!, $nextToken: String) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
-    items
+    items {
+      id
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      tags
+    }
     nextToken
   }
 }
@@ -195,9 +209,11 @@ export const UpdateMetaDataDocument = gql`
   updateMetaData(id: $id, metaDataInput: $metaDataInput) {
     tags
     attributes {
-      attribute
+      attribute {
+        name
+        type
+      }
       value
-      type
     }
   }
 }
@@ -229,44 +245,50 @@ export function useUpdateMetaDataMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateMetaDataMutationHookResult = ReturnType<typeof useUpdateMetaDataMutation>;
 export type UpdateMetaDataMutationResult = Apollo.MutationResult<UpdateMetaDataMutation>;
 export type UpdateMetaDataMutationOptions = Apollo.BaseMutationOptions<UpdateMetaDataMutation, UpdateMetaDataMutationVariables>;
-export const GetMetaDataDocument = gql`
-    query GetMetaData($id: String!) {
-  getMeta(id: $id) {
-    attributes {
-      attribute
-      value
-      type
+export const SearchDocument = gql`
+    query SEARCH($searchInput: SearchInput!, $pageSize: Int!) {
+  search(searchInput: $searchInput, pageSize: $pageSize) {
+    items {
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      id
+      tags
     }
-    id
-    tags
+    nextToken
   }
 }
     `;
 
 /**
- * __useGetMetaDataQuery__
+ * __useSearchQuery__
  *
- * To run a query within a React component, call `useGetMetaDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMetaDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMetaDataQuery({
+ * const { data, loading, error } = useSearchQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      searchInput: // value for 'searchInput'
+ *      pageSize: // value for 'pageSize'
  *   },
  * });
  */
-export function useGetMetaDataQuery(baseOptions: Apollo.QueryHookOptions<GetMetaDataQuery, GetMetaDataQueryVariables>) {
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMetaDataQuery, GetMetaDataQueryVariables>(GetMetaDataDocument, options);
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
       }
-export function useGetMetaDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMetaDataQuery, GetMetaDataQueryVariables>) {
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMetaDataQuery, GetMetaDataQueryVariables>(GetMetaDataDocument, options);
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
         }
-export type GetMetaDataQueryHookResult = ReturnType<typeof useGetMetaDataQuery>;
-export type GetMetaDataLazyQueryHookResult = ReturnType<typeof useGetMetaDataLazyQuery>;
-export type GetMetaDataQueryResult = Apollo.QueryResult<GetMetaDataQuery, GetMetaDataQueryVariables>;
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;

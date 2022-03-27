@@ -1,5 +1,3 @@
-import { MetaDataInput, SlidesQueryVariables } from "graphql/graphqlTypes";
-
 export enum entryType {
   folder = "Folder",
   file = "File",
@@ -31,9 +29,3 @@ export enum Characters {
   magnifyingGlass = "\u{1F50D}",
   refresh = "\u{27F3}",
 }
-
-export type MetaDataForm = MetaDataInput & {
-  newTag: string;
-  newKey: string;
-  newValue: string;
-};

@@ -1,0 +1,16 @@
+query SEARCH($searchInput: SearchInput!, $pageSize: Int!) {
+  search(searchInput: $searchInput, pageSize: $pageSize) {
+    items {
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      id
+      tags
+    }
+    nextToken
+  }
+}

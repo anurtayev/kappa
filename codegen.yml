@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - src/graphql/schema.graphql
+  - node_modules/@aspan/sigma/lib/schema.graphql
 documents: src/**/*.graphql
 generates:
   src/graphql/graphqlTypes.ts:
