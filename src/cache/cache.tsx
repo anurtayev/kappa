@@ -2,7 +2,7 @@ import { InMemoryCache, makeVar } from "@apollo/client";
 import { createRef } from "react";
 import * as H from "history";
 
-import { SearchInput } from "graphql";
+import { SearchInput } from "lib";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {

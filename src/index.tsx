@@ -13,9 +13,6 @@ import { App } from "./App";
 import { defaultTheme, appRoutes } from "lib";
 import { cache } from "cache";
 
-if (window.location.pathname === "/")
-  window.location.assign(`${appRoutes.browse}`);
-
 ReactDOM.render(
   <ApolloProvider
     client={

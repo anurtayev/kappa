@@ -1,44 +1,30 @@
-import { useContext } from "react";
 import { useNavigate, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { appRoutes, Characters, getId, getParent } from "lib";
+import { appRoutes, Characters } from "lib";
 
 export const Nav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { refetch, saveScrollTopFn, navRef } = useContext(StateContext);
 
   const { pathname, search } = location;
-  const isHomeFolder = pathname === `${appRoutes.folder}/`;
-  const isSearchFolder = pathname === appRoutes.folder && search;
 
   return (
-    <Frame
-      ref={navRef}
-      onClick={() => {
-        saveScrollTopFn(location);
-      }}
-    >
-      {!isHomeFolder && (
+    <Frame>
+      {
         <ActionButton
           onClick={() => {
-            navigate(appRoutes.folder + "/");
+            navigate("/");
           }}
         >
           {Characters.home}
         </ActionButton>
-      )}
+      }
 
-      <Route path={[appRoutes.folder, appRoutes.image]}>
-        {/** Meta */}
-        {!isHomeFolder && !isSearchFolder && (
-          <ActionButton
-            onClick={() => navigate(appRoutes.meta + getId(pathname))}
-          >
-            {Characters.label}
-          </ActionButton>
-        )}
+      <Route path={appRoutes.browse}>
+        <ActionButton onClick={() => navigate(appRoutes.browse)}>
+          {Characters.label}
+        </ActionButton>
 
         {/** Search */}
         <ActionButton onClick={() => navigate(appRoutes.search)}>
@@ -46,24 +32,13 @@ export const Nav = () => {
         </ActionButton>
 
         {/** Refresh */}
-        {isSearchFolder && (
-          <ActionButton onClick={() => refetch()}>
-            {Characters.refresh}
-          </ActionButton>
-        )}
+        <ActionButton>{Characters.refresh}</ActionButton>
       </Route>
 
-      <Route path={appRoutes.folder}>
-        {/** Parent folder */}
-        {!isHomeFolder && !isSearchFolder && (
-          <ActionButton
-            onClick={() =>
-              navigate(appRoutes.folder + getParent(getId(pathname)))
-            }
-          >
-            {Characters.arrowUp}
-          </ActionButton>
-        )}
+      <Route path={appRoutes.browse}>
+        <ActionButton onClick={() => navigate(appRoutes.browse)}>
+          {Characters.arrowUp}
+        </ActionButton>
       </Route>
 
       <Id>{pathname}</Id>

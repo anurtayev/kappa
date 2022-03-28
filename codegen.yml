@@ -3,11 +3,11 @@ schema:
   - node_modules/@aspan/sigma/lib/schema.graphql
 documents: src/**/*.graphql
 generates:
-  src/graphql/graphqlTypes.ts:
+  src/lib/graphqlTypes.ts:
     plugins:
       - typescript
       - typescript-operations
       - typescript-react-apollo
-  src/graphql/graphql.schema.json:
+  src/lib/graphql.schema.json:
     plugins:
       - introspection

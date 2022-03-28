@@ -2,7 +2,7 @@ import React from "react";
 import { FieldArray, Field, useFormikContext } from "formik";
 import styled from "styled-components";
 
-import { Characters, FormBrick, SmallButton, MetaDataForm } from "lib";
+import { Characters, FormBrick, SmallButton } from "lib";
 import { Selections } from "./Selections";
 
 type Params = { availableTags: string[]; availableAttributes: string[] };
@@ -16,7 +16,13 @@ export const MetaDataPartialForm = ({
   const {
     values: { tags, attributes, newTag, newKey, newValue },
     setFieldValue,
-  } = useFormikContext<MetaDataForm>();
+  } = useFormikContext<{
+    tags: [];
+    attributes: [];
+    newTag: "";
+    newKey: "";
+    newValue: "";
+  }>();
 
   return (
     <>
@@ -43,7 +49,7 @@ export const MetaDataPartialForm = ({
                 <SmallButton
                   onClick={() => {
                     const newTagValue = cleanse(newTag);
-                    !tags?.includes(newTagValue) && push(newTagValue);
+                    push(newTagValue);
                     setFieldValue("newTag", "");
                   }}
                 >
@@ -52,12 +58,8 @@ export const MetaDataPartialForm = ({
               </FormBrick>
               <Selections
                 currentValue={newTag}
-                selections={availableTags.filter((availableTag) =>
-                  tags && tags.length ? !tags.includes(availableTag) : true
-                )}
-                setNewValue={(selectedValue: string) =>
-                  !tags?.includes(selectedValue) && push(selectedValue)
-                }
+                selections={availableTags.filter((availableTag) => true)}
+                setNewValue={(selectedValue: string) => push(selectedValue)}
               />
             </>
           )}
@@ -107,12 +109,8 @@ export const MetaDataPartialForm = ({
               </FormBrick>
               <Selections
                 currentValue={newKey}
-                selections={availableAttributes.filter((availableAttribute) =>
-                  attributes && attributes.length
-                    ? !attributes.some(
-                        ([attributeKey]) => attributeKey === availableAttribute
-                      )
-                    : true
+                selections={availableAttributes.filter(
+                  (availableAttribute) => attributes && attributes.length
                 )}
                 setNewValue={(selectedValue: string) =>
                   setFieldValue("newKey", selectedValue)

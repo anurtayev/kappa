@@ -1,5 +1,9 @@
-query SEARCH($searchInput: SearchInput!, $pageSize: Int!) {
-  search(searchInput: $searchInput, pageSize: $pageSize) {
+query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
+  search(
+    searchInput: $searchInput
+    pageSize: $pageSize
+    nextToken: $nextToken
+  ) {
     items {
       attributes {
         attribute {

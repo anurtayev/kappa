@@ -14,42 +14,28 @@ export const ImageScreen = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
-  const { slides, folderPathname, search, navRef } = useContext(StateContext);
+  const { slides, folderPathname, search, navRef } = {
+    slides: [],
+    folderPathname: "",
+    search: "",
+    navRef: null,
+  };
 
-  const entry = slides.entries.find((entry) => entry.id === "/" + id);
+  const entry = { id: "", __typename: "" };
 
   if (!entry || entry.__typename !== "File") throw new Error("entry not found");
 
   return (
     <Frame>
       <Image
-        src={`${process.env.REACT_APP_THUMBOR_URL}/unsafe/fit-in/${
-          navRef.current?.clientWidth
-        }x${
-          document.documentElement.clientHeight -
-          (navRef.current?.clientHeight || 0)
-        }/${encodeURIComponent(
+        src={`${
+          process.env.REACT_APP_THUMBOR_URL
+        }/unsafe/fit-in/${encodeURIComponent(
           `${process.env.REACT_APP_IMG_CDN_URL_INTERNAL || ""}/${id}`
         )}`}
         alt=""
         onClick={() => navigate(folderPathname + search)}
       />
-      {entry.prev && (
-        <LeftSlideButton
-          onClick={() => {
-            navigate(appRoutes.image + entry.prev);
-          }}
-        >
-          {Characters.arrowLeft}
-        </LeftSlideButton>
-      )}
-      {entry.next && (
-        <RightSlideButton
-          onClick={() => navigate(appRoutes.image + entry.next)}
-        >
-          {Characters.arrowRight}
-        </RightSlideButton>
-      )}
     </Frame>
   );
 };

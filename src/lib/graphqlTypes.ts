@@ -150,6 +150,7 @@ export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?:
 export type SearchQueryVariables = Exact<{
   searchInput: SearchInput;
   pageSize: Scalars['Int'];
+  nextToken?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -246,8 +247,8 @@ export type UpdateMetaDataMutationHookResult = ReturnType<typeof useUpdateMetaDa
 export type UpdateMetaDataMutationResult = Apollo.MutationResult<UpdateMetaDataMutation>;
 export type UpdateMetaDataMutationOptions = Apollo.BaseMutationOptions<UpdateMetaDataMutation, UpdateMetaDataMutationVariables>;
 export const SearchDocument = gql`
-    query SEARCH($searchInput: SearchInput!, $pageSize: Int!) {
-  search(searchInput: $searchInput, pageSize: $pageSize) {
+    query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
+  search(searchInput: $searchInput, pageSize: $pageSize, nextToken: $nextToken) {
     items {
       attributes {
         attribute {
@@ -278,6 +279,7 @@ export const SearchDocument = gql`
  *   variables: {
  *      searchInput: // value for 'searchInput'
  *      pageSize: // value for 'pageSize'
+ *      nextToken: // value for 'nextToken'
  *   },
  * });
  */
