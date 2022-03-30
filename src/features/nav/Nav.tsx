@@ -1,4 +1,4 @@
-import { useNavigate, Route, useLocation } from "react-router-dom";
+import { useNavigate, Route, useLocation, Routes } from "react-router-dom";
 import styled from "styled-components";
 
 import { appRoutes, Characters } from "lib";
@@ -20,26 +20,27 @@ export const Nav = () => {
           {Characters.home}
         </ActionButton>
       }
+      <Routes>
+        <Route path={appRoutes.browse}>
+          <ActionButton onClick={() => navigate(appRoutes.browse)}>
+            {Characters.label}
+          </ActionButton>
 
-      <Route path={appRoutes.browse}>
-        <ActionButton onClick={() => navigate(appRoutes.browse)}>
-          {Characters.label}
-        </ActionButton>
+          {/** Search */}
+          <ActionButton onClick={() => navigate(appRoutes.search)}>
+            {Characters.magnifyingGlass}
+          </ActionButton>
 
-        {/** Search */}
-        <ActionButton onClick={() => navigate(appRoutes.search)}>
-          {Characters.magnifyingGlass}
-        </ActionButton>
+          {/** Refresh */}
+          <ActionButton>{Characters.refresh}</ActionButton>
+        </Route>
 
-        {/** Refresh */}
-        <ActionButton>{Characters.refresh}</ActionButton>
-      </Route>
-
-      <Route path={appRoutes.browse}>
-        <ActionButton onClick={() => navigate(appRoutes.browse)}>
-          {Characters.arrowUp}
-        </ActionButton>
-      </Route>
+        <Route path={appRoutes.browse}>
+          <ActionButton onClick={() => navigate(appRoutes.browse)}>
+            {Characters.arrowUp}
+          </ActionButton>
+        </Route>
+      </Routes>
 
       <Id>{pathname}</Id>
     </Frame>

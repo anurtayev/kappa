@@ -1,1 +1,1 @@
-export * from "./FolderScreen";
+export * from "./EntriesView";

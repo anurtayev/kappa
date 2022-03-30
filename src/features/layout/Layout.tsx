@@ -5,7 +5,7 @@ import { Nav } from "features/nav";
 
 export const Layout = () => (
   <div>
-    <Nav />
+    pppp
     <Outlet />
   </div>
 );

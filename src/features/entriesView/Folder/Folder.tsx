@@ -1,9 +1,10 @@
 import { Frame, PaddedSpan } from "./Folder.styles";
+import { MetaData } from "lib";
 
-type FolderParams = { key: string };
+type FolderParams = { entry: MetaData };
 
-export const Folder = ({ key }: FolderParams) => (
+export const Folder = ({ entry: { id, attributes, tags } }: FolderParams) => (
   <Frame>
-    <PaddedSpan>{key.split("/").slice(-1)[0]}</PaddedSpan>
+    <PaddedSpan>{id.split("/").slice(-1)[0]}</PaddedSpan>
   </Frame>
 );

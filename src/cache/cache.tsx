@@ -24,8 +24,6 @@ export const cache: InMemoryCache = new InMemoryCache({
 });
 
 export type NavigationHistory = Array<string>;
-export type BrowseEntry = { id: string; pageSize: number; nextToken: string };
-export type SearchEntry = { id: string; pageSize: number; nextToken: string };
 
 export const folderPathnameVar = makeVar<string>("");
 export const searchVar = makeVar<string>("");
