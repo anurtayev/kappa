@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import {
   ApolloClient,
@@ -14,20 +14,22 @@ import { defaultTheme, appRoutes } from "lib";
 import { cache } from "cache";
 
 ReactDOM.render(
-  <ApolloProvider
-    client={
-      new ApolloClient<NormalizedCacheObject>({
-        uri: process.env.REACT_APP_CLOUDFRONT_URL + "/graphql",
-        cache,
-        connectToDevTools: true,
-      })
-    }
-  >
-    <ThemeProvider theme={defaultTheme}>
-      <Router>
-        <App />
-      </Router>
-    </ThemeProvider>
-  </ApolloProvider>,
+  <StrictMode>
+    <ApolloProvider
+      client={
+        new ApolloClient<NormalizedCacheObject>({
+          uri: process.env.REACT_APP_CLOUDFRONT_URL + "/graphql",
+          cache,
+          connectToDevTools: true,
+        })
+      }
+    >
+      <ThemeProvider theme={defaultTheme}>
+        <Router>
+          <App />
+        </Router>
+      </ThemeProvider>
+    </ApolloProvider>
+  </StrictMode>,
   document.getElementById("root")
 );

@@ -11,15 +11,13 @@ export const Nav = () => {
 
   return (
     <Frame>
-      {
-        <ActionButton
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          {Characters.home}
-        </ActionButton>
-      }
+      <ActionButton
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        {Characters.home}
+      </ActionButton>
       <Routes>
         <Route path={appRoutes.browse}>
           <ActionButton onClick={() => navigate(appRoutes.browse)}>

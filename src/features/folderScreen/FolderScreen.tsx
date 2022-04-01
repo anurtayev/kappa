@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { EntriesView } from "features/entriesView";
 import { SlidesQuery, useSlidesQuery } from "lib";
 
 export const FolderScreen = () => {
+  const [id, setId] = useState<string>("media/");
   const { data, loading, error } = useSlidesQuery({
     variables: {
       pageSize: 10,
-      id: "media/",
+      id,
     },
   });
 
@@ -19,8 +20,14 @@ export const FolderScreen = () => {
   return (
     <div
       onClick={({ target }) => {
-        if (target instanceof HTMLElement)
-          console.log("==>", target.dataset["key"]);
+        if (target instanceof HTMLElement) {
+          const id = target.dataset["key"];
+          const isFolder = target.dataset["isfolder"];
+
+          console.log("==> here", id, isFolder);
+
+          isFolder && id && setId(id);
+        }
       }}
     >
       {items ? <EntriesView entries={items} /> : "no entries"}
