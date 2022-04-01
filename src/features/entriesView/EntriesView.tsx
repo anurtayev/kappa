@@ -16,13 +16,13 @@ export const EntriesView = ({ entries }: FolderScreenParameters) => {
     <FolderScreenFrame>
       {entries?.map((entry) =>
         isFolder(entry) ? (
-          <File key={entry.id} entry={entry} />
-        ) : (
           <Folder key={entry.id} entry={entry} />
+        ) : (
+          <File key={entry.id} entry={entry} />
         )
       )}
     </FolderScreenFrame>
   );
 };
 
-const isFolder = (entry: MetaData) => entry.id.slice(-1) === "/";
+const isFolder = ({ id }: MetaData) => id.slice(-1) === "/";
