@@ -4,10 +4,11 @@ import { useLocation } from "react-router-dom";
 import { FolderScreenFrame } from "./styles";
 import { File } from "./File";
 import { Folder } from "./Folder";
-import { FolderConnection, MetaData } from "lib";
+import { FolderConnection, MetaData, NavItem } from "lib";
 
 export type FolderScreenParameters = {
   entries: FolderConnection["items"];
+  navs: Array<NavItem>;
   // scrollRef: RefObject<HTMLDivElement>;
 };
 

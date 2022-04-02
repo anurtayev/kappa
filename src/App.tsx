@@ -7,7 +7,7 @@ import {
   useHref,
 } from "react-router-dom";
 
-import { FolderScreen } from "features/folderScreen";
+import { BrowseContainer } from "features/browseContainer";
 import { ImageScreen } from "features/imageScreen";
 import { SearchScreen } from "features/searchScreen";
 import { Layout } from "./features/layout";
@@ -24,7 +24,7 @@ export const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path={appRoutes.browse} element={<FolderScreen />} />
+        <Route path={appRoutes.browse} element={<BrowseContainer />} />
         <Route path={appRoutes.search} element={<SearchScreen />} />
         <Route path={appRoutes.image} element={<ImageScreen />} />
       </Route>

@@ -1,12 +1,21 @@
-export enum entryType {
+import { NavigateFunction } from "react-router-dom";
+
+export enum EntryType {
   folder = "Folder",
   file = "File",
+}
+
+export enum EntryAction {
+  navigate = "Navigate",
+  meta = "Meta",
 }
 
 export enum appRoutes {
   browse = "browse",
   search = "search",
   image = "image",
+  meta = "meta",
+  slides = "slides",
 }
 
 export enum systemAttributes {
@@ -29,3 +38,9 @@ export enum Characters {
   magnifyingGlass = "\u{1F50D}",
   refresh = "\u{27F3}",
 }
+
+export type NavItem = {
+  navFn: NavigateFunction;
+  icon: Characters;
+  title: string;
+};
