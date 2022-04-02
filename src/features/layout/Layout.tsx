@@ -1,10 +1,19 @@
-import React from "react";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { Nav } from "features/nav";
+import { appRoutes } from "lib";
 
-export const Layout = () => (
-  <div>
-    <Outlet />
-  </div>
-);
+export const Layout = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    location.pathname === "/" && navigate(appRoutes.browse);
+  }, [location]);
+
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
+};
