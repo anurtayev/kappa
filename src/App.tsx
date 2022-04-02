@@ -22,15 +22,12 @@ export const App = () => {
   }, [location]);
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path={appRoutes.browse} element={<FolderScreen />} />
-          <Route path={appRoutes.search} element={<SearchScreen />} />
-          <Route path={appRoutes.image} element={<ImageScreen />} />
-          <Route path={"*"} element={<FolderScreen />} />
-        </Route>
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route path={appRoutes.browse} element={<FolderScreen />} />
+        <Route path={appRoutes.search} element={<SearchScreen />} />
+        <Route path={appRoutes.image} element={<ImageScreen />} />
+      </Route>
+    </Routes>
   );
 };

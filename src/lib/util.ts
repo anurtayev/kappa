@@ -4,9 +4,9 @@ export enum entryType {
 }
 
 export enum appRoutes {
-  browse = "/browse",
-  search = "/search",
-  image = "/image",
+  browse = "browse",
+  search = "search",
+  image = "image",
 }
 
 export enum systemAttributes {
