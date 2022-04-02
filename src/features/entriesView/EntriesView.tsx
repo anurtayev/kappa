@@ -1,10 +1,11 @@
 import { useEffect, useContext, RefObject } from "react";
 import { useLocation } from "react-router-dom";
 
-import { FolderScreenFrame } from "./styles";
+import { FolderConnection, MetaData, NavItem } from "lib";
+import { FolderScreenFrame, VerticalFrame } from "./styles";
 import { File } from "./File";
 import { Folder } from "./Folder";
-import { FolderConnection, MetaData, NavItem } from "lib";
+import { Nav } from "features/nav";
 
 export type FolderScreenParameters = {
   entries: FolderConnection["items"];
@@ -12,17 +13,20 @@ export type FolderScreenParameters = {
   // scrollRef: RefObject<HTMLDivElement>;
 };
 
-export const EntriesView = ({ entries }: FolderScreenParameters) => {
+export const EntriesView = ({ entries, navs }: FolderScreenParameters) => {
   return (
-    <FolderScreenFrame>
-      {entries?.map((entry) =>
-        isFolder(entry) ? (
-          <Folder key={entry.id} entry={entry} />
-        ) : (
-          <File key={entry.id} entry={entry} />
-        )
-      )}
-    </FolderScreenFrame>
+    <VerticalFrame>
+      <Nav navs={navs}></Nav>
+      <FolderScreenFrame>
+        {entries?.map((entry) =>
+          isFolder(entry) ? (
+            <Folder key={entry.id} entry={entry} />
+          ) : (
+            <File key={entry.id} entry={entry} />
+          )
+        )}
+      </FolderScreenFrame>
+    </VerticalFrame>
   );
 };
 

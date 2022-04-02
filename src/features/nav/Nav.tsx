@@ -1,9 +1,9 @@
 import { useNavigate, Route, useLocation, Routes } from "react-router-dom";
 import styled from "styled-components";
 
-import { appRoutes, Characters } from "lib";
+import { appRoutes, Characters, NavItem } from "lib";
 
-export const Nav = () => {
+export const Nav = ({ navs }: { navs: Array<NavItem> }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -11,35 +11,9 @@ export const Nav = () => {
 
   return (
     <Frame>
-      <ActionButton
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        {Characters.home}
-      </ActionButton>
-      <Routes>
-        <Route path={appRoutes.browse}>
-          <ActionButton onClick={() => navigate(appRoutes.browse)}>
-            {Characters.label}
-          </ActionButton>
-
-          {/** Search */}
-          <ActionButton onClick={() => navigate(appRoutes.search)}>
-            {Characters.magnifyingGlass}
-          </ActionButton>
-
-          {/** Refresh */}
-          <ActionButton>{Characters.refresh}</ActionButton>
-        </Route>
-
-        <Route path={appRoutes.browse}>
-          <ActionButton onClick={() => navigate(appRoutes.browse)}>
-            {Characters.arrowUp}
-          </ActionButton>
-        </Route>
-      </Routes>
-
+      {navs.map(({ navFn, icon }) => (
+        <ActionButton onClick={navFn}>{icon}</ActionButton>
+      ))}
       <Id>{pathname}</Id>
     </Frame>
   );

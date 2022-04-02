@@ -40,7 +40,7 @@ export enum Characters {
 }
 
 export type NavItem = {
-  navFn: NavigateFunction;
+  navFn: () => void;
   icon: Characters;
   title: string;
 };
