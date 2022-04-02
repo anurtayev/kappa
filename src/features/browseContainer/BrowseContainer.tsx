@@ -56,20 +56,22 @@ export const BrowseContainer = () => {
   const navs: Array<NavItem> = [
     { title: "Home", navFn: () => navigate("/"), icon: Characters.home },
     { title: "Back", navFn: () => navigate(-1), icon: Characters.arrowLeft },
-    {
+  ];
+  newNextToken &&
+    navs.push({
       title: "Next",
       navFn: () =>
         navigate(
           `/${appRoutes.browse}?id=${id}&nexttoken=${newNextToken}&pagesize=${pageSize}`
         ),
       icon: Characters.arrowRight,
-    },
-    {
-      title: "Search",
-      navFn: () => navigate(`/${appRoutes.search}`),
-      icon: Characters.magnifyingGlass,
-    },
-  ];
+    });
+
+  navs.push({
+    title: "Search",
+    navFn: () => navigate(`/${appRoutes.search}`),
+    icon: Characters.magnifyingGlass,
+  });
 
   return (
     <div

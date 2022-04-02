@@ -11,8 +11,10 @@ export const Nav = ({ navs }: { navs: Array<NavItem> }) => {
 
   return (
     <Frame>
-      {navs.map(({ navFn, icon }) => (
-        <ActionButton onClick={navFn}>{icon}</ActionButton>
+      {navs.map(({ navFn, icon }, index) => (
+        <ActionButton key={index} onClick={navFn}>
+          {icon}
+        </ActionButton>
       ))}
       <Id>{pathname}</Id>
     </Frame>
