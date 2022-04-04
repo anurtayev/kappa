@@ -64,18 +64,17 @@ export const BrowseContainer = () => {
     },
   });
 
+  useEffect(() => {
+    imagesDivRef.current &&
+      data?.listFolder?.scrollTop &&
+      imagesDivRef.current.scrollTo(0, data?.listFolder?.scrollTop);
+  });
+
   if (loading) return <p>Loading</p>;
   if (error || !data) return <p>Error {JSON.stringify(error)}</p>;
 
   const items = data.listFolder?.items;
-  const scrollTop = data.listFolder?.scrollTop;
   const newNextToken = data.listFolder?.nextToken;
-
-  useEffect(() => {
-    imagesDivRef.current &&
-      scrollTop &&
-      imagesDivRef.current.scrollTo(0, scrollTop);
-  }, [scrollTop]);
 
   const navs: Array<NavItem> = [
     {
@@ -135,6 +134,6 @@ export const BrowseContainer = () => {
       onClickFolder={onClickFolder}
     />
   ) : (
-    "no entries"
+    <div>no entries</div>
   );
 };
