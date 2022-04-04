@@ -1,4 +1,9 @@
-query Slides($id: String, $pageSize: Int!, $nextToken: String) {
+query Slides(
+  $id: String
+  $pageSize: Int!
+  $nextToken: String
+  $locationKey: String!
+) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
     items {
       id
@@ -12,6 +17,7 @@ query Slides($id: String, $pageSize: Int!, $nextToken: String) {
       tags
     }
     nextToken
+    scrollTop(locationKey: $locationKey) @client
   }
 }
 

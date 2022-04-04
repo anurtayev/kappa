@@ -52,6 +52,12 @@ export type FolderConnection = {
   __typename?: 'FolderConnection';
   items?: Maybe<Array<MetaData>>;
   nextToken?: Maybe<Scalars['String']>;
+  scrollTop: Scalars['Int'];
+};
+
+
+export type FolderConnectionScrollTopArgs = {
+  locationKey: Scalars['String'];
 };
 
 export enum InputType {
@@ -134,10 +140,11 @@ export type SlidesQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
   nextToken?: InputMaybe<Scalars['String']>;
+  locationKey: Scalars['String'];
 }>;
 
 
-export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, items?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
+export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, scrollTop: number, items?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 export type UpdateMetaDataMutationVariables = Exact<{
   id: Scalars['String'];
@@ -158,7 +165,7 @@ export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'Folde
 
 
 export const SlidesDocument = gql`
-    query Slides($id: String, $pageSize: Int!, $nextToken: String) {
+    query Slides($id: String, $pageSize: Int!, $nextToken: String, $locationKey: String!) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
     items {
       id
@@ -172,6 +179,7 @@ export const SlidesDocument = gql`
       tags
     }
     nextToken
+    scrollTop(locationKey: $locationKey) @client
   }
 }
     `;
@@ -191,6 +199,7 @@ export const SlidesDocument = gql`
  *      id: // value for 'id'
  *      pageSize: // value for 'pageSize'
  *      nextToken: // value for 'nextToken'
+ *      locationKey: // value for 'locationKey'
  *   },
  * });
  */

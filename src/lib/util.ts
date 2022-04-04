@@ -44,3 +44,5 @@ export type NavItem = {
   icon: Characters;
   title: string;
 };
+
+export type NavItems = Array<NavItem>;
