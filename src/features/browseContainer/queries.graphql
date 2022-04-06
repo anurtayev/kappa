@@ -20,16 +20,3 @@ query Slides(
     scrollTop(locationKey: $locationKey) @client
   }
 }
-
-mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
-  updateMetaData(id: $id, metaDataInput: $metaDataInput) {
-    tags
-    attributes {
-      attribute {
-        name
-        type
-      }
-      value
-    }
-  }
-}

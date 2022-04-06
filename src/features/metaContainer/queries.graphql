@@ -1,0 +1,30 @@
+mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
+  updateMetaData(id: $id, metaDataInput: $metaDataInput) {
+    tags
+    attributes {
+      attribute {
+        name
+        type
+      }
+      value
+    }
+  }
+}
+
+query GetAllTagsAndAttributes(
+  $nextTokenAttributes: String
+  $nextTokenTags: String
+) {
+  getAttributes(nextToken: $nextTokenAttributes) {
+    attributes {
+      name
+      type
+    }
+    nextToken
+  }
+
+  getTags(nextToken: $nextTokenTags) {
+    tags
+    nextToken
+  }
+}

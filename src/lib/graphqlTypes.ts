@@ -44,7 +44,7 @@ export type AttributeValueInput = {
 
 export type AttributesConnection = {
   __typename?: 'AttributesConnection';
-  attributes?: Maybe<Array<Scalars['String']>>;
+  attributes?: Maybe<Array<Attribute>>;
   nextToken?: Maybe<Scalars['String']>;
 };
 
@@ -154,6 +154,11 @@ export type UpdateMetaDataMutationVariables = Exact<{
 
 export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?: { __typename?: 'MetaData', tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null } | null };
 
+export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getAttributes?: { __typename?: 'AttributesConnection', nextToken?: string | null, attributes?: Array<{ __typename?: 'Attribute', name: string, type: InputType }> | null } | null, getTags?: { __typename?: 'TagsConnection', tags?: Array<string> | null, nextToken?: string | null } | null };
+
 export type SearchQueryVariables = Exact<{
   searchInput: SearchInput;
   pageSize: Scalars['Int'];
@@ -255,6 +260,48 @@ export function useUpdateMetaDataMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateMetaDataMutationHookResult = ReturnType<typeof useUpdateMetaDataMutation>;
 export type UpdateMetaDataMutationResult = Apollo.MutationResult<UpdateMetaDataMutation>;
 export type UpdateMetaDataMutationOptions = Apollo.BaseMutationOptions<UpdateMetaDataMutation, UpdateMetaDataMutationVariables>;
+export const GetAllTagsAndAttributesDocument = gql`
+    query GetAllTagsAndAttributes {
+  getAttributes {
+    attributes {
+      name
+      type
+    }
+    nextToken
+  }
+  getTags {
+    tags
+    nextToken
+  }
+}
+    `;
+
+/**
+ * __useGetAllTagsAndAttributesQuery__
+ *
+ * To run a query within a React component, call `useGetAllTagsAndAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllTagsAndAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllTagsAndAttributesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllTagsAndAttributesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>(GetAllTagsAndAttributesDocument, options);
+      }
+export function useGetAllTagsAndAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>(GetAllTagsAndAttributesDocument, options);
+        }
+export type GetAllTagsAndAttributesQueryHookResult = ReturnType<typeof useGetAllTagsAndAttributesQuery>;
+export type GetAllTagsAndAttributesLazyQueryHookResult = ReturnType<typeof useGetAllTagsAndAttributesLazyQuery>;
+export type GetAllTagsAndAttributesQueryResult = Apollo.QueryResult<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>;
 export const SearchDocument = gql`
     query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
   search(searchInput: $searchInput, pageSize: $pageSize, nextToken: $nextToken) {

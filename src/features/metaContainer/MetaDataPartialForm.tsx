@@ -3,26 +3,27 @@ import { FieldArray, Field, useFormikContext } from "formik";
 import styled from "styled-components";
 
 import { Characters, FormBrick, SmallButton } from "lib";
-import { Selections } from "./Selections";
+import {
+  useUpdateMetaDataMutation,
+  MetaData,
+  MetaDataInput,
+  UpdateMetaDataMutationFn,
+  isFolder,
+} from "lib";
 
-type Params = { availableTags: string[]; availableAttributes: string[] };
+import { Selections } from "./Selections";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
-export const MetaDataPartialForm = ({
-  availableTags,
-  availableAttributes,
-}: Params) => {
+export const MetaDataPartialForm = () => {
   const {
-    values: { tags, attributes, newTag, newKey, newValue },
+    values: { tags, attributes },
     setFieldValue,
-  } = useFormikContext<{
-    tags: [];
-    attributes: [];
-    newTag: "";
-    newKey: "";
-    newValue: "";
-  }>();
+  } = useFormikContext<MetaDataInput>();
+
+  let newTag = "";
+  let newKey = "";
+  let newValueStr = "";
 
   return (
     <>
@@ -99,7 +100,7 @@ export const MetaDataPartialForm = ({
                         (attribute) => attribute[0] === newKeyValue
                       )
                     )
-                      push([newKeyValue, cleanse(newValue)]);
+                      push([newKeyValue, cleanse(newValueStr)]);
                     setFieldValue("newKey", "");
                     setFieldValue("newValue", "");
                   }}

@@ -11,6 +11,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { BrowseContainer } from "features/browseContainer";
 import { ImageScreen } from "features/imageScreen";
 import { SearchScreen } from "features/searchScreen";
+import { MetaContainer } from "features/metaContainer";
 import { Layout } from "./features/layout";
 import { appRoutes } from "lib";
 import { defaultTheme } from "lib";
@@ -35,6 +36,7 @@ export const App = () => {
                 <Route path={appRoutes.browse} element={<BrowseContainer />} />
                 <Route path={appRoutes.search} element={<SearchScreen />} />
                 <Route path={appRoutes.image} element={<ImageScreen />} />
+                <Route path={appRoutes.meta} element={<MetaContainer />} />
               </Route>
             </Routes>
           </Router>

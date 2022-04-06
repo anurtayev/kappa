@@ -46,3 +46,5 @@ export type NavItem = {
 };
 
 export type NavItems = Array<NavItem>;
+
+export const isFolder = (id: string): boolean => id.slice(-1) === "/";

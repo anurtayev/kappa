@@ -1,7 +1,7 @@
 import { useEffect, useContext, RefObject, MouseEventHandler } from "react";
 import { useLocation } from "react-router-dom";
 
-import { FolderConnection, MetaData, NavItem } from "lib";
+import { FolderConnection, MetaData, NavItem, isFolder } from "lib";
 import { FolderScreenFrame, VerticalFrame } from "./styles";
 import { File } from "./File";
 import { Folder } from "./Folder";
@@ -29,7 +29,7 @@ export const EntriesView = ({
       <Nav navs={navs}></Nav>
       <FolderScreenFrame ref={scrollRef}>
         {entries?.map((entry) =>
-          isFolder(entry) ? (
+          isFolder(entry.id) ? (
             <Folder
               key={entry.id}
               entry={entry}
@@ -49,5 +49,3 @@ export const EntriesView = ({
     </VerticalFrame>
   );
 };
-
-const isFolder = ({ id }: MetaData) => id.slice(-1) === "/";
