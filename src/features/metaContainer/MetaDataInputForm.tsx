@@ -14,6 +14,9 @@ import {
   MetaDataInput,
   UpdateMetaDataMutationFn,
   isFolder,
+  Attribute,
+  Maybe,
+  Scalars,
 } from "lib";
 import { MetaDataPartialForm } from "./MetaDataPartialForm";
 
@@ -22,6 +25,14 @@ type MetaDataInputFormParams = {
   metaDataInput: MetaDataInput;
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
+  availableTags: Array<Scalars["String"]>;
+  availableAttributes: Array<Attribute>;
+};
+
+export type FormValues = {
+  metaDataInput: MetaDataInput;
+  availableTags: Array<string>;
+  availableAttributes: Array<Attribute>;
 };
 
 export const MetaDataInputForm = ({
@@ -29,14 +40,16 @@ export const MetaDataInputForm = ({
   metaDataInput,
   updateMetaDataMutation,
   navigate,
+  availableAttributes = [],
+  availableTags = [],
 }: MetaDataInputFormParams) => (
   <Formik
-    initialValues={metaDataInput}
-    onSubmit={(values, { setSubmitting }) => {
+    initialValues={{ metaDataInput, availableTags, availableAttributes }}
+    onSubmit={({ metaDataInput }, { setSubmitting }) => {
       updateMetaDataMutation({
         variables: {
           id,
-          metaDataInput: values,
+          metaDataInput,
         },
       });
       setSubmitting(false);

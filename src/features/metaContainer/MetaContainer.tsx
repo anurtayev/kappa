@@ -11,6 +11,7 @@ import {
 import {
   Characters,
   useUpdateMetaDataMutation,
+  useGetAllTagsAndAttributesQuery,
   MetaData,
   MetaDataInput,
 } from "lib";
@@ -47,18 +48,29 @@ export const MetaContainer = () => {
     attributes: metaData.attributes,
   };
 
-  const [updateMetaDataMutation, { data, loading, error }] =
-    useUpdateMetaDataMutation({
-      variables: {
-        id,
-        metaDataInput,
-      },
-    });
+  const [
+    updateMetaDataMutation,
+    { data: updateData, loading: updateLoading, error: updateError },
+  ] = useUpdateMetaDataMutation({
+    variables: {
+      id,
+      metaDataInput,
+    },
+  });
 
-  if (loading || !data) return <p>Loading</p>;
-  if (error) return <p>Error</p>;
+  const {
+    data: tagsAndAttributesData,
+    loading: tagsAndAttributesLoading,
+    error: tagsAndAttributesError,
+  } = useGetAllTagsAndAttributesQuery();
+
+  if (tagsAndAttributesLoading || !tagsAndAttributesData) return <p>Loading</p>;
+  if (tagsAndAttributesError) return <p>Error</p>;
 
   const goBack = () => navigate(-1);
+
+  const { getAttributes: availableAttributes, getTags: availableTags } =
+    tagsAndAttributesData;
 
   return (
     <MetaDataInputForm
@@ -66,6 +78,8 @@ export const MetaContainer = () => {
       metaDataInput={metaDataInput}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
+      availableAttributes={availableAttributes || []}
+      availableTags={availableTags || []}
     />
   );
 };

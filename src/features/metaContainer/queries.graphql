@@ -11,20 +11,11 @@ mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
   }
 }
 
-query GetAllTagsAndAttributes(
-  $nextTokenAttributes: String
-  $nextTokenTags: String
-) {
-  getAttributes(nextToken: $nextTokenAttributes) {
-    attributes {
-      name
-      type
-    }
-    nextToken
+query GetAllTagsAndAttributes {
+  getAttributes {
+    name
+    type
   }
 
-  getTags(nextToken: $nextTokenTags) {
-    tags
-    nextToken
-  }
+  getTags
 }

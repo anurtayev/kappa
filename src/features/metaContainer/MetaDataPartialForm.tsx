@@ -12,14 +12,20 @@ import {
 } from "lib";
 
 import { Selections } from "./Selections";
+import { FormValues } from "./MetaDataInputForm";
+import { AttributeValue } from "@aspan/sigma/lib";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
 export const MetaDataPartialForm = () => {
   const {
-    values: { tags, attributes },
+    values: {
+      metaDataInput: { tags, attributes },
+      availableTags,
+      availableAttributes,
+    },
     setFieldValue,
-  } = useFormikContext<MetaDataInput>();
+  } = useFormikContext<FormValues>();
 
   let newTag = "";
   let newKey = "";
@@ -75,12 +81,12 @@ export const MetaDataPartialForm = () => {
             <>
               <ExistingItemsContainer>
                 {attributes &&
-                  attributes.map((attribute: string[], index: number) => (
+                  attributes.map((attribute: AttributeValue, index: number) => (
                     <FormBrick key={index}>
-                      <ElemBox>{attribute[0]}</ElemBox>
+                      <ElemBox>{attribute.attribute.name}</ElemBox>
                       <StyledField
                         name={`attributes.${index}.1`}
-                        value={attribute[1]}
+                        value={attribute.value}
                       />
                       <SmallButton onClick={() => remove(index)}>
                         {Characters.multiply}
@@ -97,7 +103,8 @@ export const MetaDataPartialForm = () => {
                     const newKeyValue = cleanse(newKey);
                     if (
                       !attributes?.find(
-                        (attribute) => attribute[0] === newKeyValue
+                        (attributeValue) =>
+                          attributeValue.attribute.name === newKeyValue
                       )
                     )
                       push([newKeyValue, cleanse(newValueStr)]);
@@ -110,9 +117,9 @@ export const MetaDataPartialForm = () => {
               </FormBrick>
               <Selections
                 currentValue={newKey}
-                selections={availableAttributes.filter(
-                  (availableAttribute) => attributes && attributes.length
-                )}
+                selections={availableAttributes
+                  .filter((availableAttribute) => attributes?.length)
+                  .map((availableAttribute) => availableAttribute.name)}
                 setNewValue={(selectedValue: string) =>
                   setFieldValue("newKey", selectedValue)
                 }

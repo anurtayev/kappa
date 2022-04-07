@@ -42,12 +42,6 @@ export type AttributeValueInput = {
   value: Scalars['String'];
 };
 
-export type AttributesConnection = {
-  __typename?: 'AttributesConnection';
-  attributes?: Maybe<Array<Attribute>>;
-  nextToken?: Maybe<Scalars['String']>;
-};
-
 export type FolderConnection = {
   __typename?: 'FolderConnection';
   items?: Maybe<Array<MetaData>>;
@@ -90,20 +84,10 @@ export type MutationUpdateMetaDataArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAttributes?: Maybe<AttributesConnection>;
-  getTags?: Maybe<TagsConnection>;
+  getAttributes?: Maybe<Array<Attribute>>;
+  getTags?: Maybe<Array<Scalars['String']>>;
   listFolder?: Maybe<FolderConnection>;
   search?: Maybe<FolderConnection>;
-};
-
-
-export type QueryGetAttributesArgs = {
-  nextToken?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetTagsArgs = {
-  nextToken?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -130,12 +114,6 @@ export enum SortOrder {
   Desc = 'DESC'
 }
 
-export type TagsConnection = {
-  __typename?: 'TagsConnection';
-  nextToken?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
 export type SlidesQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
@@ -157,7 +135,7 @@ export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?:
 export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getAttributes?: { __typename?: 'AttributesConnection', nextToken?: string | null, attributes?: Array<{ __typename?: 'Attribute', name: string, type: InputType }> | null } | null, getTags?: { __typename?: 'TagsConnection', tags?: Array<string> | null, nextToken?: string | null } | null };
+export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getTags?: Array<string> | null, getAttributes?: Array<{ __typename?: 'Attribute', name: string, type: InputType }> | null };
 
 export type SearchQueryVariables = Exact<{
   searchInput: SearchInput;
@@ -263,16 +241,10 @@ export type UpdateMetaDataMutationOptions = Apollo.BaseMutationOptions<UpdateMet
 export const GetAllTagsAndAttributesDocument = gql`
     query GetAllTagsAndAttributes {
   getAttributes {
-    attributes {
-      name
-      type
-    }
-    nextToken
+    name
+    type
   }
-  getTags {
-    tags
-    nextToken
-  }
+  getTags
 }
     `;
 
