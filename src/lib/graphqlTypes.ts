@@ -84,8 +84,8 @@ export type MutationUpdateMetaDataArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAttributes?: Maybe<Array<Attribute>>;
-  getTags?: Maybe<Array<Scalars['String']>>;
+  getAttributes: Array<Attribute>;
+  getTags: Array<Scalars['String']>;
   listFolder?: Maybe<FolderConnection>;
   search?: Maybe<FolderConnection>;
 };
@@ -135,7 +135,7 @@ export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?:
 export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getTags?: Array<string> | null, getAttributes?: Array<{ __typename?: 'Attribute', name: string, type: InputType }> | null };
+export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getTags: Array<string>, getAttributes: Array<{ __typename?: 'Attribute', name: string, type: InputType }> };
 
 export type SearchQueryVariables = Exact<{
   searchInput: SearchInput;
