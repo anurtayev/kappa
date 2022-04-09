@@ -1,22 +1,8 @@
-import React, { useEffect, createRef, MouseEventHandler } from "react";
-import {
-  useSearchParams,
-  useNavigate,
-  useLocation,
-  Link,
-  NavigateFunction,
-  To,
-} from "react-router-dom";
+import { useEffect, createRef, MouseEventHandler } from "react";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 
 import { EntriesView } from "features/entriesView";
-import {
-  EntryType,
-  EntryAction,
-  useSlidesQuery,
-  appRoutes,
-  Characters,
-  NavItem,
-} from "lib";
+import { useSlidesQuery, appRoutes, Characters, NavItem } from "lib";
 
 /**
  * id
@@ -33,7 +19,7 @@ import {
  */
 export const BrowseContainer = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
   const imagesDivRef = createRef<HTMLDivElement>();
 

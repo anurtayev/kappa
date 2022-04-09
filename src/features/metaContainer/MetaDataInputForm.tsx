@@ -1,24 +1,16 @@
 import { Form, Formik } from "formik";
 import styled from "styled-components";
-import {
-  useLocation,
-  useNavigate,
-  useSearchParams,
-  NavigateFunction,
-} from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 
 import {
   Characters,
-  useUpdateMetaDataMutation,
-  MetaData,
   MetaDataInput,
   UpdateMetaDataMutationFn,
   isFolder,
   Attribute,
-  Maybe,
   Scalars,
 } from "lib";
-import { MetaDataPartialForm } from "./MetaDataPartialForm";
+import { MetaDataPartialForm } from "features/metaDataPartialForm";
 
 type MetaDataInputFormParams = {
   id: string;
@@ -26,12 +18,6 @@ type MetaDataInputFormParams = {
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
   availableTags: Array<Scalars["String"]>;
-  availableAttributes: Array<Attribute>;
-};
-
-export type FormValues = {
-  metaDataInput: MetaDataInput;
-  availableTags: Array<string>;
   availableAttributes: Array<Attribute>;
 };
 
@@ -63,7 +49,11 @@ export const MetaDataInputForm = ({
           <EntryName>{id.split("/").slice(-1)[0]}</EntryName>
         </HeaderContainer>
 
-        <MetaDataPartialForm />
+        <MetaDataPartialForm
+          availableAttributes={availableAttributes}
+          availableTags={availableTags}
+          metaDataInput={metaDataInput}
+        />
 
         <ButtonContainer>
           <SubmitButton type="submit" disabled={isSubmitting}>

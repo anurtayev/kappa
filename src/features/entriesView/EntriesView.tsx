@@ -1,7 +1,6 @@
-import { useEffect, useContext, RefObject, MouseEventHandler } from "react";
-import { useLocation } from "react-router-dom";
+import { RefObject, MouseEventHandler } from "react";
 
-import { FolderConnection, MetaData, NavItem, isFolder } from "lib";
+import { FolderConnection, NavItem, isFolder } from "lib";
 import { FolderScreenFrame, VerticalFrame } from "./styles";
 import { File } from "./File";
 import { Folder } from "./Folder";

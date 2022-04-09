@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
 import { Frame } from "./File.styles";
-import { MetaData, EntryType, EntryAction } from "lib";
+import { MetaData } from "lib";
 
 export type FileParams = {
   entry: MetaData;
@@ -9,7 +9,7 @@ export type FileParams = {
 };
 
 export const File = ({
-  entry: { id, tags, attributes },
+  entry: { id },
   onClickMeta,
   onClickSlides,
 }: FileParams) => (

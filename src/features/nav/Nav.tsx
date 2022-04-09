@@ -1,13 +1,12 @@
-import { useNavigate, Route, useLocation, Routes } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { appRoutes, Characters, NavItem } from "lib";
+import { NavItem } from "lib";
 
 export const Nav = ({ navs }: { navs: Array<NavItem> }) => {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const { pathname, search } = location;
+  const { pathname } = location;
 
   return (
     <Frame>

@@ -1,18 +1,9 @@
-import React, { useContext } from "react";
-import { useMutation, useQuery, gql, useApolloClient } from "@apollo/client";
-import { Form, Formik } from "formik";
-import {
-  useLocation,
-  useNavigate,
-  useSearchParams,
-  NavigateFunction,
-} from "react-router-dom";
+import { gql, useApolloClient } from "@apollo/client";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
-  Characters,
   useUpdateMetaDataMutation,
   useGetAllTagsAndAttributesQuery,
-  MetaData,
   MetaDataInput,
 } from "lib";
 import { MetaDataInputForm } from "./MetaDataInputForm";
@@ -20,8 +11,7 @@ import { MetaDataInputForm } from "./MetaDataInputForm";
 export const MetaContainer = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
 
   const id = searchParams.get("id");
   if (!id) {
@@ -67,8 +57,6 @@ export const MetaContainer = () => {
   if (tagsAndAttributesLoading || !tagsAndAttributesData) return <p>Loading</p>;
   if (tagsAndAttributesError) return <p>Error</p>;
 
-  const goBack = () => navigate(-1);
-
   const { getAttributes: availableAttributes, getTags: availableTags } =
     tagsAndAttributesData;
 
@@ -78,8 +66,8 @@ export const MetaContainer = () => {
       metaDataInput={metaDataInput}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
-      availableAttributes={availableAttributes || []}
-      availableTags={availableTags || []}
+      availableAttributes={availableAttributes}
+      availableTags={availableTags}
     />
   );
 };

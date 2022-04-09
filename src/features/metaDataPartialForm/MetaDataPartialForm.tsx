@@ -1,32 +1,19 @@
-import React from "react";
-import { FieldArray, Field, useFormikContext } from "formik";
+import { FieldArray, Field } from "formik";
 import styled from "styled-components";
 
 import { Characters, FormBrick, SmallButton } from "lib";
-import {
-  useUpdateMetaDataMutation,
-  MetaData,
-  MetaDataInput,
-  UpdateMetaDataMutationFn,
-  isFolder,
-} from "lib";
+import { MetaDataInputFormValues } from "lib";
 
 import { Selections } from "./Selections";
-import { FormValues } from "./MetaDataInputForm";
 import { AttributeValue } from "@aspan/sigma/lib";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
-export const MetaDataPartialForm = () => {
-  const {
-    values: {
-      metaDataInput: { tags, attributes },
-      availableTags,
-      availableAttributes,
-    },
-    setFieldValue,
-  } = useFormikContext<FormValues>();
-
+export const MetaDataPartialForm = ({
+  metaDataInput: { tags, attributes },
+  availableTags,
+  availableAttributes,
+}: MetaDataInputFormValues) => {
   let newTag = "";
   let newKey = "";
   let newValueStr = "";
@@ -57,7 +44,7 @@ export const MetaDataPartialForm = () => {
                   onClick={() => {
                     const newTagValue = cleanse(newTag);
                     push(newTagValue);
-                    setFieldValue("newTag", "");
+                    newTag = "";
                   }}
                 >
                   {Characters.plus}
@@ -108,8 +95,8 @@ export const MetaDataPartialForm = () => {
                       )
                     )
                       push([newKeyValue, cleanse(newValueStr)]);
-                    setFieldValue("newKey", "");
-                    setFieldValue("newValue", "");
+                    newKey = "";
+                    newValueStr = "";
                   }}
                 >
                   {Characters.plus}
@@ -121,7 +108,7 @@ export const MetaDataPartialForm = () => {
                   .filter((availableAttribute) => attributes?.length)
                   .map((availableAttribute) => availableAttribute.name)}
                 setNewValue={(selectedValue: string) =>
-                  setFieldValue("newKey", selectedValue)
+                  (newKey = selectedValue)
                 }
               />
             </>

@@ -1,5 +1,5 @@
-import { useEffect, StrictMode } from "react";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { StrictMode } from "react";
+import { Routes, Route } from "react-router-dom";
 import {
   ApolloClient,
   ApolloProvider,

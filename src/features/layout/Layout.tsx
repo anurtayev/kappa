@@ -9,7 +9,7 @@ export const Layout = () => {
 
   useEffect(() => {
     location.pathname === "/" && navigate(appRoutes.browse);
-  }, [location]);
+  }, [location, navigate]);
 
   return (
     <div>

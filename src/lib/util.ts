@@ -1,4 +1,4 @@
-import { NavigateFunction } from "react-router-dom";
+import { MetaDataInput, Attribute } from "@aspan/sigma";
 
 export enum EntryType {
   folder = "Folder",
@@ -48,3 +48,9 @@ export type NavItem = {
 export type NavItems = Array<NavItem>;
 
 export const isFolder = (id: string): boolean => id.slice(-1) === "/";
+
+export type MetaDataInputFormValues = {
+  metaDataInput: MetaDataInput;
+  availableTags: Array<string>;
+  availableAttributes: Array<Attribute>;
+};

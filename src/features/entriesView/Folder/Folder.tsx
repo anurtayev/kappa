@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
 import { Frame, PaddedSpan } from "./Folder.styles";
-import { MetaData, EntryType, EntryAction } from "lib";
+import { MetaData } from "lib";
 
 type FolderParams = {
   entry: MetaData;
@@ -8,10 +8,7 @@ type FolderParams = {
   onClickFolder: MouseEventHandler;
 };
 
-export const Folder = ({
-  entry: { id, attributes, tags },
-  onClickFolder,
-}: FolderParams) => (
+export const Folder = ({ entry: { id }, onClickFolder }: FolderParams) => (
   <Frame data-key={id} onClick={onClickFolder}>
     <PaddedSpan>{id.split("/").slice(1, -1)}</PaddedSpan>
   </Frame>

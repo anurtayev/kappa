@@ -1,8 +1,4 @@
-import { InMemoryCache, makeVar } from "@apollo/client";
-import { createRef } from "react";
-import * as H from "history";
-
-import { SearchInput } from "lib";
+import { InMemoryCache } from "@apollo/client";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {

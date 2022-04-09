@@ -1,24 +1,14 @@
-import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { appRoutes, Characters } from "lib";
-
-import {
-  Frame,
-  Image,
-  LeftSlideButton,
-  RightSlideButton,
-} from "./ImageScreen.styles";
+import { Frame, Image } from "./ImageScreen.styles";
 
 export const ImageScreen = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
-  const { slides, folderPathname, search, navRef } = {
-    slides: [],
+  const { folderPathname, search } = {
     folderPathname: "",
     search: "",
-    navRef: null,
   };
 
   const entry = { id: "", __typename: "" };
