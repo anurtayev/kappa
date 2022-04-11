@@ -4,56 +4,69 @@ import { NavigateFunction } from "react-router-dom";
 
 import {
   Characters,
-  MetaDataInput,
+  MetaData,
+  AvailableMetaData,
   UpdateMetaDataMutationFn,
   isFolder,
-  Attribute,
-  Scalars,
+  FormikMetaData,
 } from "lib";
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
+import { Frame } from "./styles";
 
 type MetaDataInputFormParams = {
-  id: string;
-  metaDataInput: MetaDataInput;
+  metaData: MetaData;
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
-  availableTags: Array<Scalars["String"]>;
-  availableAttributes: Array<Attribute>;
+  availableMetaData: AvailableMetaData;
 };
 
 export const MetaDataInputForm = ({
-  id,
-  metaDataInput,
+  metaData,
   updateMetaDataMutation,
   navigate,
-  availableAttributes = [],
-  availableTags = [],
+  availableMetaData,
 }: MetaDataInputFormParams) => (
-  <Formik
-    initialValues={{ metaDataInput, availableTags, availableAttributes }}
-    onSubmit={({ metaDataInput }, { setSubmitting }) => {
-      updateMetaDataMutation({
-        variables: {
-          id,
-          metaDataInput,
-        },
-      });
+  <Formik<FormikMetaData>
+    initialValues={{
+      metaData,
+      availableMetaData,
+      newTag: "",
+      newKey: "",
+      newValueStr: "",
+    }}
+    onSubmit={({ metaData }, { setSubmitting }) => {
+      console.log("==> ", metaData);
+
+      // updateMetaDataMutation({
+      //   variables: {
+      //     id,
+      //     metaDataInput,
+      //   },
+      // });
       setSubmitting(false);
-      navigate(-1);
+      // navigate(-1);
+    }}
+    validate={(values) => {
+      console.log("==> validate", values);
     }}
   >
-    {({ isSubmitting }) => (
+    {({
+      values: {
+        metaData: { id },
+      },
+      isSubmitting,
+    }) => (
       <FlexForm>
         <HeaderContainer>
           <span>{isFolder(id) ? Characters.folder : Characters.file}</span>
           <EntryName>{id.split("/").slice(-1)[0]}</EntryName>
         </HeaderContainer>
 
-        <MetaDataPartialForm
-          availableAttributes={availableAttributes}
-          availableTags={availableTags}
-          metaDataInput={metaDataInput}
+        <Frame
+          thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
         />
+
+        <MetaDataPartialForm />
 
         <ButtonContainer>
           <SubmitButton type="submit" disabled={isSubmitting}>

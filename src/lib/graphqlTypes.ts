@@ -84,10 +84,10 @@ export type MutationUpdateMetaDataArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAttributes: Array<Attribute>;
-  getTags: Array<Scalars['String']>;
+  attributes: Array<Attribute>;
   listFolder?: Maybe<FolderConnection>;
   search?: Maybe<FolderConnection>;
+  tags: Array<Scalars['String']>;
 };
 
 
@@ -135,7 +135,7 @@ export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?:
 export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', getTags: Array<string>, getAttributes: Array<{ __typename?: 'Attribute', name: string, type: InputType }> };
+export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', tags: Array<string>, attributes: Array<{ __typename?: 'Attribute', name: string, type: InputType }> };
 
 export type SearchQueryVariables = Exact<{
   searchInput: SearchInput;
@@ -240,11 +240,11 @@ export type UpdateMetaDataMutationResult = Apollo.MutationResult<UpdateMetaDataM
 export type UpdateMetaDataMutationOptions = Apollo.BaseMutationOptions<UpdateMetaDataMutation, UpdateMetaDataMutationVariables>;
 export const GetAllTagsAndAttributesDocument = gql`
     query GetAllTagsAndAttributes {
-  getAttributes {
+  attributes {
     name
     type
   }
-  getTags
+  tags
 }
     `;
 

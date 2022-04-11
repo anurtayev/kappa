@@ -18,56 +18,37 @@ export const MetaContainer = () => {
     throw new Error("id is missing");
   }
 
-  const { MetaData: metaData } = client.readQuery({
-    query: gql`
-      query ReadMetaData($id: String!) {
-        MetaData(id: $id) {
-          id
-          attributes
-          tags
-        }
+  const metaData = client.readFragment({
+    id: `MetaData:${id}`,
+    fragment: gql`
+      fragment ReadMetaData on MetaData {
+        id
+        attributes
+        tags
       }
     `,
-    variables: {
-      id,
-    },
   });
-
-  const metaDataInput: MetaDataInput = {
-    tags: metaData.tags,
-    attributes: metaData.attributes,
-  };
 
   const [
     updateMetaDataMutation,
     { data: updateData, loading: updateLoading, error: updateError },
-  ] = useUpdateMetaDataMutation({
-    variables: {
-      id,
-      metaDataInput,
-    },
-  });
+  ] = useUpdateMetaDataMutation();
 
   const {
-    data: tagsAndAttributesData,
-    loading: tagsAndAttributesLoading,
-    error: tagsAndAttributesError,
+    data: availableMetaData,
+    loading: availableMetaDataLoading,
+    error: availableMetaDataError,
   } = useGetAllTagsAndAttributesQuery();
 
-  if (tagsAndAttributesLoading || !tagsAndAttributesData) return <p>Loading</p>;
-  if (tagsAndAttributesError) return <p>Error</p>;
-
-  const { getAttributes: availableAttributes, getTags: availableTags } =
-    tagsAndAttributesData;
+  if (availableMetaDataLoading || !availableMetaData) return <p>Loading</p>;
+  if (availableMetaDataError) return <p>Error</p>;
 
   return (
     <MetaDataInputForm
-      id={id}
-      metaDataInput={metaDataInput}
+      metaData={metaData}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
-      availableAttributes={availableAttributes}
-      availableTags={availableTags}
+      availableMetaData={availableMetaData}
     />
   );
 };

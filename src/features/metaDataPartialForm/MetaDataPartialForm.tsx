@@ -1,29 +1,40 @@
-import { FieldArray, Field } from "formik";
-import styled from "styled-components";
+import { FieldArray, useFormikContext } from "formik";
 
 import { Characters, FormBrick, SmallButton } from "lib";
-import { MetaDataInputFormValues } from "lib";
+import { FormikMetaData } from "lib";
 
 import { Selections } from "./Selections";
 import { AttributeValue } from "@aspan/sigma/lib";
+import {
+  SectionHeader,
+  ElemBox,
+  ExistingItemsContainer,
+  StyledField,
+} from "./styles";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
-export const MetaDataPartialForm = ({
-  metaDataInput: { tags, attributes },
-  availableTags,
-  availableAttributes,
-}: MetaDataInputFormValues) => {
-  let newTag = "";
-  let newKey = "";
-  let newValueStr = "";
+export const MetaDataPartialForm = () => {
+  const {
+    values: {
+      metaData: { tags, attributes },
+      newTag,
+      newKey,
+      newValueStr,
+      availableMetaData: {
+        tags: availableTags,
+        attributes: availableAttributes,
+      },
+    },
+    setFieldValue,
+  } = useFormikContext<FormikMetaData>();
 
   return (
     <>
       <div>
         <SectionHeader>Tags</SectionHeader>
         <FieldArray
-          name="tags"
+          name="metaData.tags"
           render={({ remove, push }) => (
             <>
               <ExistingItemsContainer>
@@ -44,7 +55,7 @@ export const MetaDataPartialForm = ({
                   onClick={() => {
                     const newTagValue = cleanse(newTag);
                     push(newTagValue);
-                    newTag = "";
+                    setFieldValue("newTag", "");
                   }}
                 >
                   {Characters.plus}
@@ -52,7 +63,9 @@ export const MetaDataPartialForm = ({
               </FormBrick>
               <Selections
                 currentValue={newTag}
-                selections={availableTags.filter((availableTag) => true)}
+                selections={availableTags.filter((availableTag) =>
+                  availableTag.startsWith(newTag)
+                )}
                 setNewValue={(selectedValue: string) => push(selectedValue)}
               />
             </>
@@ -95,8 +108,8 @@ export const MetaDataPartialForm = ({
                       )
                     )
                       push([newKeyValue, cleanse(newValueStr)]);
-                    newKey = "";
-                    newValueStr = "";
+                    setFieldValue("newKey", "");
+                    setFieldValue("newValueStr", "");
                   }}
                 >
                   {Characters.plus}
@@ -108,7 +121,7 @@ export const MetaDataPartialForm = ({
                   .filter((availableAttribute) => attributes?.length)
                   .map((availableAttribute) => availableAttribute.name)}
                 setNewValue={(selectedValue: string) =>
-                  (newKey = selectedValue)
+                  setFieldValue("newKey", selectedValue)
                 }
               />
             </>
@@ -118,26 +131,3 @@ export const MetaDataPartialForm = ({
     </>
   );
 };
-
-const SectionHeader = styled.h5`
-  color: #1187f6;
-  margin: 0 0 0.2rem 0;
-`;
-
-const ElemBox = styled.div`
-  border: 1px solid;
-  padding: 0 0.2rem 0 0.2rem;
-  background: lightgrey;
-  height: 1rem;
-  font-size: 0.75rem;
-`;
-
-const ExistingItemsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const StyledField = styled(Field)`
-  height: 0.76rem;
-  width: 40%;
-`;

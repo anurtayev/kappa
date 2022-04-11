@@ -12,10 +12,10 @@ mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
 }
 
 query GetAllTagsAndAttributes {
-  getAttributes {
+  attributes {
     name
     type
   }
 
-  getTags
+  tags
 }

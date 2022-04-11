@@ -1,4 +1,4 @@
-import { MetaDataInput, Attribute } from "@aspan/sigma";
+import { MetaData, Scalars, Attribute } from "@aspan/sigma";
 
 export enum EntryType {
   folder = "Folder",
@@ -49,8 +49,15 @@ export type NavItems = Array<NavItem>;
 
 export const isFolder = (id: string): boolean => id.slice(-1) === "/";
 
-export type MetaDataInputFormValues = {
-  metaDataInput: MetaDataInput;
-  availableTags: Array<string>;
-  availableAttributes: Array<Attribute>;
+export type AvailableMetaData = {
+  attributes: Array<Attribute>;
+  tags: Array<Scalars["String"]>;
 };
+
+export interface FormikMetaData {
+  metaData: MetaData;
+  availableMetaData: AvailableMetaData;
+  newTag: string;
+  newKey: string;
+  newValueStr: string;
+}
