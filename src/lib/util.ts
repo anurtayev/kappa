@@ -60,4 +60,5 @@ export interface FormikMetaData {
   newTag: string;
   newKey: string;
   newValueStr: string;
+  newType: string;
 }

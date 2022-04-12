@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 
-import { useSearchQuery, SearchInput, MetaDataInput } from "lib";
+import { useSearchQuery, SearchInput } from "lib";
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
 import { FlexForm, Section, SubmitButton } from "./SearchScreen.styles";
 
@@ -32,11 +32,7 @@ export const SearchScreenContainer = () => {
     >
       {({ isSubmitting }) => (
         <FlexForm>
-          <MetaDataPartialForm
-            availableAttributes={[]}
-            availableTags={[]}
-            metaDataInput={{}}
-          />
+          <MetaDataPartialForm />
 
           <Section>
             <SubmitButton type="submit" disabled={isSubmitting}>

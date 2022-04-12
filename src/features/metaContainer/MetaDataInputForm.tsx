@@ -33,9 +33,10 @@ export const MetaDataInputForm = ({
       newTag: "",
       newKey: "",
       newValueStr: "",
+      newType: "STRING",
     }}
     onSubmit={({ metaData }, { setSubmitting }) => {
-      console.log("==> ", metaData);
+      // console.log("==> onSubmit", metaData);
 
       // updateMetaDataMutation({
       //   variables: {
@@ -47,7 +48,7 @@ export const MetaDataInputForm = ({
       // navigate(-1);
     }}
     validate={(values) => {
-      console.log("==> validate", values);
+      // console.log("==> validate", values);
     }}
   >
     {({
