@@ -1,5 +1,5 @@
 import { FieldArray, useFormikContext, Field } from "formik";
-import { AttributeValue } from "@aspan/sigma/lib";
+import { AttributeValue, Attribute } from "@aspan/sigma/lib";
 
 import {
   Characters,
@@ -10,6 +10,7 @@ import {
 } from "lib";
 
 import { Selections } from "./Selections";
+import { AvailableAttributes } from "./AvailableAttributes";
 import {
   SectionHeader,
   ElemBox,
@@ -144,14 +145,19 @@ export const MetaDataPartialForm = () => {
                   {Characters.plus}
                 </SmallButton>
               </FormBrick>
-              <Selections
-                currentValue={newKey}
-                selections={availableAttributes
-                  .filter((attribute) => attribute.name.startsWith(newKey))
-                  .map((attribute) => attribute.name)}
-                setNewValue={(selectedValue: string) =>
-                  setFieldValue("newKey", selectedValue)
-                }
+              <AvailableAttributes
+                currentValue={{
+                  name: newKey,
+                  type:
+                    newType === "STRING" ? InputType.String : InputType.Number,
+                }}
+                availableAttributes={availableAttributes.filter((attribute) =>
+                  attribute.name.startsWith(newKey)
+                )}
+                setNewValue={(selectedValue: Attribute) => {
+                  setFieldValue("newKey", selectedValue.name);
+                  setFieldValue("newType", selectedValue.type);
+                }}
               />
             </>
           )}
