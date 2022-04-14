@@ -14,6 +14,10 @@ export const ElemBox = styled.div`
   font-size: 0.75rem;
 `;
 
+export const ElemBoxValue = styled(ElemBox)`
+  background: none;
+`;
+
 export const ExistingItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -21,5 +25,5 @@ export const ExistingItemsContainer = styled.div`
 
 export const StyledField = styled(Field)`
   height: 0.76rem;
-  width: 40%;
+  width: 10rem;
 `;

@@ -14,6 +14,7 @@ import {
   ExistingItemsContainer,
   SectionHeader,
   StyledField,
+  ElemBoxValue,
 } from "./styles";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
@@ -107,10 +108,7 @@ export const MetaDataPartialForm = () => {
                     (attributeValue: AttributeValue, index: number) => (
                       <FormBrick key={index}>
                         <ElemBox>{attributeValue.attribute.name}</ElemBox>
-                        <StyledField
-                          name={`metaData.attributes.${index}.value`}
-                          value={attributeValue.value}
-                        />
+                        <ElemBoxValue>{attributeValue.value}</ElemBoxValue>
                         <SmallButton onClick={() => remove(index)}>
                           {Characters.multiply}
                         </SmallButton>
