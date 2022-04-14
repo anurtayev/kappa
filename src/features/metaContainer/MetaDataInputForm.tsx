@@ -9,6 +9,7 @@ import {
   UpdateMetaDataMutationFn,
   isFolder,
   FormikMetaData,
+  InputType,
 } from "lib";
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
 import { Frame } from "./styles";
@@ -33,19 +34,19 @@ export const MetaDataInputForm = ({
       newTag: "",
       newKey: "",
       newValueStr: "",
-      newType: "STRING",
+      newType: InputType.String,
     }}
-    onSubmit={({ metaData }, { setSubmitting }) => {
-      // console.log("==> onSubmit", metaData);
+    onSubmit={async ({ metaData }, { setSubmitting }) => {
+      const { id, attributes, tags } = metaData;
 
-      // updateMetaDataMutation({
-      //   variables: {
-      //     id,
-      //     metaDataInput,
-      //   },
-      // });
+      await updateMetaDataMutation({
+        variables: {
+          id,
+          metaDataInput: { attributes, tags },
+        },
+      });
       setSubmitting(false);
-      // navigate(-1);
+      navigate(-1);
     }}
     validate={(values) => {
       // console.log("==> validate", values);

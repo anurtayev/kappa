@@ -28,10 +28,34 @@ export const MetaContainer = () => {
     `,
   });
 
-  const [
-    updateMetaDataMutation,
-    { data: updateData, loading: updateLoading, error: updateError },
-  ] = useUpdateMetaDataMutation();
+  const [updateMetaDataMutation] = useUpdateMetaDataMutation({
+    update(cache, mutationResult) {
+      const { tags, attributes, id } =
+        mutationResult?.data?.updateMetaData || {};
+
+      console.log(
+        "==>",
+        JSON.stringify(mutationResult?.data?.updateMetaData, null, 2)
+      );
+
+      // cache.modify({
+      //   fields: {
+      //     todos(existingTodos = []) {
+      //       const newTodoRef = cache.writeFragment({
+      //         data: addTodo,
+      //         fragment: gql`
+      //           fragment NewTodo on Todo {
+      //             id
+      //             type
+      //           }
+      //         `,
+      //       });
+      //       return [...existingTodos, newTodoRef];
+      //     },
+      //   },
+      // });
+    },
+  });
 
   const {
     data: availableMetaData,

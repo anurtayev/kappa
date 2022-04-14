@@ -1,24 +1,39 @@
-import { FieldArray, useFormikContext, Field } from "formik";
-import { AttributeValue, Attribute } from "@aspan/sigma/lib";
-
+import { Attribute, AttributeValue } from "@aspan/sigma/lib";
+import { Field, FieldArray, useFormikContext } from "formik";
 import {
   Characters,
   FormBrick,
-  SmallButton,
   FormikMetaData,
   InputType,
+  SmallButton,
 } from "lib";
-
-import { Selections } from "./Selections";
 import { AvailableAttributes } from "./AvailableAttributes";
+import { Selections } from "./Selections";
 import {
-  SectionHeader,
   ElemBox,
   ExistingItemsContainer,
+  SectionHeader,
   StyledField,
 } from "./styles";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
+
+const optionStringSelected = (
+  <option value={InputType.String} selected>
+    {InputType.String}
+  </option>
+);
+const optionStringNotSelected = (
+  <option value={InputType.String}>{InputType.String}</option>
+);
+const optionNumberSelected = (
+  <option value={InputType.Number} selected>
+    {InputType.Number}
+  </option>
+);
+const optionNumberNotSelected = (
+  <option value={InputType.Number}>{InputType.Number}</option>
+);
 
 export const MetaDataPartialForm = () => {
   const {
@@ -35,8 +50,6 @@ export const MetaDataPartialForm = () => {
     },
     setFieldValue,
   } = useFormikContext<FormikMetaData>();
-
-  console.log("==> MetaDataPartialForm newType", newType);
 
   return (
     <>
@@ -85,7 +98,7 @@ export const MetaDataPartialForm = () => {
       <div>
         <SectionHeader>Attributes</SectionHeader>
         <FieldArray
-          name="metadata.attributes"
+          name="metaData.attributes"
           render={({ remove, push }) => (
             <>
               <ExistingItemsContainer>
@@ -95,7 +108,7 @@ export const MetaDataPartialForm = () => {
                       <FormBrick key={index}>
                         <ElemBox>{attributeValue.attribute.name}</ElemBox>
                         <StyledField
-                          name={`metadata.attributes.${index}.value`}
+                          name={`metaData.attributes.${index}.value`}
                           value={attributeValue.value}
                         />
                         <SmallButton onClick={() => remove(index)}>
@@ -109,23 +122,16 @@ export const MetaDataPartialForm = () => {
               <FormBrick>
                 <StyledField name="newKey" autoComplete="off" />
                 <Field as="select" name="newType">
-                  <option value={"STRING"} selected={newType === "STRING"}>
-                    {"STRING"}
-                  </option>
-                  <option value={"NUMBER"} selected={newType === "NUMBER"}>
-                    {"NUMBER"}
-                  </option>
+                  {newType === InputType.String
+                    ? optionStringSelected
+                    : optionStringNotSelected}
+                  {newType === InputType.Number
+                    ? optionNumberSelected
+                    : optionNumberNotSelected}
                 </Field>
                 <StyledField name="newValueStr" />
                 <SmallButton
                   onClick={() => {
-                    console.log(
-                      "==> new attribute:",
-                      newKey,
-                      newType,
-                      newValueStr
-                    );
-
                     const newKeyValue = cleanse(newKey);
                     if (
                       !attributes?.find(
@@ -134,23 +140,26 @@ export const MetaDataPartialForm = () => {
                       )
                     )
                       push({
+                        __typename: "AttributeValue",
                         attribute: { name: newKeyValue, type: newType },
                         value: cleanse(newValueStr),
-                      });
+                      } as AttributeValue);
                     setFieldValue("newKey", "");
                     setFieldValue("newValueStr", "");
-                    setFieldValue("newType", "STRING");
+                    setFieldValue("newType", InputType.String);
                   }}
                 >
                   {Characters.plus}
                 </SmallButton>
               </FormBrick>
               <AvailableAttributes
-                currentValue={{
-                  name: newKey,
-                  type:
-                    newType === "STRING" ? InputType.String : InputType.Number,
-                }}
+                currentValue={
+                  {
+                    __typename: "Attribute",
+                    name: newKey,
+                    type: newType,
+                  } as Attribute
+                }
                 availableAttributes={availableAttributes.filter((attribute) =>
                   attribute.name.startsWith(newKey)
                 )}

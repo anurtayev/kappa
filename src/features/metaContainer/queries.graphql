@@ -1,5 +1,6 @@
 mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
   updateMetaData(id: $id, metaDataInput: $metaDataInput) {
+    id
     tags
     attributes {
       attribute {

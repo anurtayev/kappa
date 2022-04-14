@@ -130,7 +130,7 @@ export type UpdateMetaDataMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?: { __typename?: 'MetaData', tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null } | null };
+export type UpdateMetaDataMutation = { __typename?: 'Mutation', updateMetaData?: { __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null } | null };
 
 export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -200,6 +200,7 @@ export type SlidesQueryResult = Apollo.QueryResult<SlidesQuery, SlidesQueryVaria
 export const UpdateMetaDataDocument = gql`
     mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
   updateMetaData(id: $id, metaDataInput: $metaDataInput) {
+    id
     tags
     attributes {
       attribute {

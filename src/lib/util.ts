@@ -1,4 +1,4 @@
-import { MetaData, Scalars, Attribute } from "@aspan/sigma";
+import { MetaData, Scalars, Attribute, InputType } from "@aspan/sigma";
 
 export enum EntryType {
   folder = "Folder",
@@ -60,5 +60,5 @@ export interface FormikMetaData {
   newTag: string;
   newKey: string;
   newValueStr: string;
-  newType: string;
+  newType: InputType;
 }
