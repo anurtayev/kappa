@@ -1,4 +1,4 @@
-import { Attribute, AttributeValue } from "@aspan/sigma/lib";
+import { Attribute, AttributeValue, AttributeInput } from "@aspan/sigma/lib";
 import { Field, FieldArray, useFormikContext } from "formik";
 import {
   AttributeValueInput,
@@ -19,23 +19,6 @@ import {
 } from "./styles";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
-
-const optionStringSelected = (
-  <option value={InputType.String} selected>
-    {InputType.String}
-  </option>
-);
-const optionStringNotSelected = (
-  <option value={InputType.String}>{InputType.String}</option>
-);
-const optionNumberSelected = (
-  <option value={InputType.Number} selected>
-    {InputType.Number}
-  </option>
-);
-const optionNumberNotSelected = (
-  <option value={InputType.Number}>{InputType.Number}</option>
-);
 
 export const MetaDataPartialForm = () => {
   const {
@@ -149,10 +132,9 @@ export const MetaDataPartialForm = () => {
               <AvailableAttributes
                 currentValue={
                   {
-                    __typename: "Attribute",
                     name: newKey,
                     type: newType,
-                  } as Attribute
+                  } as AttributeInput
                 }
                 availableAttributes={availableAttributes.filter((attribute) =>
                   attribute.name.startsWith(newKey)

@@ -1,8 +1,8 @@
-import { Attribute } from "lib";
+import { Attribute, AttributeInput } from "lib";
 
 type Params = {
-  currentValue: Attribute;
-  availableAttributes: Attribute[];
+  currentValue: AttributeInput;
+  availableAttributes: AttributeInput[];
   setNewValue: Function;
 };
 
