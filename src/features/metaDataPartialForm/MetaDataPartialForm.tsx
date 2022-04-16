@@ -1,6 +1,7 @@
 import { Attribute, AttributeValue } from "@aspan/sigma/lib";
 import { Field, FieldArray, useFormikContext } from "formik";
 import {
+  AttributeValueInput,
   Characters,
   FormBrick,
   FormikMetaData,
@@ -57,7 +58,7 @@ export const MetaDataPartialForm = () => {
       <div>
         <SectionHeader>Tags</SectionHeader>
         <FieldArray
-          name="metaData.tags"
+          name="metaDataInput.tags"
           render={({ remove, push }) => (
             <>
               <ExistingItemsContainer>
@@ -99,7 +100,7 @@ export const MetaDataPartialForm = () => {
       <div>
         <SectionHeader>Attributes</SectionHeader>
         <FieldArray
-          name="metaData.attributes"
+          name="metaDataInput.attributes"
           render={({ remove, push }) => (
             <>
               <ExistingItemsContainer>
@@ -119,29 +120,24 @@ export const MetaDataPartialForm = () => {
 
               <FormBrick>
                 <StyledField name="newKey" autoComplete="off" />
-                <Field as="select" name="newType">
-                  {newType === InputType.String
-                    ? optionStringSelected
-                    : optionStringNotSelected}
-                  {newType === InputType.Number
-                    ? optionNumberSelected
-                    : optionNumberNotSelected}
+                <Field as="select" name="newType" value={newType}>
+                  <option value={InputType.String}>{InputType.String}</option>
+                  <option value={InputType.Number}>{InputType.Number}</option>
                 </Field>
                 <StyledField name="newValueStr" />
                 <SmallButton
                   onClick={() => {
-                    const newKeyValue = cleanse(newKey);
+                    const cleansedKey = cleanse(newKey);
                     if (
                       !attributes?.find(
                         (attributeValue) =>
-                          attributeValue.attribute.name === newKeyValue
+                          attributeValue.attribute.name === cleansedKey
                       )
                     )
                       push({
-                        __typename: "AttributeValue",
-                        attribute: { name: newKeyValue, type: newType },
+                        attribute: { name: cleansedKey, type: newType },
                         value: cleanse(newValueStr),
-                      } as AttributeValue);
+                      } as AttributeValueInput);
                     setFieldValue("newKey", "");
                     setFieldValue("newValueStr", "");
                     setFieldValue("newType", InputType.String);

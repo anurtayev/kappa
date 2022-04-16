@@ -48,8 +48,8 @@ export const MetaDataInputForm = ({
       setSubmitting(false);
       navigate(-1);
     }}
-    validate={(values) => {
-      // console.log("==> validate", values);
+    validate={({ newKey, newTag, newValueStr, newType }) => {
+      // console.log("==> validate", newTag, newKey, newType, newValueStr);
     }}
   >
     {({ isSubmitting }) => (

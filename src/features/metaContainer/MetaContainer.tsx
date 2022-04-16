@@ -30,43 +30,12 @@ export const MetaContainer = () => {
     `,
   });
 
-  const [updateMetaDataMutation] = useUpdateMetaDataMutation({
-    update(cache, mutationResult) {
-      const { tags, attributes, id } =
-        mutationResult?.data?.updateMetaData || {};
+  const [updateMetaDataMutation] = useUpdateMetaDataMutation();
 
-      console.log(
-        "==>",
-        JSON.stringify(mutationResult?.data?.updateMetaData, null, 2)
-      );
+  const { data, loading, error } = useGetAllTagsAndAttributesQuery();
 
-      // cache.modify({
-      //   fields: {
-      //     todos(existingTodos = []) {
-      //       const newTodoRef = cache.writeFragment({
-      //         data: addTodo,
-      //         fragment: gql`
-      //           fragment NewTodo on Todo {
-      //             id
-      //             type
-      //           }
-      //         `,
-      //       });
-      //       return [...existingTodos, newTodoRef];
-      //     },
-      //   },
-      // });
-    },
-  });
-
-  const {
-    data: availableMetaData,
-    loading: availableMetaDataLoading,
-    error: availableMetaDataError,
-  } = useGetAllTagsAndAttributesQuery();
-
-  if (availableMetaDataLoading || !availableMetaData) return <p>Loading</p>;
-  if (availableMetaDataError) return <p>Error</p>;
+  if (loading || !data) return <p>Loading</p>;
+  if (error) return <p>Error</p>;
 
   return (
     <MetaDataInputForm
@@ -74,7 +43,7 @@ export const MetaContainer = () => {
       metaDataInput={convertMetaDataToInput(metaData)}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
-      availableMetaData={availableMetaData}
+      availableMetaData={data}
     />
   );
 };
