@@ -1,48 +1,48 @@
+import { MetaDataPartialForm } from "features/metaDataPartialForm";
 import { Form, Formik } from "formik";
-import styled from "styled-components";
-import { NavigateFunction } from "react-router-dom";
-
 import {
-  Characters,
-  MetaData,
   AvailableMetaData,
-  UpdateMetaDataMutationFn,
-  isFolder,
+  Characters,
   FormikMetaData,
   InputType,
+  isFolder,
+  RequiredMetaData,
+  UpdateMetaDataMutationFn,
+  cleanseMetaDataInput,
 } from "lib";
-import { MetaDataPartialForm } from "features/metaDataPartialForm";
+import { NavigateFunction } from "react-router-dom";
+import styled from "styled-components";
 import { Frame } from "./styles";
 
 type MetaDataInputFormParams = {
-  metaData: MetaData;
+  id: string;
+  metaDataInput: RequiredMetaData;
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
   availableMetaData: AvailableMetaData;
 };
 
 export const MetaDataInputForm = ({
-  metaData,
+  id,
+  metaDataInput,
   updateMetaDataMutation,
   navigate,
   availableMetaData,
 }: MetaDataInputFormParams) => (
   <Formik<FormikMetaData>
     initialValues={{
-      metaData,
+      metaDataInput,
       availableMetaData,
       newTag: "",
       newKey: "",
       newValueStr: "",
       newType: InputType.String,
     }}
-    onSubmit={async ({ metaData }, { setSubmitting }) => {
-      const { id, attributes, tags } = metaData;
-
+    onSubmit={async ({ metaDataInput }, { setSubmitting }) => {
       await updateMetaDataMutation({
         variables: {
           id,
-          metaDataInput: { attributes, tags },
+          metaDataInput: cleanseMetaDataInput(metaDataInput),
         },
       });
       setSubmitting(false);
@@ -52,12 +52,7 @@ export const MetaDataInputForm = ({
       // console.log("==> validate", values);
     }}
   >
-    {({
-      values: {
-        metaData: { id },
-      },
-      isSubmitting,
-    }) => (
+    {({ isSubmitting }) => (
       <FlexForm>
         <HeaderContainer>
           <span>{isFolder(id) ? Characters.folder : Characters.file}</span>

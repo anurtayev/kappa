@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   useUpdateMetaDataMutation,
   useGetAllTagsAndAttributesQuery,
+  convertMetaDataToInput,
+  MetaData,
 } from "lib";
 import { MetaDataInputForm } from "./MetaDataInputForm";
 
@@ -17,7 +19,7 @@ export const MetaContainer = () => {
     throw new Error("id is missing");
   }
 
-  const metaData = client.readFragment({
+  const metaData: MetaData | null = client.readFragment({
     id: `MetaData:${id}`,
     fragment: gql`
       fragment ReadMetaData on MetaData {
@@ -68,7 +70,8 @@ export const MetaContainer = () => {
 
   return (
     <MetaDataInputForm
-      metaData={metaData}
+      id={id}
+      metaDataInput={convertMetaDataToInput(metaData)}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
       availableMetaData={availableMetaData}

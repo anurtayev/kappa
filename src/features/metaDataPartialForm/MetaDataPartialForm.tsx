@@ -39,7 +39,7 @@ const optionNumberNotSelected = (
 export const MetaDataPartialForm = () => {
   const {
     values: {
-      metaData: { tags, attributes },
+      metaDataInput: { tags, attributes },
       newTag,
       newKey,
       newValueStr,

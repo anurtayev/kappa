@@ -1,4 +1,11 @@
-import { MetaData, Scalars, Attribute, InputType } from "@aspan/sigma";
+import {
+  MetaData,
+  Scalars,
+  Attribute,
+  InputType,
+  MetaDataInput,
+  AttributeValueInput,
+} from "@aspan/sigma";
 
 export enum EntryType {
   folder = "Folder",
@@ -55,10 +62,53 @@ export type AvailableMetaData = {
 };
 
 export interface FormikMetaData {
-  metaData: MetaData;
+  metaDataInput: RequiredMetaData;
   availableMetaData: AvailableMetaData;
   newTag: string;
   newKey: string;
   newValueStr: string;
   newType: InputType;
 }
+
+export type RequiredMetaData = {
+  attributes: Array<AttributeValueInput>;
+  tags: Array<string>;
+};
+
+export const convertMetaDataToInput = (
+  input: MetaData | null | undefined
+): RequiredMetaData => {
+  if (input === undefined || input === null)
+    return { tags: [], attributes: [] };
+  return {
+    tags: input.tags || [],
+    attributes:
+      (input.attributes &&
+        input.attributes?.reduce((previousValue, currentValue) => {
+          return [
+            ...previousValue,
+            {
+              value: currentValue.value,
+              attribute: {
+                name: currentValue.attribute.name,
+                type: currentValue.attribute.type,
+              },
+            },
+          ];
+        }, [] as Array<AttributeValueInput>)) ||
+      [],
+  };
+};
+
+export type MetaDataInputOrUndefined = MetaDataInput | undefined;
+export const cleanseMetaDataInput = ({
+  tags,
+  attributes,
+}: RequiredMetaData): MetaDataInputOrUndefined => {
+  if (!tags.length && !attributes.length) return undefined;
+  else
+    return {
+      tags: (tags.length && tags) || undefined,
+      attributes: (attributes.length && attributes) || undefined,
+    };
+};
