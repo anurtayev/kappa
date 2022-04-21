@@ -56,6 +56,9 @@ export type NavItems = Array<NavItem>;
 
 export const isFolder = (id: string): boolean => id.slice(-1) === "/";
 
+export const getMediaName = (key: string): string =>
+  key.split("/").slice(-1)[0];
+
 export type AvailableMetaData = {
   attributes: Array<Attribute>;
   tags: Array<Scalars["String"]>;
@@ -105,10 +108,8 @@ export const cleanseMetaDataInput = ({
   tags,
   attributes,
 }: RequiredMetaData): MetaDataInputOrUndefined => {
-  if (!tags.length && !attributes.length) return undefined;
-  else
-    return {
-      tags: (tags.length && tags) || undefined,
-      attributes: (attributes.length && attributes) || undefined,
-    };
+  return {
+    tags: (tags.length && tags) || null,
+    attributes: (attributes.length && attributes) || null,
+  };
 };

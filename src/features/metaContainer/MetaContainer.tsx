@@ -32,7 +32,9 @@ export const MetaContainer = () => {
 
   const [updateMetaDataMutation] = useUpdateMetaDataMutation();
 
-  const { data, loading, error } = useGetAllTagsAndAttributesQuery();
+  const { data, loading, error } = useGetAllTagsAndAttributesQuery({
+    fetchPolicy: "cache-and-network",
+  });
 
   if (loading || !data) return <p>Loading</p>;
   if (error) return <p>Error</p>;

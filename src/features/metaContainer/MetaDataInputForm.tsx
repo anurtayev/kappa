@@ -1,5 +1,6 @@
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
 import { Form, Formik } from "formik";
+
 import {
   AvailableMetaData,
   Characters,
@@ -8,6 +9,7 @@ import {
   isFolder,
   RequiredMetaData,
   UpdateMetaDataMutationFn,
+  getMediaName,
   cleanseMetaDataInput,
 } from "lib";
 import { NavigateFunction } from "react-router-dom";
@@ -39,14 +41,20 @@ export const MetaDataInputForm = ({
       newType: InputType.String,
     }}
     onSubmit={async ({ metaDataInput }, { setSubmitting }) => {
-      await updateMetaDataMutation({
-        variables: {
-          id,
-          metaDataInput: cleanseMetaDataInput(metaDataInput),
-        },
-      });
-      setSubmitting(false);
-      navigate(-1);
+      try {
+        await updateMetaDataMutation({
+          variables: {
+            id,
+            metaDataInput: cleanseMetaDataInput(metaDataInput),
+          },
+        });
+        console.log("==> 2");
+
+        setSubmitting(false);
+        navigate(-1);
+      } catch (error) {
+        console.error(error);
+      }
     }}
     validate={({ newKey, newTag, newValueStr, newType }) => {
       // console.log("==> validate", newTag, newKey, newType, newValueStr);
@@ -56,7 +64,7 @@ export const MetaDataInputForm = ({
       <FlexForm>
         <HeaderContainer>
           <span>{isFolder(id) ? Characters.folder : Characters.file}</span>
-          <EntryName>{id.split("/").slice(-1)[0]}</EntryName>
+          <EntryName>{getMediaName(id)}</EntryName>
         </HeaderContainer>
 
         <Frame

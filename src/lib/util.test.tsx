@@ -225,7 +225,8 @@ describe("convertMetaDataToInput", () => {
 describe("cleanseMetaDataInput", () => {
   it("should return undefined if tags and attributes are empty arrays", () => {
     const meta: RequiredMetaData = { tags: [], attributes: [] };
-    expect(cleanseMetaDataInput(meta)).toBeUndefined();
+    const expectedResult = { tags: null, attributes: null };
+    expect(cleanseMetaDataInput(meta)).toEqual(expectedResult);
   });
 
   it("should return tags undefined if it is empty array", () => {
@@ -236,14 +237,14 @@ describe("cleanseMetaDataInput", () => {
       },
     ];
     const meta: RequiredMetaData = { tags: [], attributes };
-    const metaResult: MetaDataInputOrUndefined = { attributes };
+    const metaResult: MetaDataInputOrUndefined = { attributes, tags: null };
     expect(cleanseMetaDataInput(meta)).toEqual(metaResult);
   });
 
   it("should return attribute undefined if it is empty array", () => {
     const tags: string[] = ["name"];
     const meta: RequiredMetaData = { tags, attributes: [] };
-    const metaResult: MetaDataInputOrUndefined = { tags };
+    const metaResult: MetaDataInputOrUndefined = { tags, attributes: null };
     expect(cleanseMetaDataInput(meta)).toEqual(metaResult);
   });
 });
