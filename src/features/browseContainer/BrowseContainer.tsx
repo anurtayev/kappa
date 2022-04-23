@@ -59,8 +59,9 @@ export const BrowseContainer = () => {
   if (loading) return <p>Loading</p>;
   if (error || !data) return <p>Error {JSON.stringify(error)}</p>;
 
-  const items = data.listFolder?.items;
-  slides(items);
+  const folders = data.listFolder?.folders;
+  const files = data.listFolder?.files;
+  slides(files);
   const newNextToken = data.listFolder?.nextToken;
 
   const navs: Array<NavItem> = [
@@ -102,9 +103,10 @@ export const BrowseContainer = () => {
     saveScrollTopAndNavigate(`/${appRoutes.browse}?id=${id}`);
   };
 
-  return items ? (
+  return folders || files ? (
     <EntriesView
-      entries={items}
+      folders={folders}
+      files={files}
       navs={navs}
       scrollRef={imagesDivRef}
       onClickMeta={onClickMeta}

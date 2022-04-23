@@ -4,7 +4,18 @@ query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
     pageSize: $pageSize
     nextToken: $nextToken
   ) {
-    items {
+    folders {
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      id
+      tags
+    }
+    files {
       attributes {
         attribute {
           name

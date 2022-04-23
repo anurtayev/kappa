@@ -19,7 +19,8 @@ export const SearchScreenContainer = () => {
   if (loading) return <p>Loading</p>;
   if (error || !data) return <p>Error</p>;
 
-  const items = data.search?.items;
+  const folders = data.search?.folders;
+  const files = data.search?.files;
   const nextToken = data.search?.nextToken;
 
   return (

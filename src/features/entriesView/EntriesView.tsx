@@ -6,7 +6,8 @@ import { Folder } from "./Folder";
 import { FolderScreenFrame, VerticalFrame } from "./styles";
 
 export type FolderScreenParameters = {
-  entries: FolderConnection["items"];
+  folders: FolderConnection["folders"];
+  files: FolderConnection["files"];
   navs: Array<NavItem>;
   scrollRef: RefObject<HTMLDivElement>;
   onClickMeta: (id: string) => void;
@@ -15,7 +16,8 @@ export type FolderScreenParameters = {
 };
 
 export const EntriesView = ({
-  entries,
+  folders,
+  files,
   navs,
   scrollRef,
   onClickFolder,
@@ -26,23 +28,22 @@ export const EntriesView = ({
     <VerticalFrame>
       <Nav navs={navs}></Nav>
       <FolderScreenFrame ref={scrollRef}>
-        {entries?.map((entry, index) =>
-          isFolder(entry.id) ? (
-            <Folder
-              key={entry.id}
-              entry={entry}
-              onClickFolder={() => onClickFolder(entry.id)}
-              onClickMeta={() => onClickMeta(entry.id)}
-            />
-          ) : (
-            <File
-              key={entry.id}
-              entry={entry}
-              onClickSlides={() => onClickSlides(index)}
-              onClickMeta={() => onClickMeta(entry.id)}
-            />
-          )
-        )}
+        {folders?.map((entry) => (
+          <Folder
+            key={entry.id}
+            entry={entry}
+            onClickFolder={() => onClickFolder(entry.id)}
+            onClickMeta={() => onClickMeta(entry.id)}
+          />
+        ))}
+        {files?.map((entry, index) => (
+          <File
+            key={entry.id}
+            entry={entry}
+            onClickSlides={() => onClickSlides(index)}
+            onClickMeta={() => onClickMeta(entry.id)}
+          />
+        ))}
       </FolderScreenFrame>
     </VerticalFrame>
   );

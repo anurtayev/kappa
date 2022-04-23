@@ -5,7 +5,18 @@ query Slides(
   $locationKey: String!
 ) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
-    items {
+    folders {
+      id
+      attributes {
+        attribute {
+          name
+          type
+        }
+        value
+      }
+      tags
+    }
+    files {
       id
       attributes {
         attribute {

@@ -1,4 +1,4 @@
-import { Attribute, AttributeInput } from "lib";
+import { AttributeInput } from "lib";
 
 type Params = {
   currentValue: AttributeInput;
