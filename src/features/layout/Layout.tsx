@@ -11,9 +11,5 @@ export const Layout = () => {
     location.pathname === "/" && navigate(appRoutes.browse);
   }, [location, navigate]);
 
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 };

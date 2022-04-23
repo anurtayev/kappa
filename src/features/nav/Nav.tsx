@@ -1,27 +1,32 @@
+import { NavItem } from "lib";
+import { RefObject } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { NavItem } from "lib";
+type NavParams = {
+  navs: Array<NavItem>;
+  navRef?: RefObject<HTMLDivElement> | undefined;
+};
 
-export const Nav = ({ navs }: { navs: Array<NavItem> }) => {
+export const Nav = ({ navs, navRef }: NavParams) => {
   const location = useLocation();
 
   const { pathname } = location;
 
   return (
-    <Frame>
+    <Frame ref={navRef}>
       {navs.map(({ navFn, icon }, index) => (
         <ActionButton key={index} onClick={navFn}>
           {icon}
         </ActionButton>
       ))}
-      <Id>{pathname}</Id>
     </Frame>
   );
 };
 
 const Frame = styled.div`
   display: flex;
+  width: 100%;
 `;
 
 const ActionButton = styled.div`
@@ -50,12 +55,4 @@ const ActionButton = styled.div`
     background-size: 100%;
     transition: background 0s;
   }
-`;
-
-const Id = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  margin-left: auto;
-  margin-right: 2rem;
 `;

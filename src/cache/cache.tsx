@@ -1,5 +1,6 @@
 import { InMemoryCache, makeVar } from "@apollo/client";
 import { Maybe, MetaData } from "lib";
+import { createRef } from "react";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
