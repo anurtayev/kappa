@@ -1,7 +1,7 @@
-import { setCurrentSlides } from "cache";
+import { slides } from "cache";
 import { EntriesView } from "features/entriesView";
 import { appRoutes, Characters, NavItem, useSlidesQuery } from "lib";
-import { createRef, MouseEventHandler, useEffect } from "react";
+import { createRef, useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 /**
@@ -60,7 +60,7 @@ export const BrowseContainer = () => {
   if (error || !data) return <p>Error {JSON.stringify(error)}</p>;
 
   const items = data.listFolder?.items;
-  setCurrentSlides(items);
+  slides(items);
   const newNextToken = data.listFolder?.nextToken;
 
   const navs: Array<NavItem> = [
@@ -90,25 +90,16 @@ export const BrowseContainer = () => {
     icon: Characters.magnifyingGlass,
   });
 
-  const onClickMeta: MouseEventHandler = ({ target }) => {
-    if (target instanceof HTMLElement) {
-      const key = target.dataset["key"];
-      saveScrollTopAndNavigate(`/${appRoutes.meta}?id=${key}`);
-    }
+  const onClickMeta = (id: string) => {
+    saveScrollTopAndNavigate(`/${appRoutes.meta}?id=${id}`);
   };
 
-  const onClickSlides: MouseEventHandler = ({ target }) => {
-    if (target instanceof HTMLElement) {
-      const key = target.dataset["key"];
-      saveScrollTopAndNavigate(`/${appRoutes.slides}?id=${key}`);
-    }
+  const onClickSlides = (index: number) => {
+    saveScrollTopAndNavigate(`/${appRoutes.slides}?index=${index}`);
   };
 
-  const onClickFolder: MouseEventHandler = ({ target }) => {
-    if (target instanceof HTMLElement) {
-      const key = target.dataset["key"];
-      saveScrollTopAndNavigate(`/${appRoutes.browse}?id=${key}`);
-    }
+  const onClickFolder = (id: string) => {
+    saveScrollTopAndNavigate(`/${appRoutes.browse}?id=${id}`);
   };
 
   return items ? (

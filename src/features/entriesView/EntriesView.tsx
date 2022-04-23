@@ -1,18 +1,17 @@
-import { RefObject, MouseEventHandler } from "react";
-
-import { FolderConnection, NavItem, isFolder } from "lib";
-import { FolderScreenFrame, VerticalFrame } from "./styles";
+import { Nav } from "features/nav";
+import { FolderConnection, isFolder, NavItem } from "lib";
+import { RefObject } from "react";
 import { File } from "./File";
 import { Folder } from "./Folder";
-import { Nav } from "features/nav";
+import { FolderScreenFrame, VerticalFrame } from "./styles";
 
 export type FolderScreenParameters = {
   entries: FolderConnection["items"];
   navs: Array<NavItem>;
   scrollRef: RefObject<HTMLDivElement>;
-  onClickMeta: MouseEventHandler;
-  onClickSlides: MouseEventHandler;
-  onClickFolder: MouseEventHandler;
+  onClickMeta: (id: string) => void;
+  onClickSlides: (index: number) => void;
+  onClickFolder: (id: string) => void;
 };
 
 export const EntriesView = ({
@@ -32,15 +31,15 @@ export const EntriesView = ({
             <Folder
               key={entry.id}
               entry={entry}
-              onClickFolder={onClickFolder}
-              onClickMeta={onClickMeta}
+              onClickFolder={() => onClickFolder(entry.id)}
+              onClickMeta={() => onClickMeta(entry.id)}
             />
           ) : (
             <File
               key={entry.id}
               entry={entry}
-              onClickSlides={onClickSlides}
-              onClickMeta={onClickMeta}
+              onClickSlides={() => onClickSlides(index)}
+              onClickMeta={() => onClickMeta(entry.id)}
             />
           )
         )}

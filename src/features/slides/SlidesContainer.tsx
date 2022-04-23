@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { URLSearchParams } from "url";
-import { SlideScreen } from "./SlideScreen";
+import { SlideScreen, SlideNavFn } from "./SlideScreen";
 
 const getIndexFromParams = (params: URLSearchParams): number => {
   try {
@@ -55,13 +55,26 @@ export const SlidesContainer = () => {
     },
   ];
 
-  const onClickNext = () => {
-    index < numberOfSlides - 1 && setIndex(index + 1);
-  };
+  const onClickNext: SlideNavFn =
+    index < numberOfSlides - 1
+      ? () => {
+          setIndex(index + 1);
+        }
+      : undefined;
 
-  const onClickPrev = () => {
-    index < numberOfSlides - 1 && setIndex(index + 1);
-  };
+  const onClickPrev: SlideNavFn =
+    index > 0
+      ? () => {
+          setIndex(index - 1);
+        }
+      : undefined;
 
-  return <SlideScreen id={slideId} navs={navs} />;
+  return (
+    <SlideScreen
+      id={slideId}
+      navs={navs}
+      onClickNext={onClickNext}
+      onClickPrev={onClickPrev}
+    />
+  );
 };
