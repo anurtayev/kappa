@@ -27,7 +27,7 @@ export const EntriesView = ({
     <VerticalFrame>
       <Nav navs={navs}></Nav>
       <FolderScreenFrame ref={scrollRef}>
-        {entries?.map((entry) =>
+        {entries?.map((entry, index) =>
           isFolder(entry.id) ? (
             <Folder
               key={entry.id}

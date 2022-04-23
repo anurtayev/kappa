@@ -1,3 +1,8 @@
 type FolderConnection {
   scrollTop(locationKey: String!): Int!
 }
+
+type Query {
+  slideId(index: Int!): String
+  numberOfSlides: Int
+}

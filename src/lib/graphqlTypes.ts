@@ -86,7 +86,9 @@ export type Query = {
   __typename?: 'Query';
   attributes: Array<Attribute>;
   listFolder?: Maybe<FolderConnection>;
+  numberOfSlides?: Maybe<Scalars['Int']>;
   search?: Maybe<FolderConnection>;
+  slideId?: Maybe<Scalars['String']>;
   tags: Array<Scalars['String']>;
 };
 
@@ -102,6 +104,11 @@ export type QuerySearchArgs = {
   nextToken?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
   searchInput: SearchInput;
+};
+
+
+export type QuerySlideIdArgs = {
+  index: Scalars['Int'];
 };
 
 export type SearchInput = {
@@ -145,6 +152,13 @@ export type SearchQueryVariables = Exact<{
 
 
 export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, items?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
+
+export type GetSlideIdQueryVariables = Exact<{
+  index: Scalars['Int'];
+}>;
+
+
+export type GetSlideIdQuery = { __typename?: 'Query', slideId?: string | null, numberOfSlides?: number | null };
 
 
 export const SlidesDocument = gql`
@@ -323,3 +337,37 @@ export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sea
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export const GetSlideIdDocument = gql`
+    query GetSlideId($index: Int!) {
+  slideId(index: $index)
+  numberOfSlides
+}
+    `;
+
+/**
+ * __useGetSlideIdQuery__
+ *
+ * To run a query within a React component, call `useGetSlideIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSlideIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSlideIdQuery({
+ *   variables: {
+ *      index: // value for 'index'
+ *   },
+ * });
+ */
+export function useGetSlideIdQuery(baseOptions: Apollo.QueryHookOptions<GetSlideIdQuery, GetSlideIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSlideIdQuery, GetSlideIdQueryVariables>(GetSlideIdDocument, options);
+      }
+export function useGetSlideIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSlideIdQuery, GetSlideIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSlideIdQuery, GetSlideIdQueryVariables>(GetSlideIdDocument, options);
+        }
+export type GetSlideIdQueryHookResult = ReturnType<typeof useGetSlideIdQuery>;
+export type GetSlideIdLazyQueryHookResult = ReturnType<typeof useGetSlideIdLazyQuery>;
+export type GetSlideIdQueryResult = Apollo.QueryResult<GetSlideIdQuery, GetSlideIdQueryVariables>;

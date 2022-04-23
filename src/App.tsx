@@ -12,6 +12,7 @@ import { BrowseContainer } from "features/browseContainer";
 import { ImageScreen } from "features/imageScreen";
 import { SearchScreenContainer } from "features/searchScreen";
 import { MetaContainer } from "features/metaContainer";
+import { SlidesContainer } from "features/slides";
 import { Layout } from "./features/layout";
 import { appRoutes } from "lib";
 import { defaultTheme } from "lib";
@@ -40,6 +41,7 @@ export const App = () => {
                 />
                 <Route path={appRoutes.image} element={<ImageScreen />} />
                 <Route path={appRoutes.meta} element={<MetaContainer />} />
+                <Route path={appRoutes.slides} element={<SlidesContainer />} />
               </Route>
             </Routes>
           </Router>

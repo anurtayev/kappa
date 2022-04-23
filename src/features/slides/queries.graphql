@@ -1,0 +1,4 @@
+query GetSlideId($index: Int!) {
+  slideId(index: $index)
+  numberOfSlides
+}

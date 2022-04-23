@@ -1,8 +1,7 @@
-import { Formik } from "formik";
-import { useNavigate } from "react-router-dom";
-
-import { useSearchQuery, SearchInput } from "lib";
 import { MetaDataPartialForm } from "features/metaDataPartialForm";
+import { Formik } from "formik";
+import { SearchInput, useSearchQuery } from "lib";
+import { useNavigate } from "react-router-dom";
 import { FlexForm, Section, SubmitButton } from "./SearchScreen.styles";
 
 export const SearchScreenContainer = () => {

@@ -1,4 +1,5 @@
-import { InMemoryCache } from "@apollo/client";
+import Apollo, { InMemoryCache, makeVar, gql } from "@apollo/client";
+import { SlidesDocument, SlidesQueryVariables, Maybe, MetaData } from "lib";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
@@ -11,5 +12,18 @@ export const cache: InMemoryCache = new InMemoryCache({
         },
       },
     },
+    Query: {
+      fields: {
+        slideId: {
+          read(_, { variables, args }) {
+            console.log();
+          },
+        },
+      },
+    },
   },
 });
+
+export const setCurrentSlides = makeVar<Maybe<Array<MetaData>> | undefined>(
+  undefined
+);

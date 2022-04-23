@@ -1,8 +1,8 @@
-import { useEffect, createRef, MouseEventHandler } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-
+import { setCurrentSlides } from "cache";
 import { EntriesView } from "features/entriesView";
-import { useSlidesQuery, appRoutes, Characters, NavItem } from "lib";
+import { appRoutes, Characters, NavItem, useSlidesQuery } from "lib";
+import { createRef, MouseEventHandler, useEffect } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 /**
  * id
@@ -60,6 +60,7 @@ export const BrowseContainer = () => {
   if (error || !data) return <p>Error {JSON.stringify(error)}</p>;
 
   const items = data.listFolder?.items;
+  setCurrentSlides(items);
   const newNextToken = data.listFolder?.nextToken;
 
   const navs: Array<NavItem> = [
