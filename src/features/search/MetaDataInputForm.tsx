@@ -1,35 +1,49 @@
 import { MetaDataContainer } from "features/metaDataForm";
-import { Form, Formik } from "formik";
-import { FormikMetaData, InputType, SearchInput } from "lib";
+import { Form, Formik, FormikHelpers } from "formik";
+import {
+  AttributeSortTerm,
+  AttributeValueInput,
+  FormikMetaData,
+  InputType,
+  Scalars,
+  SearchInput,
+  SortOrder,
+} from "lib";
 import styled from "styled-components";
 
 type SearchInputFormType = {
-  filter: Pick<Required<SearchInput>, "filter">;
-  sorter: Pick<Required<SearchInput>, "sorter">;
+  filter: {
+    attributes: Array<AttributeValueInput>;
+    tags: Array<Scalars["String"]>;
+  };
+  searchAttributeValueStr: "";
+
+  sorter: Array<AttributeSortTerm>;
+  searchSortOrder: SortOrder;
 };
 
+export type SubmitFn = (
+  values: SearchInputFormType,
+  formikHelpers: FormikHelpers<SearchInputFormType>
+) => void;
 type SearchInputFormParams = {
-  onSubmitSearchInput: (searchInput: SearchInput) => void;
+  onSubmitSearchInput: SubmitFn;
 };
 
-export const SearchInputForm = ({}: SearchInputFormParams) => (
-  <Formik<FormikMetaData>
+export const SearchInputForm = ({
+  onSubmitSearchInput,
+}: SearchInputFormParams) => (
+  <Formik<SearchInputFormType>
     initialValues={{
-      metaDataInput: { attributes: [], tags: [] },
-      newTag: "",
-      newKey: "",
-      newValueStr: "",
-      newType: InputType.String,
+      filter: {
+        attributes: [],
+        tags: [],
+      },
+      searchAttributeValueStr: "",
+      sorter: [],
+      searchSortOrder: SortOrder.Asc,
     }}
-    onSubmit={async ({ metaDataInput }, { setSubmitting }) => {
-      try {
-      } catch (error) {
-        console.error(error);
-      }
-    }}
-    validate={({ newKey, newTag, newValueStr, newType }) => {
-      // console.log("==> validate", newTag, newKey, newType, newValueStr);
-    }}
+    onSubmit={onSubmitSearchInput}
   >
     {({ isSubmitting }) => (
       <FlexForm>

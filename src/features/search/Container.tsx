@@ -1,16 +1,15 @@
+import { EntriesView } from "features/entriesView";
 import {
   appRoutes,
-  SearchInput,
-  useSearchQuery,
   getPageSizeFromURLSearchParams,
-  PARAM_SEARCH_INPUT,
-  PARAM_PAGE_SIZE,
   PARAM_NEXT_TOKEN,
+  PARAM_PAGE_SIZE,
+  PARAM_SEARCH_INPUT,
+  useSearchQuery,
 } from "lib";
-import { useLocation, useSearchParams } from "react-router-dom";
-import { SearchInputForm } from "./MetaDataInputForm";
-import { EntriesView } from "features/entriesView";
 import { useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { SearchInputForm, SubmitFn } from "./MetaDataInputForm";
 
 export const Container = () => {
   const [searchParams] = useSearchParams();
@@ -42,7 +41,7 @@ export const Container = () => {
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error}</p>;
 
-  const onSubmitSearchInput = (searchInput: SearchInput): void => {
+  const onSubmitSearchInput: SubmitFn = (formData, helpers) => {
     setSearchInput(searchInput);
   };
   const newNextToken = data?.search?.nextToken;
