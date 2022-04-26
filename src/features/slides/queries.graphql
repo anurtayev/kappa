@@ -1,4 +1,4 @@
 query GetSlideId($index: Int!) {
-  slideId(index: $index)
-  numberOfSlides
+  slideId(index: $index) @client
+  numberOfSlides @client
 }

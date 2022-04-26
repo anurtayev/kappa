@@ -20,7 +20,15 @@ import {
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
-export const MetaDataPartialForm = () => {
+type MetaDataPartialFormParams = {
+  availableTags: Array<string> | undefined;
+  availableAttributes: Array<AttributeInput> | undefined;
+};
+
+export const MetaDataPartialForm = ({
+  availableAttributes,
+  availableTags,
+}: MetaDataPartialFormParams) => {
   const {
     values: {
       metaDataInput: { tags, attributes },
@@ -28,10 +36,6 @@ export const MetaDataPartialForm = () => {
       newKey,
       newValueStr,
       newType,
-      availableMetaData: {
-        tags: availableTags,
-        attributes: availableAttributes,
-      },
     },
     setFieldValue,
   } = useFormikContext<FormikMetaData>();
@@ -70,7 +74,7 @@ export const MetaDataPartialForm = () => {
               </FormBrick>
               <Selections
                 currentValue={newTag}
-                selections={availableTags.filter((availableTag) =>
+                selections={(availableTags || []).filter((availableTag) =>
                   availableTag.startsWith(newTag)
                 )}
                 setNewValue={(selectedValue: string) => push(selectedValue)}
@@ -136,8 +140,8 @@ export const MetaDataPartialForm = () => {
                     type: newType,
                   } as AttributeInput
                 }
-                availableAttributes={availableAttributes.filter((attribute) =>
-                  attribute.name.startsWith(newKey)
+                availableAttributes={(availableAttributes || []).filter(
+                  (attribute) => attribute.name.startsWith(newKey)
                 )}
                 setNewValue={(selectedValue: Attribute) => {
                   setFieldValue("newKey", selectedValue.name);

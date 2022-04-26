@@ -1,7 +1,7 @@
-import { NavItem, Characters } from "lib";
 import { Nav } from "features/nav";
+import { Characters, NavItem } from "lib";
+import { createRef } from "react";
 import { Frame, Image, LeftSlideButton, RightSlideButton } from "./styles";
-import { createRef, RefObject } from "react";
 
 export type SlideScreenParams = {
   id: string;

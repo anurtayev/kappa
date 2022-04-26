@@ -662,13 +662,9 @@
                 "name": "searchInput",
                 "description": null,
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "SearchInput",
-                    "ofType": null
-                  }
+                  "kind": "INPUT_OBJECT",
+                  "name": "SearchInput",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -752,9 +748,13 @@
             "name": "filter",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "MetaDataInput",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "MetaDataInput",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,

@@ -1,6 +1,5 @@
 import { NavItem } from "lib";
 import { RefObject } from "react";
-import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 type NavParams = {
@@ -9,10 +8,6 @@ type NavParams = {
 };
 
 export const Nav = ({ navs, navRef }: NavParams) => {
-  const location = useLocation();
-
-  const { pathname } = location;
-
   return (
     <Frame ref={navRef}>
       {navs.map(({ navFn, icon }, index) => (

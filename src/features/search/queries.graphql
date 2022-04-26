@@ -1,4 +1,9 @@
-query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
+query Search(
+  $searchInput: SearchInput
+  $pageSize: Int!
+  $nextToken: String
+  $locationKey: String!
+) {
   search(
     searchInput: $searchInput
     pageSize: $pageSize
@@ -27,5 +32,6 @@ query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
       tags
     }
     nextToken
+    scrollTop(locationKey: $locationKey) @client
   }
 }

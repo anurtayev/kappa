@@ -1,16 +1,14 @@
-import { MetaDataPartialForm } from "features/metaDataPartialForm";
+import { MetaDataContainer } from "features/metaDataForm";
 import { Form, Formik } from "formik";
-
 import {
-  AvailableMetaData,
   Characters,
+  cleanseMetaDataInput,
   FormikMetaData,
+  getMediaName,
   InputType,
   isFolder,
   RequiredMetaData,
   UpdateMetaDataMutationFn,
-  getMediaName,
-  cleanseMetaDataInput,
 } from "lib";
 import { NavigateFunction } from "react-router-dom";
 import styled from "styled-components";
@@ -21,7 +19,6 @@ type MetaDataInputFormParams = {
   metaDataInput: RequiredMetaData;
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
-  availableMetaData: AvailableMetaData;
 };
 
 export const MetaDataInputForm = ({
@@ -29,12 +26,10 @@ export const MetaDataInputForm = ({
   metaDataInput,
   updateMetaDataMutation,
   navigate,
-  availableMetaData,
 }: MetaDataInputFormParams) => (
   <Formik<FormikMetaData>
     initialValues={{
       metaDataInput,
-      availableMetaData,
       newTag: "",
       newKey: "",
       newValueStr: "",
@@ -71,7 +66,7 @@ export const MetaDataInputForm = ({
           thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
         />
 
-        <MetaDataPartialForm />
+        <MetaDataContainer />
 
         <ButtonContainer>
           <SubmitButton type="submit" disabled={isSubmitting}>

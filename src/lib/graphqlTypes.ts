@@ -104,7 +104,7 @@ export type QueryListFolderArgs = {
 export type QuerySearchArgs = {
   nextToken?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
-  searchInput: SearchInput;
+  searchInput?: InputMaybe<SearchInput>;
 };
 
 
@@ -113,7 +113,7 @@ export type QuerySlideIdArgs = {
 };
 
 export type SearchInput = {
-  filter?: InputMaybe<MetaDataInput>;
+  filter: MetaDataInput;
   sorter?: InputMaybe<Array<AttributeSortTerm>>;
 };
 
@@ -146,13 +146,14 @@ export type GetAllTagsAndAttributesQueryVariables = Exact<{ [key: string]: never
 export type GetAllTagsAndAttributesQuery = { __typename?: 'Query', tags: Array<string>, attributes: Array<{ __typename?: 'Attribute', name: string, type: InputType }> };
 
 export type SearchQueryVariables = Exact<{
-  searchInput: SearchInput;
+  searchInput?: InputMaybe<SearchInput>;
   pageSize: Scalars['Int'];
   nextToken?: InputMaybe<Scalars['String']>;
+  locationKey: Scalars['String'];
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
+export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, scrollTop: number, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 export type GetSlideIdQueryVariables = Exact<{
   index: Scalars['Int'];
@@ -302,7 +303,7 @@ export type GetAllTagsAndAttributesQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllTagsAndAttributesLazyQueryHookResult = ReturnType<typeof useGetAllTagsAndAttributesLazyQuery>;
 export type GetAllTagsAndAttributesQueryResult = Apollo.QueryResult<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>;
 export const SearchDocument = gql`
-    query Search($searchInput: SearchInput!, $pageSize: Int!, $nextToken: String) {
+    query Search($searchInput: SearchInput, $pageSize: Int!, $nextToken: String, $locationKey: String!) {
   search(searchInput: $searchInput, pageSize: $pageSize, nextToken: $nextToken) {
     folders {
       attributes {
@@ -327,6 +328,7 @@ export const SearchDocument = gql`
       tags
     }
     nextToken
+    scrollTop(locationKey: $locationKey) @client
   }
 }
     `;
@@ -346,6 +348,7 @@ export const SearchDocument = gql`
  *      searchInput: // value for 'searchInput'
  *      pageSize: // value for 'pageSize'
  *      nextToken: // value for 'nextToken'
+ *      locationKey: // value for 'locationKey'
  *   },
  * });
  */
@@ -362,8 +365,8 @@ export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
 export const GetSlideIdDocument = gql`
     query GetSlideId($index: Int!) {
-  slideId(index: $index)
-  numberOfSlides
+  slideId(index: $index) @client
+  numberOfSlides @client
 }
     `;
 

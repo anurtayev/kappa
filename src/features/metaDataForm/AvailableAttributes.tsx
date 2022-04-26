@@ -27,7 +27,7 @@ export const AvailableAttributes = ({
         <button
           key={selection.name}
           type="button"
-          onClick={(e) => {
+          onClick={() => {
             setNewValue(selection);
           }}
         >

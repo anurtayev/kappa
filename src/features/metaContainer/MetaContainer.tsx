@@ -1,12 +1,10 @@
 import { gql, useApolloClient } from "@apollo/client";
-import { useNavigate, useSearchParams } from "react-router-dom";
-
 import {
-  useUpdateMetaDataMutation,
-  useGetAllTagsAndAttributesQuery,
   convertMetaDataToInput,
   MetaData,
+  useUpdateMetaDataMutation,
 } from "lib";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { MetaDataInputForm } from "./MetaDataInputForm";
 
 export const MetaContainer = () => {
@@ -32,20 +30,12 @@ export const MetaContainer = () => {
 
   const [updateMetaDataMutation] = useUpdateMetaDataMutation();
 
-  const { data, loading, error } = useGetAllTagsAndAttributesQuery({
-    fetchPolicy: "cache-and-network",
-  });
-
-  if (loading || !data) return <p>Loading</p>;
-  if (error) return <p>Error</p>;
-
   return (
     <MetaDataInputForm
       id={id}
       metaDataInput={convertMetaDataToInput(metaData)}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
-      availableMetaData={data}
     />
   );
 };

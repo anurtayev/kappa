@@ -6,6 +6,7 @@ import {
   MetaDataInput,
   AttributeValueInput,
 } from "@aspan/sigma";
+import { SearchInput } from "./graphqlTypes";
 
 export enum EntryType {
   folder = "Folder",
@@ -66,7 +67,6 @@ export type AvailableMetaData = {
 
 export interface FormikMetaData {
   metaDataInput: RequiredMetaData;
-  availableMetaData: AvailableMetaData;
   newTag: string;
   newKey: string;
   newValueStr: string;
@@ -113,3 +113,14 @@ export const cleanseMetaDataInput = ({
     attributes: (attributes.length && attributes) || null,
   };
 };
+
+export const getPageSizeFromURLSearchParams = (
+  searchParams: URLSearchParams
+): number =>
+  Number(
+    searchParams.get(PARAM_PAGE_SIZE) || process.env.REACT_APP_PAGE_SIZE || "20"
+  );
+
+export const PARAM_SEARCH_INPUT = "searchinput";
+export const PARAM_PAGE_SIZE = "pagesize";
+export const PARAM_NEXT_TOKEN = "nexttoken";
