@@ -5,7 +5,7 @@ type Params = {
   push: (obj: any) => void;
 };
 
-export const Attributes = ({ attributes, push }: Params) =>
+export const AttributeSortTerms = ({ attributes, push }: Params) =>
   attributes?.length ? (
     <div>
       {attributes.map((attribute) => (

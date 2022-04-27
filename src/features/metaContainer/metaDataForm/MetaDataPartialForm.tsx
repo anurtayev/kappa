@@ -74,9 +74,9 @@ export const MetaDataPartialForm = ({
               </FormBrick>
               <Tags
                 currentValue={newTag}
-                availableTags={availableTags}
+                tags={availableTags}
                 selectedTags={tags}
-                setNewValue={(selectedValue: string) => push(selectedValue)}
+                push={(selectedValue: string) => push(selectedValue)}
               />
             </>
           )}
@@ -139,8 +139,8 @@ export const MetaDataPartialForm = ({
                     type: newType,
                   } as AttributeInput
                 }
-                availableAttributes={(availableAttributes || []).filter(
-                  (attribute) => attribute.name.startsWith(newKey)
+                attributes={(availableAttributes || []).filter((attribute) =>
+                  attribute.name.startsWith(newKey)
                 )}
                 setNewValue={(selectedValue: Attribute) => {
                   setFieldValue("newKey", selectedValue.name);

@@ -4,7 +4,9 @@ import {
   StyledField,
 } from "features/metaContainer/metaDataForm/styles";
 import { Tags } from "features/tags";
-import { FieldArray, Formik } from "formik";
+import { Attributes } from "features/attributes";
+import { AttributeSortTerms } from "./AttributeSortTerms";
+import { Field, FieldArray, Formik } from "formik";
 import {
   AttributeSortTerm,
   AttributeValueInput,
@@ -27,7 +29,7 @@ type SearchInputFormType = {
   tagNameFilter: "";
 
   sorter: Array<AttributeSortTerm>;
-  searchSortOrder: SortOrder;
+  attributeSortTerm: AttributeSortTerm;
   attributeNameFilter: "";
 };
 
@@ -55,9 +57,9 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
         },
         searchAttributeValueStr: "",
         tagNameFilter: "",
-        sorter: [],
-        searchSortOrder: SortOrder.Asc,
         attributeNameFilter: "",
+        sorter: [],
+        attributeSortTerm: { attribute: "", sortOrder: SortOrder.Asc },
       }}
       onSubmit={({ filter, sorter }, helpers) => {
         setSearchInput({ filter, sorter });
@@ -69,7 +71,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
           searchAttributeValueStr,
           tagNameFilter,
           sorter,
-          searchSortOrder,
+          attributeSortTerm,
           attributeNameFilter,
         },
         isSubmitting,
@@ -78,29 +80,106 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
         <FlexForm>
           <div>
             <p>sorter</p>
+
             <p>tags</p>
             <FieldArray
               name="filter.tags"
               render={({ remove, push }) => (
                 <>
                   <ExistingItemsContainer>
-                    {tags &&
-                      tags.map((tag: string, index: number) => (
-                        <FormBrick key={index}>
-                          <ElemBox>{tag}</ElemBox>
-                          <SmallButton onClick={() => remove(index)}>
-                            {Characters.multiply}
-                          </SmallButton>
-                        </FormBrick>
-                      ))}
+                    {tags.map((tag, index) => (
+                      <FormBrick key={index}>
+                        <ElemBox>{tag}</ElemBox>
+                        <SmallButton onClick={() => remove(index)}>
+                          {Characters.multiply}
+                        </SmallButton>
+                      </FormBrick>
+                    ))}
                   </ExistingItemsContainer>
 
                   <StyledField name="tagNameFilter" autoComplete="off" />
                   <Tags
-                    currentValue={tagNameFilter}
-                    selectedTags={tags}
-                    availableTags={availableTags}
-                    setNewValue={(selectedValue: string) => push(selectedValue)}
+                    tags={availableTags
+                      ?.filter(
+                        (availableTag) =>
+                          !tags.includes(availableTag) &&
+                          availableTag.startsWith(tagNameFilter) &&
+                          availableTag !== tagNameFilter
+                      )
+                      .sort()}
+                    push={push}
+                  />
+                </>
+              )}
+            />
+
+            <p>attributes</p>
+            <FieldArray
+              name="filter.attributes"
+              render={({ remove, push }) => (
+                <>
+                  <ExistingItemsContainer>
+                    {attributes.map((attributeValueInput, index) => (
+                      <FormBrick key={index}>
+                        <ElemBox>{attributeValueInput.attribute.name}</ElemBox>
+                        <SmallButton onClick={() => remove(index)}>
+                          {Characters.multiply}
+                        </SmallButton>
+                      </FormBrick>
+                    ))}
+                  </ExistingItemsContainer>
+
+                  <StyledField name="attributeNameFilter" autoComplete="off" />
+                  <Attributes
+                    attributes={availableAttributes
+                      ?.filter(
+                        (availableAttribute) =>
+                          !attributes.find(
+                            (attribute) =>
+                              attribute.attribute.name !==
+                              availableAttribute.name
+                          ) &&
+                          availableAttribute.name.includes(
+                            attributeNameFilter
+                          ) &&
+                          availableAttribute.name !== attributeNameFilter
+                      )
+                      .sort()}
+                    push={push}
+                  />
+                </>
+              )}
+            />
+
+            <p>sorter</p>
+            <FieldArray
+              name="sorter"
+              render={({ remove, push }) => (
+                <>
+                  <ExistingItemsContainer>
+                    {sorter.map((attributeSortTerm, index) => (
+                      <FormBrick key={index}>
+                        <ElemBox>{attributeSortTerm.attribute}</ElemBox>
+                        <SmallButton onClick={() => remove(index)}>
+                          {Characters.multiply}
+                        </SmallButton>
+                      </FormBrick>
+                    ))}
+                  </ExistingItemsContainer>
+
+                  <Field name="attributeSortTerm" />
+                  <AttributeSortTerms
+                    attributes={availableAttributes
+                      ?.filter(
+                        (availableAttribute) =>
+                          !sorter.find(
+                            (existingAttributeSortTerm) =>
+                              existingAttributeSortTerm.attribute !==
+                              availableAttribute.name
+                          )
+                      )
+                      .sort()}
+                    push={push}
                   />
                 </>
               )}

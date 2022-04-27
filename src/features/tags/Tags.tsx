@@ -1,40 +1,15 @@
 type Params = {
-  currentValue: string;
-  selectedTags: string[];
-  availableTags: string[] | undefined;
-  setNewValue: Function;
+  tags: string[] | undefined;
+  push: (obj: any) => void;
 };
 
-export const Tags = ({
-  currentValue,
-  selectedTags,
-  availableTags,
-  setNewValue,
-}: Params) => {
-  if (!availableTags) return null;
-
-  const filteredSelections = availableTags
-    .filter(
-      (availableTag) =>
-        !selectedTags.includes(availableTag) &&
-        availableTag.startsWith(currentValue) &&
-        availableTag !== currentValue
-    )
-    .sort();
-
-  return filteredSelections.length > 1 ? (
+export const Tags = ({ tags, push }: Params) =>
+  tags?.length ? (
     <div>
-      {filteredSelections.map((selection) => (
-        <button
-          key={selection}
-          type="button"
-          onClick={(e) => {
-            setNewValue(selection);
-          }}
-        >
-          {selection}
+      {tags.map((tag, index) => (
+        <button key={index} type="button" onClick={() => push(tag)}>
+          {tag}
         </button>
       ))}
     </div>
   ) : null;
-};
