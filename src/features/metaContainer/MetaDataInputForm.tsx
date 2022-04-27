@@ -1,6 +1,7 @@
-import { MetaDataContainer } from "features/metaDataForm";
+import { MetaDataPartialForm } from "features/metaContainer/metaDataForm";
 import { Form, Formik } from "formik";
 import {
+  Attribute,
   Characters,
   cleanseMetaDataInput,
   FormikMetaData,
@@ -19,6 +20,8 @@ type MetaDataInputFormParams = {
   metaDataInput: RequiredMetaData;
   updateMetaDataMutation: UpdateMetaDataMutationFn;
   navigate: NavigateFunction;
+  availableAttributes: Array<Attribute> | undefined;
+  availableTags: Array<string> | undefined;
 };
 
 export const MetaDataInputForm = ({
@@ -26,6 +29,8 @@ export const MetaDataInputForm = ({
   metaDataInput,
   updateMetaDataMutation,
   navigate,
+  availableAttributes,
+  availableTags,
 }: MetaDataInputFormParams) => (
   <Formik<FormikMetaData>
     initialValues={{
@@ -43,7 +48,6 @@ export const MetaDataInputForm = ({
             metaDataInput: cleanseMetaDataInput(metaDataInput),
           },
         });
-        console.log("==> 2");
 
         setSubmitting(false);
         navigate(-1);
@@ -66,7 +70,10 @@ export const MetaDataInputForm = ({
           thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
         />
 
-        <MetaDataContainer />
+        <MetaDataPartialForm
+          availableAttributes={availableAttributes}
+          availableTags={availableTags}
+        />
 
         <ButtonContainer>
           <SubmitButton type="submit" disabled={isSubmitting}>

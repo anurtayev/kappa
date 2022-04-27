@@ -2,12 +2,6 @@ import styled from "styled-components";
 import { Form } from "formik";
 import { EntryFrame } from "lib";
 
-export const FlexForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
 export const Section = styled.div`
   margin: 1rem 0 0 2rem;
 `;
@@ -34,4 +28,17 @@ export const Frame = styled(styled.div`
 `)`
   background-image: ${({ thumbImageUrl }: { thumbImageUrl: string }) =>
     `url("${thumbImageUrl}")`};
+`;
+
+export const FlexForm = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 1em;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
 `;

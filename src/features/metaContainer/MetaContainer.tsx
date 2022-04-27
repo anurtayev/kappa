@@ -2,6 +2,7 @@ import { gql, useApolloClient } from "@apollo/client";
 import {
   convertMetaDataToInput,
   MetaData,
+  useGetAllTagsAndAttributesQuery,
   useUpdateMetaDataMutation,
 } from "lib";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -28,7 +29,17 @@ export const MetaContainer = () => {
     `,
   });
 
+  const { data, loading, error } = useGetAllTagsAndAttributesQuery({
+    fetchPolicy: "cache-and-network",
+  });
+
+  if (loading) return <div>Loading available metadata...</div>;
+  if (error) throw error;
+
   const [updateMetaDataMutation] = useUpdateMetaDataMutation();
+
+  const availableAttributes = data?.attributes;
+  const availableTags = data?.tags;
 
   return (
     <MetaDataInputForm
@@ -36,6 +47,8 @@ export const MetaContainer = () => {
       metaDataInput={convertMetaDataToInput(metaData)}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
+      availableAttributes={availableAttributes}
+      availableTags={availableTags}
     />
   );
 };

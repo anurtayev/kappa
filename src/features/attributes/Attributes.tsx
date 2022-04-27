@@ -6,7 +6,7 @@ type Params = {
   setNewValue: Function;
 };
 
-export const AvailableAttributes = ({
+export const Attributes = ({
   currentValue,
   availableAttributes,
   setNewValue,

@@ -8,8 +8,8 @@ import {
   InputType,
   SmallButton,
 } from "lib";
-import { AvailableAttributes } from "./AvailableAttributes";
-import { Selections } from "./Selections";
+import { Attributes } from "../../attributes/Attributes";
+import { Tags } from "features/tags";
 import {
   ElemBox,
   ExistingItemsContainer,
@@ -72,11 +72,10 @@ export const MetaDataPartialForm = ({
                   {Characters.plus}
                 </SmallButton>
               </FormBrick>
-              <Selections
+              <Tags
                 currentValue={newTag}
-                selections={(availableTags || []).filter((availableTag) =>
-                  availableTag.startsWith(newTag)
-                )}
+                availableTags={availableTags}
+                selectedTags={tags}
                 setNewValue={(selectedValue: string) => push(selectedValue)}
               />
             </>
@@ -133,7 +132,7 @@ export const MetaDataPartialForm = ({
                   {Characters.plus}
                 </SmallButton>
               </FormBrick>
-              <AvailableAttributes
+              <Attributes
                 currentValue={
                   {
                     name: newKey,

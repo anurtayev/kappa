@@ -5,11 +5,12 @@ import {
   PARAM_NEXT_TOKEN,
   PARAM_PAGE_SIZE,
   PARAM_SEARCH_INPUT,
+  SearchInput,
   useSearchQuery,
 } from "lib";
 import { useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { SearchInputForm, SubmitFn } from "./MetaDataInputForm";
+import { SearchInputForm } from "./SearchInputForm";
 
 export const Container = () => {
   const [searchParams] = useSearchParams();
@@ -27,7 +28,9 @@ export const Container = () => {
     }
   } catch (error) {}
 
-  const [searchInput, setSearchInput] = useState(searchInputDefaultValue);
+  const [searchInput, setSearchInput] = useState<SearchInput>(
+    searchInputDefaultValue
+  );
 
   const { data, loading, error } = useSearchQuery({
     variables: {
@@ -41,9 +44,6 @@ export const Container = () => {
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error}</p>;
 
-  const onSubmitSearchInput: SubmitFn = (formData, helpers) => {
-    setSearchInput(searchInput);
-  };
   const newNextToken = data?.search?.nextToken;
   let nextPageUrl;
   if (newNextToken) {
@@ -53,7 +53,7 @@ export const Container = () => {
 
   return (
     <>
-      <SearchInputForm onSubmitSearchInput={onSubmitSearchInput} />;
+      <SearchInputForm setSearchInput={setSearchInput} />;
       <EntriesView
         files={data?.search?.files}
         folders={data?.search?.folders}
