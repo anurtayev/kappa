@@ -1,6 +1,13 @@
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
-import { appRoutes, useSlidesQuery } from "lib";
+import { Nav } from "features/nav";
+import {
+  appRoutes,
+  Characters,
+  NavItem,
+  useScrollRef,
+  useSlidesQuery,
+} from "lib";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
@@ -22,22 +29,55 @@ export const BrowseContainer = () => {
     },
   });
 
+  const { divRef, saveScrollTopAndNavigate } = useScrollRef(
+    data?.listFolder?.scrollTop
+  );
+
   if (loading) return <p>Loading</p>;
   if (error) throw error;
 
   const newNextToken = data?.listFolder?.nextToken;
+  const nextPageUrl =
+    newNextToken &&
+    `/${appRoutes.browse}?id=${id}&nexttoken=${newNextToken}&pagesize=${pageSize}`;
   const files = data?.listFolder?.files;
   slides(files);
 
+  const navs: Array<NavItem> = [
+    {
+      title: "Home",
+      navFn: () => saveScrollTopAndNavigate("/"),
+      icon: Characters.home,
+    },
+    {
+      title: "Back",
+      navFn: () => saveScrollTopAndNavigate(-1),
+      icon: Characters.arrowLeft,
+    },
+  ];
+  nextPageUrl &&
+    navs.push({
+      title: "Next",
+      navFn: () => saveScrollTopAndNavigate(nextPageUrl),
+      icon: Characters.arrowRight,
+    });
+  navs.push({
+    title: "Search",
+    navFn: () => saveScrollTopAndNavigate(`/${appRoutes.search}`),
+    icon: Characters.magnifyingGlass,
+  });
+
   return (
-    <EntriesView
-      folders={data?.listFolder?.folders}
-      files={files}
-      nextPageUrl={
-        newNextToken &&
-        `/${appRoutes.browse}?id=${id}&nexttoken=${newNextToken}&pagesize=${pageSize}`
-      }
-      scrollTop={data?.listFolder?.scrollTop}
-    />
+    <>
+      <Nav navs={navs}></Nav>
+      <EntriesView
+        folders={data?.listFolder?.folders}
+        files={files}
+        nextPageUrl={nextPageUrl}
+        scrollTop={data?.listFolder?.scrollTop}
+        divRef={divRef}
+        saveScrollTopAndNavigate={saveScrollTopAndNavigate}
+      />
+    </>
   );
 };
