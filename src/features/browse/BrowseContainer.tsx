@@ -1,5 +1,5 @@
 import { slides } from "cache";
-import { EntriesView } from "features/entriesView";
+import { EntriesView } from "features/entries";
 import { appRoutes, useSlidesQuery } from "lib";
 import { useLocation, useSearchParams } from "react-router-dom";
 

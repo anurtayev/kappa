@@ -1,4 +1,4 @@
-import { EntriesView } from "features/entriesView";
+import { EntriesView } from "features/entries";
 import {
   appRoutes,
   getPageSizeFromURLSearchParams,
@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInputForm } from "./SearchInputForm";
 
-export const Container = () => {
+export const SearchContainer = () => {
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 
@@ -42,7 +42,7 @@ export const Container = () => {
   });
 
   if (loading) return <p>Loading</p>;
-  if (error) return <p>{error}</p>;
+  // if (error) return <p>{error.message}</p>;
 
   const newNextToken = data?.search?.nextToken;
   let nextPageUrl;

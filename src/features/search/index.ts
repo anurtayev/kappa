@@ -1,1 +1,1 @@
-export { Container as SearchContainer } from "./SearchContainer";
+export { SearchContainer } from "./SearchContainer";
