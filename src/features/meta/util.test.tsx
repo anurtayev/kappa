@@ -1,11 +1,11 @@
 import { InputType, MetaData, MetaDataInput } from "lib";
-import { AttributeValueInput } from "./graphqlTypes";
+import { AttributeValueInput } from "lib";
 import {
   cleanseMetaDataInput,
-  convertMetaDataToInput,
   MetaDataInputOrUndefined,
   RequiredMetaData,
 } from "./util";
+import convertMetaDataToInput from "./convertMetaDataToInput";
 
 describe("convertMetaDataToInput", () => {
   it("should convert MetaData to MetaDataInput correctly", () => {

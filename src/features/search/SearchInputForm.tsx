@@ -2,7 +2,7 @@ import {
   ElemBox,
   ExistingItemsContainer,
   StyledField,
-} from "features/metaContainer/metaDataForm/styles";
+} from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Attributes } from "features/attributes";
 import { AttributeSortTerms } from "./AttributeSortTerms";

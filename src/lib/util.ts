@@ -60,60 +60,6 @@ export const isFolder = (id: string): boolean => id.slice(-1) === "/";
 export const getMediaName = (key: string): string =>
   key.split("/").slice(-1)[0];
 
-export type AvailableMetaData = {
-  attributes: Array<Attribute>;
-  tags: Array<Scalars["String"]>;
-};
-
-export interface FormikMetaData {
-  metaDataInput: RequiredMetaData;
-  newTag: string;
-  newKey: string;
-  newValueStr: string;
-  newType: InputType;
-}
-
-export type RequiredMetaData = {
-  attributes: Array<AttributeValueInput>;
-  tags: Array<string>;
-};
-
-export const convertMetaDataToInput = (
-  input: MetaData | null | undefined
-): RequiredMetaData => {
-  if (input === undefined || input === null)
-    return { tags: [], attributes: [] };
-  return {
-    tags: input.tags || [],
-    attributes:
-      (input.attributes &&
-        input.attributes?.reduce((previousValue, currentValue) => {
-          return [
-            ...previousValue,
-            {
-              value: currentValue.value,
-              attribute: {
-                name: currentValue.attribute.name,
-                type: currentValue.attribute.type,
-              },
-            },
-          ];
-        }, [] as Array<AttributeValueInput>)) ||
-      [],
-  };
-};
-
-export type MetaDataInputOrUndefined = MetaDataInput | undefined;
-export const cleanseMetaDataInput = ({
-  tags,
-  attributes,
-}: RequiredMetaData): MetaDataInputOrUndefined => {
-  return {
-    tags: (tags.length && tags) || null,
-    attributes: (attributes.length && attributes) || null,
-  };
-};
-
 export const getPageSizeFromURLSearchParams = (
   searchParams: URLSearchParams
 ): number =>

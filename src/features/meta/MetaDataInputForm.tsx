@@ -1,19 +1,23 @@
-import { MetaDataPartialForm } from "features/metaContainer/metaDataForm";
-import { Form, Formik } from "formik";
+import { Formik } from "formik";
 import {
   Attribute,
   Characters,
-  cleanseMetaDataInput,
-  FormikMetaData,
   getMediaName,
   InputType,
   isFolder,
-  RequiredMetaData,
   UpdateMetaDataMutationFn,
 } from "lib";
 import { NavigateFunction } from "react-router-dom";
-import styled from "styled-components";
-import { Frame } from "./styles";
+import { MetaDataPartialForm } from "./MetaDataPartialForm";
+import {
+  ButtonContainer,
+  EntryName,
+  FlexForm,
+  Frame,
+  HeaderContainer,
+  SubmitButton,
+} from "./styles";
+import { cleanseMetaDataInput, FormikMetaData, RequiredMetaData } from "./util";
 
 type MetaDataInputFormParams = {
   id: string;
@@ -87,29 +91,3 @@ export const MetaDataInputForm = ({
     )}
   </Formik>
 );
-
-const FlexForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding-left: 1em;
-`;
-
-const EntryName = styled.span`
-  margin-left: 0.5rem;
-`;
-
-const SubmitButton = styled.button`
-  background: deepskyblue;
-  margin-right: 1rem;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: flex-start;
-`;
-
-const HeaderContainer = styled.div`
-  margin-bottom: 1rem;
-`;

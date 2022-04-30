@@ -1,22 +1,22 @@
-import { Attribute, AttributeValue, AttributeInput } from "@aspan/sigma/lib";
+import { AttributeInput, AttributeValue } from "@aspan/sigma/lib";
+import { Attributes } from "features/attributes";
+import { Tags } from "features/tags";
 import { Field, FieldArray, useFormikContext } from "formik";
 import {
   AttributeValueInput,
   Characters,
   FormBrick,
-  FormikMetaData,
   InputType,
   SmallButton,
 } from "lib";
-import { Attributes } from "../../attributes/Attributes";
-import { Tags } from "features/tags";
 import {
   ElemBox,
+  ElemBoxValue,
   ExistingItemsContainer,
   SectionHeader,
   StyledField,
-  ElemBoxValue,
 } from "./styles";
+import { FormikMetaData } from "./util";
 
 const cleanse = (value: string): string => value.trim().toLowerCase();
 
@@ -73,10 +73,15 @@ export const MetaDataPartialForm = ({
                 </SmallButton>
               </FormBrick>
               <Tags
-                currentValue={newTag}
-                tags={availableTags}
-                selectedTags={tags}
-                push={(selectedValue: string) => push(selectedValue)}
+                tags={availableTags
+                  ?.filter(
+                    (availableTag) =>
+                      !tags.includes(availableTag) &&
+                      availableTag.startsWith(newTag) &&
+                      availableTag !== newTag
+                  )
+                  .sort()}
+                push={push}
               />
             </>
           )}
@@ -133,19 +138,18 @@ export const MetaDataPartialForm = ({
                 </SmallButton>
               </FormBrick>
               <Attributes
-                currentValue={
-                  {
-                    name: newKey,
-                    type: newType,
-                  } as AttributeInput
-                }
-                attributes={(availableAttributes || []).filter((attribute) =>
-                  attribute.name.startsWith(newKey)
-                )}
-                setNewValue={(selectedValue: Attribute) => {
-                  setFieldValue("newKey", selectedValue.name);
-                  setFieldValue("newType", selectedValue.type);
-                }}
+                attributes={availableAttributes
+                  ?.filter(
+                    (availableAttribute) =>
+                      !attributes.find(
+                        (attribute) =>
+                          attribute.attribute.name !== availableAttribute.name
+                      ) &&
+                      availableAttribute.name.includes(newKey) &&
+                      availableAttribute.name !== newKey
+                  )
+                  .sort()}
+                push={push}
               />
             </>
           )}

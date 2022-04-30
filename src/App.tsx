@@ -8,10 +8,10 @@ import {
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import { BrowseContainer } from "features/browseContainer";
-import { ImageScreen } from "features/imageScreen";
+import { BrowseContainer } from "features/browse";
+import { ImageScreen } from "features/image";
 import { SearchContainer } from "features/search";
-import { MetaContainer } from "features/metaContainer";
+import { MetaContainer } from "features/meta";
 import { SlidesContainer } from "features/slides";
 import { ErrorBoundary } from "features/errorBoundary";
 import { Layout } from "./features/layout";
