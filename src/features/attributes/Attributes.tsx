@@ -1,4 +1,4 @@
-import { AttributeInput } from "lib";
+import { AttributeInput, AttributeValueInput } from "lib";
 
 type Params = {
   attributes: AttributeInput[] | undefined;
@@ -8,16 +8,22 @@ type Params = {
 export const Attributes = ({ attributes, push }: Params) =>
   attributes?.length ? (
     <div>
-      {attributes.map((attribute) => (
-        <button
-          key={attribute.name}
-          type="button"
-          onClick={() => {
-            push(attribute);
-          }}
-        >
-          {attribute.name}
-        </button>
-      ))}
+      {attributes.map((attribute) => {
+        return (
+          <button
+            key={attribute.name}
+            type="button"
+            onClick={() => {
+              const attributeValueInput: AttributeValueInput = {
+                attribute,
+                value: "",
+              };
+              push(attributeValueInput);
+            }}
+          >
+            {attribute.name}
+          </button>
+        );
+      })}
     </div>
   ) : null;

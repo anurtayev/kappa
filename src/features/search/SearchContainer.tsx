@@ -86,7 +86,7 @@ export const SearchContainer = () => {
   return (
     <>
       <Nav navs={navs}></Nav>
-      <SearchInputForm setSearchInput={setSearchInput} />;
+      <SearchInputForm setSearchInput={setSearchInput} />
       <EntriesView
         files={data?.search?.files}
         folders={data?.search?.folders}

@@ -129,14 +129,14 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     ))}
                   </ExistingItemsContainer>
 
-                  <StyledField name="attributeNameFilter" autoComplete="off" />
+                  <Field name="attributeNameFilter" autoComplete="off" />
                   <Attributes
                     attributes={availableAttributes
                       ?.filter(
                         (availableAttribute) =>
                           !attributes.find(
-                            (attribute) =>
-                              attribute.attribute.name !==
+                            (attributeValueInput: AttributeValueInput) =>
+                              attributeValueInput.attribute.name ===
                               availableAttribute.name
                           ) &&
                           availableAttribute.name.includes(
