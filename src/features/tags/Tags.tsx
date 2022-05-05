@@ -1,13 +1,13 @@
 type Params = {
   tags: string[] | undefined;
-  push: (obj: any) => void;
+  onClick: (tag: string) => void;
 };
 
-export const Tags = ({ tags, push }: Params) =>
+export const Tags = ({ tags, onClick }: Params) =>
   tags?.length ? (
     <div>
       {tags.map((tag, index) => (
-        <button key={index} type="button" onClick={() => push(tag)}>
+        <button key={index} type="button" onClick={() => onClick(tag)}>
           {tag}
         </button>
       ))}

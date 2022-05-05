@@ -6,12 +6,21 @@ import {
 import { Tags } from "features/tags";
 import { Attributes } from "features/attributes";
 import { AttributeSortTerms } from "./AttributeSortTerms";
-import { Field, FieldArray, Formik } from "formik";
 import {
+  Field,
+  FieldArray,
+  FieldInputProps,
+  FieldMetaProps,
+  Formik,
+  FormikProps,
+} from "formik";
+import {
+  AttributeInput,
   AttributeSortTerm,
   AttributeValueInput,
   Characters,
   FormBrick,
+  InputType,
   Scalars,
   SearchInput,
   SmallButton,
@@ -20,21 +29,38 @@ import {
 } from "lib";
 import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
 
+type FieldRenderFnProps<Value> = {
+  field: FieldInputProps<Value>;
+  meta: FieldMetaProps<Value>;
+  form: FormikProps<SearchInputFormType>;
+};
+
 type SearchInputFormType = {
   filter: {
     attributes: Array<AttributeValueInput>;
     tags: Array<Scalars["String"]>;
   };
-  searchAttributeValueStr: "";
-  tagNameFilter: "";
-
   sorter: Array<AttributeSortTerm>;
-  attributeSortTerm: AttributeSortTerm;
-  attributeNameFilter: "";
+
+  tagInput: string;
+
+  attributeInput: AttributeValueInput;
+
+  sortInput: AttributeSortTerm;
 };
 
 type SearchInputFormParams = {
   setSearchInput: React.Dispatch<React.SetStateAction<SearchInput>>;
+};
+
+const attributeInputInitValue: AttributeValueInput = {
+  attribute: { name: "", type: InputType.String },
+  value: "",
+};
+
+const sortInputInitValue: AttributeSortTerm = {
+  attribute: "",
+  sortOrder: SortOrder.Asc,
 };
 
 export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
@@ -55,11 +81,16 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
           attributes: [],
           tags: [],
         },
-        searchAttributeValueStr: "",
-        tagNameFilter: "",
-        attributeNameFilter: "",
         sorter: [],
-        attributeSortTerm: { attribute: "", sortOrder: SortOrder.Asc },
+
+        attributeInput: {
+          value: "",
+          attribute: { name: "", type: InputType.String },
+        },
+
+        tagInput: "",
+
+        sortInput: { attribute: "", sortOrder: SortOrder.Asc },
       }}
       onSubmit={({ filter, sorter }, helpers) => {
         setSearchInput({ filter, sorter });
@@ -68,11 +99,10 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
       {({
         values: {
           filter: { attributes, tags },
-          searchAttributeValueStr,
-          tagNameFilter,
+          attributeInput,
+          tagInput,
           sorter,
-          attributeSortTerm,
-          attributeNameFilter,
+          sortInput,
         },
         isSubmitting,
         setFieldValue,
@@ -97,17 +127,35 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     ))}
                   </ExistingItemsContainer>
 
-                  <StyledField name="tagNameFilter" autoComplete="off" />
+                  <Field name="tagInput" autoComplete="off" />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFieldValue("attributeInput", attributeInputInitValue)
+                    }
+                  >
+                    {Characters.multiply}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      push(attributeInput);
+                      setFieldValue("attributeInput", attributeInputInitValue);
+                    }}
+                  >
+                    {Characters.check}
+                  </button>
+
                   <Tags
                     tags={availableTags
                       ?.filter(
                         (availableTag) =>
                           !tags.includes(availableTag) &&
-                          availableTag.startsWith(tagNameFilter) &&
-                          availableTag !== tagNameFilter
+                          availableTag.startsWith(tagInput) &&
+                          availableTag !== tagInput
                       )
                       .sort()}
-                    push={push}
+                    onClick={(tag) => push(tag)}
                   />
                 </>
               )}
@@ -122,6 +170,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     {attributes.map((attributeValueInput, index) => (
                       <FormBrick key={index}>
                         <ElemBox>{attributeValueInput.attribute.name}</ElemBox>
+                        <ElemBox>{attributeValueInput.value}</ElemBox>
                         <SmallButton onClick={() => remove(index)}>
                           {Characters.multiply}
                         </SmallButton>
@@ -129,7 +178,30 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     ))}
                   </ExistingItemsContainer>
 
-                  <Field name="attributeNameFilter" autoComplete="off" />
+                  <Field name="attributeInput.attribute.name" />
+                  <Field name="attributeInput.attribute.type" as="select">
+                    <option value={InputType.String}>{InputType.String}</option>
+                    <option value={InputType.Number}>{InputType.Number}</option>
+                  </Field>
+                  <Field name="attributeInput.value" />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFieldValue("attributeInput", attributeInputInitValue)
+                    }
+                  >
+                    {Characters.multiply}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      push(attributeInput);
+                      setFieldValue("attributeInput", attributeInputInitValue);
+                    }}
+                  >
+                    {Characters.check}
+                  </button>
+
                   <Attributes
                     attributes={availableAttributes
                       ?.filter(
@@ -140,12 +212,15 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                               availableAttribute.name
                           ) &&
                           availableAttribute.name.includes(
-                            attributeNameFilter
+                            attributeInput.attribute.name
                           ) &&
-                          availableAttribute.name !== attributeNameFilter
+                          availableAttribute.name !==
+                            attributeInput.attribute.name
                       )
                       .sort()}
-                    push={push}
+                    onClick={(attribute) =>
+                      setFieldValue("attributeInput", { attribute, value: "" })
+                    }
                   />
                 </>
               )}
@@ -167,7 +242,29 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     ))}
                   </ExistingItemsContainer>
 
-                  <Field name="attributeSortTerm" />
+                  <Field name="sortInput.attribute" />
+                  <Field name="sortInput.sortOrder" as="select">
+                    <option value={SortOrder.Asc}>{SortOrder.Asc}</option>
+                    <option value={SortOrder.Desc}>{SortOrder.Desc}</option>
+                  </Field>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFieldValue("sortInput", sortInputInitValue)
+                    }
+                  >
+                    {Characters.multiply}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      push(sortInput);
+                      setFieldValue("attributeInput", sortInputInitValue);
+                    }}
+                  >
+                    {Characters.check}
+                  </button>
+
                   <AttributeSortTerms
                     attributes={availableAttributes
                       ?.filter(

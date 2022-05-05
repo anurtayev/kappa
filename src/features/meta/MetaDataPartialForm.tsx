@@ -81,7 +81,7 @@ export const MetaDataPartialForm = ({
                       availableTag !== newTag
                   )
                   .sort()}
-                push={push}
+                onClick={(tag) => {}}
               />
             </>
           )}
@@ -149,7 +149,7 @@ export const MetaDataPartialForm = ({
                       availableAttribute.name !== newKey
                   )
                   .sort()}
-                push={push}
+                onClick={() => {}}
               />
             </>
           )}

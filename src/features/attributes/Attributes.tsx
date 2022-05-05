@@ -2,10 +2,10 @@ import { AttributeInput, AttributeValueInput } from "lib";
 
 type Params = {
   attributes: AttributeInput[] | undefined;
-  push: (obj: any) => void;
+  onClick: (attribute: AttributeInput) => void;
 };
 
-export const Attributes = ({ attributes, push }: Params) =>
+export const Attributes = ({ attributes, onClick }: Params) =>
   attributes?.length ? (
     <div>
       {attributes.map((attribute) => {
@@ -13,13 +13,7 @@ export const Attributes = ({ attributes, push }: Params) =>
           <button
             key={attribute.name}
             type="button"
-            onClick={() => {
-              const attributeValueInput: AttributeValueInput = {
-                attribute,
-                value: "",
-              };
-              push(attributeValueInput);
-            }}
+            onClick={() => onClick(attribute)}
           >
             {attribute.name}
           </button>
