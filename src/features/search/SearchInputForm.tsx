@@ -28,6 +28,28 @@ import {
   useGetAllTagsAndAttributesQuery,
 } from "lib";
 import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
+import { object, string, array, mixed } from "yup";
+
+const SearchInputFormSchema = object({
+  filter: object({
+    attributes: array().of(
+      object({
+        attribute: object({
+          name: string().trim().required(),
+          type: mixed().oneOf([InputType.String, InputType.Number]),
+        }),
+        value: string(),
+      })
+    ),
+    tags: array().of(string().trim().required()),
+  }),
+  sorter: array().of(
+    object({
+      attribute: string().trim().required(),
+      sortOrder: mixed().oneOf([SortOrder.Asc, SortOrder.Desc]),
+    })
+  ),
+});
 
 type FieldRenderFnProps<Value> = {
   field: FieldInputProps<Value>;
@@ -92,9 +114,12 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
 
         sortInput: { attribute: "", sortOrder: SortOrder.Asc },
       }}
-      onSubmit={({ filter, sorter }, helpers) => {
+      onSubmit={({ filter, sorter }, {}) => {
+        console.log("==> ", filter.tags, filter.attributes, sorter);
+
         setSearchInput({ filter, sorter });
       }}
+      validationSchema={SearchInputFormSchema}
     >
       {({
         values: {
@@ -106,12 +131,14 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
         },
         isSubmitting,
         setFieldValue,
+        errors,
       }) => (
         <FlexForm>
           <div>
             <p>sorter</p>
 
             <p>tags</p>
+            {errors.filter?.tags}
             <FieldArray
               name="filter.tags"
               render={({ remove, push }) => (
@@ -130,17 +157,15 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                   <Field name="tagInput" autoComplete="off" />
                   <button
                     type="button"
-                    onClick={() =>
-                      setFieldValue("attributeInput", attributeInputInitValue)
-                    }
+                    onClick={() => setFieldValue("tagInput", "")}
                   >
                     {Characters.multiply}
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      push(attributeInput);
-                      setFieldValue("attributeInput", attributeInputInitValue);
+                      push(tagInput);
+                      setFieldValue("tagInput", "");
                     }}
                   >
                     {Characters.check}
@@ -259,7 +284,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     type="button"
                     onClick={() => {
                       push(sortInput);
-                      setFieldValue("attributeInput", sortInputInitValue);
+                      setFieldValue("sortInput", sortInputInitValue);
                     }}
                   >
                     {Characters.check}
