@@ -1,7 +1,7 @@
-import { AttributeInput } from "lib";
+import { Attribute, AttributeInput } from "lib";
 
 type Params = {
-  attributes: AttributeInput[] | undefined;
+  attributes: Attribute[] | undefined;
   onClick: (attribute: AttributeInput) => void;
 };
 
@@ -13,7 +13,9 @@ export const Attributes = ({ attributes, onClick }: Params) =>
           <button
             key={attribute.name}
             type="button"
-            onClick={() => onClick(attribute)}
+            onClick={() =>
+              onClick({ name: attribute.name, type: attribute.type })
+            }
           >
             {attribute.name}
           </button>

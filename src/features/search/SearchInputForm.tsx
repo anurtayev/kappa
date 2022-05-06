@@ -74,8 +74,6 @@ const sortInputInitValue: AttributeSortTerm = {
   sortOrder: SortOrder.Asc,
 };
 
-const minusNull = (nullableArray: Array<any> | null) => nullableArray || [];
-
 export const SearchInputForm = ({
   searchInput,
   setSearchInput,
@@ -148,7 +146,7 @@ export const SearchInputForm = ({
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {minusNull(tags).map((tag, index) => (
+                      {tags.map((tag, index) => (
                         <FormBrick key={index}>
                           <ElemBox>{tag}</ElemBox>
                           <SmallButton onClick={() => remove(index)}>
@@ -181,7 +179,7 @@ export const SearchInputForm = ({
                       tags={availableTags
                         ?.filter(
                           (availableTag) =>
-                            !minusNull(tags).includes(availableTag) &&
+                            !tags.includes(availableTag) &&
                             availableTag.startsWith(tagInput) &&
                             availableTag !== tagInput
                         )
@@ -199,19 +197,17 @@ export const SearchInputForm = ({
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {minusNull(attributes).map(
-                        (attributeValueInput, index) => (
-                          <FormBrick key={index}>
-                            <ElemBox>
-                              {attributeValueInput.attribute.name}
-                            </ElemBox>
-                            <ElemBox>{attributeValueInput.value}</ElemBox>
-                            <SmallButton onClick={() => remove(index)}>
-                              {Characters.multiply}
-                            </SmallButton>
-                          </FormBrick>
-                        )
-                      )}
+                      {attributes.map((attributeValueInput, index) => (
+                        <FormBrick key={index}>
+                          <ElemBox>
+                            {attributeValueInput.attribute.name}
+                          </ElemBox>
+                          <ElemBox>{attributeValueInput.value}</ElemBox>
+                          <SmallButton onClick={() => remove(index)}>
+                            {Characters.multiply}
+                          </SmallButton>
+                        </FormBrick>
+                      ))}
                     </ExistingItemsContainer>
 
                     <Field name="attributeInput.attribute.name" />
@@ -251,7 +247,7 @@ export const SearchInputForm = ({
                       attributes={availableAttributes
                         ?.filter(
                           (availableAttribute) =>
-                            !minusNull(attributes).find(
+                            !attributes.find(
                               (attributeValueInput: AttributeValueInput) =>
                                 attributeValueInput.attribute.name ===
                                 availableAttribute.name
@@ -281,7 +277,7 @@ export const SearchInputForm = ({
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {minusNull(sorter).map((attributeSortTerm, index) => (
+                      {sorter.map((attributeSortTerm, index) => (
                         <FormBrick key={index}>
                           <ElemBox>{attributeSortTerm.attribute}</ElemBox>
                           <ElemBox>{attributeSortTerm.sortOrder}</ElemBox>
@@ -321,7 +317,7 @@ export const SearchInputForm = ({
                       attributes={availableAttributes
                         ?.filter(
                           (availableAttribute) =>
-                            !minusNull(sorter).find(
+                            !sorter.find(
                               (existingAttributeSortTerm) =>
                                 existingAttributeSortTerm.attribute ===
                                 availableAttribute.name
