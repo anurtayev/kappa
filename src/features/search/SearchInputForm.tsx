@@ -15,32 +15,33 @@ import {
   useGetAllTagsAndAttributesQuery,
 } from "lib";
 import { array, mixed, object, string, ValidationError } from "yup";
-import { AttributeSortTerms } from "./AttributeSortTerms";
 import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
+
+const tagSchema = string().trim().required();
+
+const attributeSchema = object({
+  attribute: object({
+    name: string().trim().required(),
+    type: mixed().oneOf([InputType.String, InputType.Number]),
+  }),
+  value: string(),
+});
+
+const sorterSchema = object({
+  attribute: string().trim().required(),
+  sortOrder: mixed().oneOf([SortOrder.Asc, SortOrder.Desc]),
+});
 
 const validationSchema = object({
   filter: object({
-    attributes: array().of(
-      object({
-        attribute: object({
-          name: string().trim().required(),
-          type: mixed().oneOf([InputType.String, InputType.Number]),
-        }),
-        value: string(),
-      })
-    ),
-    tags: array().of(string().trim().required()),
+    attributes: array().of(attributeSchema),
+    tags: array().of(tagSchema),
   }),
-  sorter: array().of(
-    object({
-      attribute: string().trim().required(),
-      sortOrder: mixed().oneOf([SortOrder.Asc, SortOrder.Desc]),
-    })
-  ),
+  sorter: array().of(sorterSchema),
 }).test(
   "global-test",
-  "${path} adsfasdf",
-  ({ filter: { attributes, tags } }, context) =>
+  "",
+  ({ filter: { attributes, tags } }) =>
     !!attributes?.length ||
     !!tags?.length ||
     new ValidationError("at least one filter must be present", "", "filter")
@@ -128,7 +129,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                 typeof errors.filter === "string" &&
                 errors.filter}
 
-              <p>sorter</p>
+              <p>filter</p>
 
               <p>tags</p>
               {errors.filter?.tags && JSON.stringify(errors.filter?.tags)}
@@ -156,9 +157,11 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        push(tagInput);
-                        setFieldValue("tagInput", "");
+                      onClick={async () => {
+                        if (await tagSchema.isValid(tagInput)) {
+                          push(tagInput);
+                          setFieldValue("tagInput", "");
+                        }
                       }}
                     >
                       {Characters.check}
@@ -219,12 +222,14 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        push(attributeInput);
-                        setFieldValue(
-                          "attributeInput",
-                          attributeInputInitValue
-                        );
+                      onClick={async () => {
+                        if (await attributeSchema.isValid(attributeInput)) {
+                          push(attributeInput);
+                          setFieldValue(
+                            "attributeInput",
+                            attributeInputInitValue
+                          );
+                        }
                       }}
                     >
                       {Characters.check}
@@ -267,6 +272,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                       {sorter.map((attributeSortTerm, index) => (
                         <FormBrick key={index}>
                           <ElemBox>{attributeSortTerm.attribute}</ElemBox>
+                          <ElemBox>{attributeSortTerm.sortOrder}</ElemBox>
                           <SmallButton onClick={() => remove(index)}>
                             {Characters.multiply}
                           </SmallButton>
@@ -289,26 +295,33 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        push(sortInput);
-                        setFieldValue("sortInput", sortInputInitValue);
+                      onClick={async () => {
+                        if (await sorterSchema.isValid(sortInput)) {
+                          push(sortInput);
+                          setFieldValue("sortInput", sortInputInitValue);
+                        }
                       }}
                     >
                       {Characters.check}
                     </button>
 
-                    <AttributeSortTerms
+                    <Attributes
                       attributes={availableAttributes
                         ?.filter(
                           (availableAttribute) =>
                             !sorter.find(
                               (existingAttributeSortTerm) =>
-                                existingAttributeSortTerm.attribute !==
+                                existingAttributeSortTerm.attribute ===
                                 availableAttribute.name
                             )
                         )
                         .sort()}
-                      push={push}
+                      onClick={(attribute) =>
+                        setFieldValue("sortInput", {
+                          attribute: attribute.name,
+                          sortOrder: sortInput.sortOrder,
+                        })
+                      }
                     />
                   </>
                 )}
