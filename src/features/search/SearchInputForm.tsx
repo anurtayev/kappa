@@ -8,6 +8,7 @@ import {
   Characters,
   FormBrick,
   InputType,
+  MetaDataInput,
   Scalars,
   SearchInput,
   SmallButton,
@@ -53,16 +54,14 @@ type SearchInputFormType = {
     tags: Array<Scalars["String"]>;
   };
   sorter: Array<AttributeSortTerm>;
-
   tagInput: string;
-
   attributeInput: AttributeValueInput;
-
   sortInput: AttributeSortTerm;
 };
 
 type SearchInputFormParams = {
   setSearchInput: React.Dispatch<React.SetStateAction<SearchInput>>;
+  searchInput: SearchInput;
 };
 
 const attributeInputInitValue: AttributeValueInput = {
@@ -75,7 +74,12 @@ const sortInputInitValue: AttributeSortTerm = {
   sortOrder: SortOrder.Asc,
 };
 
-export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
+const minusNull = (nullableArray: Array<any> | null) => nullableArray || [];
+
+export const SearchInputForm = ({
+  searchInput,
+  setSearchInput,
+}: SearchInputFormParams) => {
   const { data, loading, error } = useGetAllTagsAndAttributesQuery({
     fetchPolicy: "cache-and-network",
   });
@@ -90,22 +94,28 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
     <Formik<SearchInputFormType>
       initialValues={{
         filter: {
-          attributes: [],
-          tags: [],
+          attributes: searchInput.filter.attributes || [],
+          tags: searchInput.filter.tags || [],
         },
-        sorter: [],
-
-        attributeInput: {
-          value: "",
-          attribute: { name: "", type: InputType.String },
-        },
-
+        sorter: searchInput.sorter || [],
         tagInput: "",
-
+        attributeInput: {
+          attribute: { name: "", type: InputType.String },
+          value: "",
+        },
         sortInput: { attribute: "", sortOrder: SortOrder.Asc },
       }}
-      onSubmit={({ filter, sorter }, { setSubmitting }) => {
-        setSearchInput({ filter, sorter });
+      onSubmit={(
+        { filter: { attributes, tags }, sorter },
+        { setSubmitting }
+      ) => {
+        setSearchInput({
+          filter: {
+            ...(attributes.length ? { attributes } : {}),
+            ...(tags.length ? { tags } : {}),
+          },
+          ...(sorter.length ? { sorter } : {}),
+        });
         setSubmitting(false);
       }}
       validationSchema={validationSchema}
@@ -113,9 +123,9 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
       {({
         values: {
           filter: { attributes, tags },
+          sorter,
           attributeInput,
           tagInput,
-          sorter,
           sortInput,
         },
         isSubmitting,
@@ -138,7 +148,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {tags.map((tag, index) => (
+                      {minusNull(tags).map((tag, index) => (
                         <FormBrick key={index}>
                           <ElemBox>{tag}</ElemBox>
                           <SmallButton onClick={() => remove(index)}>
@@ -171,7 +181,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                       tags={availableTags
                         ?.filter(
                           (availableTag) =>
-                            !tags.includes(availableTag) &&
+                            !minusNull(tags).includes(availableTag) &&
                             availableTag.startsWith(tagInput) &&
                             availableTag !== tagInput
                         )
@@ -189,17 +199,19 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {attributes.map((attributeValueInput, index) => (
-                        <FormBrick key={index}>
-                          <ElemBox>
-                            {attributeValueInput.attribute.name}
-                          </ElemBox>
-                          <ElemBox>{attributeValueInput.value}</ElemBox>
-                          <SmallButton onClick={() => remove(index)}>
-                            {Characters.multiply}
-                          </SmallButton>
-                        </FormBrick>
-                      ))}
+                      {minusNull(attributes).map(
+                        (attributeValueInput, index) => (
+                          <FormBrick key={index}>
+                            <ElemBox>
+                              {attributeValueInput.attribute.name}
+                            </ElemBox>
+                            <ElemBox>{attributeValueInput.value}</ElemBox>
+                            <SmallButton onClick={() => remove(index)}>
+                              {Characters.multiply}
+                            </SmallButton>
+                          </FormBrick>
+                        )
+                      )}
                     </ExistingItemsContainer>
 
                     <Field name="attributeInput.attribute.name" />
@@ -239,7 +251,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                       attributes={availableAttributes
                         ?.filter(
                           (availableAttribute) =>
-                            !attributes.find(
+                            !minusNull(attributes).find(
                               (attributeValueInput: AttributeValueInput) =>
                                 attributeValueInput.attribute.name ===
                                 availableAttribute.name
@@ -269,7 +281,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                 render={({ remove, push }) => (
                   <>
                     <ExistingItemsContainer>
-                      {sorter.map((attributeSortTerm, index) => (
+                      {minusNull(sorter).map((attributeSortTerm, index) => (
                         <FormBrick key={index}>
                           <ElemBox>{attributeSortTerm.attribute}</ElemBox>
                           <ElemBox>{attributeSortTerm.sortOrder}</ElemBox>
@@ -309,7 +321,7 @@ export const SearchInputForm = ({ setSearchInput }: SearchInputFormParams) => {
                       attributes={availableAttributes
                         ?.filter(
                           (availableAttribute) =>
-                            !sorter.find(
+                            !minusNull(sorter).find(
                               (existingAttributeSortTerm) =>
                                 existingAttributeSortTerm.attribute ===
                                 availableAttribute.name

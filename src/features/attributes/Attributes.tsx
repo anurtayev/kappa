@@ -1,4 +1,4 @@
-import { AttributeInput, AttributeValueInput } from "lib";
+import { AttributeInput } from "lib";
 
 type Params = {
   attributes: AttributeInput[] | undefined;

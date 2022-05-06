@@ -22,7 +22,9 @@ export const SearchContainer = () => {
 
   const pageSize = getPageSizeFromURLSearchParams(searchParams);
   const nextToken = searchParams.get(PARAM_NEXT_TOKEN);
-  let searchInputDefaultValue;
+  let searchInputDefaultValue: SearchInput = {
+    filter: {},
+  };
   const searchInputIdParam = searchParams.get(PARAM_SEARCH_INPUT);
   try {
     if (searchInputIdParam) {
@@ -85,8 +87,12 @@ export const SearchContainer = () => {
 
   return (
     <>
+      {JSON.stringify(searchInput)}
       <Nav navs={navs}></Nav>
-      <SearchInputForm setSearchInput={setSearchInput} />
+      <SearchInputForm
+        setSearchInput={setSearchInput}
+        searchInput={searchInput}
+      />
       <EntriesView
         files={data?.search?.files}
         folders={data?.search?.folders}
