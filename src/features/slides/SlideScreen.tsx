@@ -1,7 +1,8 @@
 import { Nav } from "features/nav";
 import { Characters, NavItem } from "lib";
 import { createRef } from "react";
-import { Frame, Image, LeftSlideButton, RightSlideButton } from "./styles";
+import { Frame, ImagePane, LeftSlideButton, RightSlideButton } from "./styles";
+import { ImageAsync } from "./ImageAsync";
 
 export type SlideScreenParams = {
   id: string;
@@ -11,36 +12,34 @@ export type SlideScreenParams = {
 };
 
 const navRef = createRef<HTMLDivElement>();
+const frameRef = createRef<HTMLDivElement>();
 
 export const SlideScreen = ({
   id,
   navs,
   onClickNext,
   onClickPrev,
-}: SlideScreenParams) => (
-  <Frame>
-    <Nav navs={navs} navRef={navRef}></Nav>
-    <Image
-      src={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${
-        navRef.current?.clientWidth
-      }&height=${
-        document.documentElement.clientHeight -
-        (navRef.current?.clientHeight || 0)
-      }`}
-      alt=""
-    />
+}: SlideScreenParams) => {
+  console.log("==> navRef", navRef, navRef.current);
+  console.log("==> frameRef", frameRef, frameRef.current);
 
-    {onClickPrev && (
-      <LeftSlideButton onClick={onClickPrev}>
-        {Characters.arrowLeft}
-      </LeftSlideButton>
-    )}
-    {onClickNext && (
-      <RightSlideButton onClick={onClickNext}>
-        {Characters.arrowRight}
-      </RightSlideButton>
-    )}
-  </Frame>
-);
+  return (
+    <Frame ref={frameRef}>
+      <Nav navs={navs} navRef={navRef}></Nav>
+      <ImageAsync id={id} />
+
+      {onClickPrev && (
+        <LeftSlideButton onClick={onClickPrev}>
+          {Characters.arrowLeft}
+        </LeftSlideButton>
+      )}
+      {onClickNext && (
+        <RightSlideButton onClick={onClickNext}>
+          {Characters.arrowRight}
+        </RightSlideButton>
+      )}
+    </Frame>
+  );
+};
 
 export type SlideNavFn = (() => void) | undefined;

@@ -1,12 +1,4 @@
-import { Nav } from "features/nav";
-import {
-  appRoutes,
-  Characters,
-  FolderConnection,
-  Maybe,
-  NavItem,
-  useScrollRef,
-} from "lib";
+import { appRoutes, FolderConnection, Maybe } from "lib";
 import { File } from "./File";
 import { Folder } from "./Folder";
 import { FolderScreenFrame, VerticalFrame } from "./styles";
