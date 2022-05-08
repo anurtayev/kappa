@@ -118,12 +118,18 @@ export const MetaDataInputForm = ({
       <FlexForm>
         <HeaderContainer>
           <span>{isFolder(id) ? Characters.folder : Characters.file}</span>
-          <EntryName>{getMediaName(id)}</EntryName>
+          <EntryName>
+            {!isFolder(id)
+              ? getMediaName(id)
+              : id.split("/").slice(1).join("/")}
+          </EntryName>
         </HeaderContainer>
 
-        <Frame
-          thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
-        />
+        {!isFolder(id) && (
+          <Frame
+            thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
+          />
+        )}
 
         <div>
           <SectionHeader>Tags</SectionHeader>
