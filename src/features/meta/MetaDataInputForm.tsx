@@ -77,7 +77,11 @@ export const MetaDataInputForm = ({
 }: MetaDataInputFormParams) => (
   <Formik<Values>
     initialValues={{
-      attributes: metaData?.attributes || [],
+      attributes:
+        metaData?.attributes?.map(({ attribute: { name, type }, value }) => ({
+          attribute: { name, type },
+          value,
+        })) || [],
       tags: metaData?.tags || [],
       tagInput: "",
       attributeInput: attributeInputInitValue,
@@ -241,7 +245,7 @@ export const MetaDataInputForm = ({
                       (availableAttribute) =>
                         !attributes.find(
                           (attribute) =>
-                            attribute.attribute.name !== availableAttribute.name
+                            attribute.attribute.name === availableAttribute.name
                         ) &&
                         availableAttribute.name.includes(
                           attributeInput.attribute.name
@@ -250,7 +254,12 @@ export const MetaDataInputForm = ({
                           attributeInput.attribute.name
                     )
                     .sort()}
-                  onClick={() => {}}
+                  onClick={(attribute) => {
+                    setFieldValue("attributeInput", {
+                      attribute,
+                      value: "",
+                    });
+                  }}
                 />
               </>
             )}
