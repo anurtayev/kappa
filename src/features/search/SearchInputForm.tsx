@@ -8,7 +8,6 @@ import {
   Characters,
   FormBrick,
   InputType,
-  MetaDataInput,
   Scalars,
   SearchInput,
   SmallButton,
@@ -25,7 +24,7 @@ const attributeSchema = object({
     name: string().trim().required(),
     type: mixed().oneOf([InputType.String, InputType.Number]),
   }),
-  value: string(),
+  value: string().trim().required(),
 });
 
 const sorterSchema = object({
@@ -97,11 +96,8 @@ export const SearchInputForm = ({
         },
         sorter: searchInput.sorter || [],
         tagInput: "",
-        attributeInput: {
-          attribute: { name: "", type: InputType.String },
-          value: "",
-        },
-        sortInput: { attribute: "", sortOrder: SortOrder.Asc },
+        attributeInput: attributeInputInitValue,
+        sortInput: sortInputInitValue,
       }}
       onSubmit={(
         { filter: { attributes, tags }, sorter },

@@ -3,10 +3,10 @@ import {
   MetaData,
   useGetAllTagsAndAttributesQuery,
   useUpdateMetaDataMutation,
+  Maybe,
 } from "lib";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MetaDataInputForm } from "./MetaDataInputForm";
-import convertMetaDataToInput from "./convertMetaDataToInput";
 
 export const MetaContainer = () => {
   const client = useApolloClient();
@@ -18,7 +18,7 @@ export const MetaContainer = () => {
     throw new Error("id is missing");
   }
 
-  const metaData: MetaData | null = client.readFragment({
+  const metaData: Maybe<MetaData> = client.readFragment({
     id: `MetaData:${id}`,
     fragment: gql`
       fragment ReadMetaData on MetaData {
@@ -44,7 +44,7 @@ export const MetaContainer = () => {
   return (
     <MetaDataInputForm
       id={id}
-      metaDataInput={convertMetaDataToInput(metaData)}
+      metaData={metaData}
       updateMetaDataMutation={updateMetaDataMutation}
       navigate={navigate}
       availableAttributes={availableAttributes}

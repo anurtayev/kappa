@@ -1,6 +1,5 @@
-import { Field } from "formik";
-import styled from "styled-components";
 import { Form } from "formik";
+import styled from "styled-components";
 
 export const SectionHeader = styled.h5`
   color: #1187f6;
@@ -22,11 +21,6 @@ export const ElemBoxValue = styled(ElemBox)`
 export const ExistingItemsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-`;
-
-export const StyledField = styled(Field)`
-  height: 0.76rem;
-  width: 10rem;
 `;
 
 export const Frame = styled.div`
