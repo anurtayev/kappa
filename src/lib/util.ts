@@ -1,13 +1,3 @@
-import {
-  MetaData,
-  Scalars,
-  Attribute,
-  InputType,
-  MetaDataInput,
-  AttributeValueInput,
-} from "@aspan/sigma";
-import { SearchInput } from "./graphqlTypes";
-
 export enum EntryType {
   folder = "Folder",
   file = "File",
@@ -45,6 +35,7 @@ export enum Characters {
   label = "\u{1f3f7}",
   magnifyingGlass = "\u{1F50D}",
   refresh = "\u{27F3}",
+  ellipsis = "\u{2026}",
 }
 
 export type NavItem = {

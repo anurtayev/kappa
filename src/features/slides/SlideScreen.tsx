@@ -1,8 +1,8 @@
 import { Nav } from "features/nav";
 import { Characters, NavItem } from "lib";
 import { createRef } from "react";
-import { Frame, ImagePane, LeftSlideButton, RightSlideButton } from "./styles";
 import { ImageAsync } from "./ImageAsync";
+import { Frame, LeftSlideButton, RightSlideButton } from "./styles";
 
 export type SlideScreenParams = {
   id: string;
@@ -19,27 +19,21 @@ export const SlideScreen = ({
   navs,
   onClickNext,
   onClickPrev,
-}: SlideScreenParams) => {
-  console.log("==> navRef", navRef, navRef.current);
-  console.log("==> frameRef", frameRef, frameRef.current);
+}: SlideScreenParams) => (
+  <Frame ref={frameRef}>
+    <Nav navs={navs} navRef={navRef}></Nav>
+    <ImageAsync id={id} />
 
-  return (
-    <Frame ref={frameRef}>
-      <Nav navs={navs} navRef={navRef}></Nav>
-      <ImageAsync id={id} />
-
-      {onClickPrev && (
-        <LeftSlideButton onClick={onClickPrev}>
-          {Characters.arrowLeft}
-        </LeftSlideButton>
-      )}
-      {onClickNext && (
-        <RightSlideButton onClick={onClickNext}>
-          {Characters.arrowRight}
-        </RightSlideButton>
-      )}
-    </Frame>
-  );
-};
-
+    {onClickPrev && (
+      <LeftSlideButton onClick={onClickPrev}>
+        {Characters.arrowLeft}
+      </LeftSlideButton>
+    )}
+    {onClickNext && (
+      <RightSlideButton onClick={onClickNext}>
+        {Characters.arrowRight}
+      </RightSlideButton>
+    )}
+  </Frame>
+);
 export type SlideNavFn = (() => void) | undefined;

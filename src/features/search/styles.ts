@@ -1,6 +1,5 @@
-import styled from "styled-components";
 import { Form } from "formik";
-import { EntryFrame } from "lib";
+import styled from "styled-components";
 
 export const Section = styled.div`
   margin: 1rem 0 0 2rem;
@@ -21,13 +20,6 @@ export const SubmitButton = styled.button`
 
 export const SectionHeader = styled.h5`
   color: red;
-`;
-
-export const Frame = styled(styled.div`
-  ${EntryFrame}
-`)`
-  background-image: ${({ thumbImageUrl }: { thumbImageUrl: string }) =>
-    `url("${thumbImageUrl}")`};
 `;
 
 export const FlexForm = styled(Form)`

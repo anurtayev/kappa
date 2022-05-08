@@ -1,5 +1,4 @@
 import { Field } from "formik";
-import { EntryFrame } from "lib";
 import styled from "styled-components";
 import { Form } from "formik";
 
@@ -30,9 +29,13 @@ export const StyledField = styled(Field)`
   width: 10rem;
 `;
 
-export const Frame = styled(styled.div`
-  ${EntryFrame}
-`)`
+export const Frame = styled.div`
+  width: 150px;
+  max-width: 150px;
+  height: 150px;
+  margin: 0.2rem;
+  background: darkslategrey;
+  border-radius: 0.4rem;
   background-image: ${({ thumbImageUrl }: { thumbImageUrl: string }) =>
     `url("${thumbImageUrl}")`};
 `;

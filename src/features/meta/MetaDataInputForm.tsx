@@ -59,9 +59,6 @@ export const MetaDataInputForm = ({
         console.error(error);
       }
     }}
-    validate={({ newKey, newTag, newValueStr, newType }) => {
-      // console.log("==> validate", newTag, newKey, newType, newValueStr);
-    }}
   >
     {({ isSubmitting }) => (
       <FlexForm>

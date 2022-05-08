@@ -2,15 +2,6 @@ import styled from "styled-components";
 
 export const defaultTheme = {};
 
-export const EntryFrame = `
-  width: 150px;
-  max-width: 150px;
-  height: 150px;
-  margin: .2rem;
-  background: darkslategrey;
-  border-radius: .4rem;
-`;
-
 export const SmallButton = styled.div`
   font-size: 0.75rem;
   display: flex;

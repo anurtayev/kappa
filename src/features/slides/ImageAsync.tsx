@@ -20,7 +20,7 @@ export const ImageAsync = ({ id }: ImageAsyncParams) => {
       });
       setIsMeasured(true);
     }
-  });
+  }, [isMeasured]);
 
   return (
     <ImagePane ref={frameRef}>
