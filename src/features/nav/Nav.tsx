@@ -31,8 +31,7 @@ const ActionButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2rem;
-  background: green;
+  background: lightgrey;
   margin: 1rem 0 1rem 1rem;
   cursor: default;
   flex-shrink: 0;
