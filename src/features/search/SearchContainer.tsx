@@ -87,7 +87,6 @@ export const SearchContainer = () => {
 
   return (
     <>
-      {JSON.stringify(searchInput)}
       <Nav navs={navs}></Nav>
       <SearchInputForm
         setSearchInput={setSearchInput}

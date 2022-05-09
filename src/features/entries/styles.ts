@@ -45,6 +45,7 @@ export const ContextMenuButton = styled.div`
   font-size: x-small;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 
 export const ContextMenuButtonPane = styled.div`

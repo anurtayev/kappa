@@ -45,7 +45,7 @@ const ActionButton = styled.div`
   }
 
   &:active {
-    background-color: lime;
+    background-color: darkgrey;
     background-size: 100%;
     transition: background 0s;
   }
