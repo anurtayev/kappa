@@ -15,11 +15,15 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "pipeline:create": ". scripts/env.sh && aws cloudformation create-stack --stack-name $STACK_NAME-pipeline --template-body file://infrastructure/codepipeline.yaml  --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT ParameterKey=GitBranchName,ParameterValue=$GIT_BRANCH ParameterKey=FullRepositoryId,ParameterValue=$REPOSITORY_ID ParameterKey=PrincipalOrgID,ParameterValue=$PRINCIPAL_ORG_ID",
+    "pipeline:update": ". scripts/env.sh && aws cloudformation update-stack --stack-name $STACK_NAME-pipeline --template-body file://infrastructure/codepipeline.yaml  --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT ParameterKey=GitBranchName,ParameterValue=$GIT_BRANCH ParameterKey=FullRepositoryId,ParameterValue=$REPOSITORY_ID ParameterKey=PrincipalOrgID,ParameterValue=$PRINCIPAL_ORG_ID",
+    "pipeline:delete": ". scripts/env.sh && aws cloudformation delete-stack --stack-name $STACK_NAME-pipeline",
     "codegen:generate": "graphql-codegen --config codegen.yml",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": ". scripts/env.sh && aws s3 sync s3://$HOSTING_BUCKET build"
   },
   "eslintConfig": {
     "extends": "react-app"

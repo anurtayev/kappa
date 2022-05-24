@@ -1,0 +1,243 @@
+Description: Aspan backend pipeline (epsilon)
+
+Parameters:
+  ProjectName:
+    Type: String
+  GitBranchName:
+    Description: Environment name, same as GitHub branch name
+    Type: String
+  FullRepositoryId:
+    Type: String
+  PrincipalOrgID:
+    Type: String
+
+Resources:
+  InfrastructureBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-infra
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldObjects
+            Status: Enabled
+            ExpirationInDays: 30
+
+  InfrastructureBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref InfrastructureBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: s3:*
+            Effect: Allow
+            Resource: !Sub ${InfrastructureBucket.Arn}/*
+            Principal: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalOrgID: !Ref PrincipalOrgID
+
+  CodeStarConnection:
+    Type: AWS::CodeStarConnections::Connection
+    Properties:
+      ConnectionName: WebAppGitRepositoryConnection
+      ProviderType: GitHub
+
+  CodePipelineExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: WebAppCodePipelineExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: codepipeline.amazonaws.com
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${ProjectName}-${GitBranchName}-CodePipelineExecutionRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: iam:PassRole
+                Resource: "*"
+                Condition:
+                  StringEqualsIfExists:
+                    iam:PassedToService:
+                      - cloudformation.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - cloudwatch:*
+                  - s3:*
+                  - cloudformation:*
+                  - ssm:GetParameters
+                  - iam:GetRole
+                  - lambda:*
+                  - codestar-connections:UseConnection
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - codebuild:BatchGetBuilds
+                  - codebuild:StartBuild
+                Resource: "*"
+
+  CodeBuildExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: WebAppCodeBuildExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: codebuild.amazonaws.com
+      Policies:
+        - PolicyName: AWS-CodeBuild-Service
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DeleteLogGroup
+                  - logs:PutLogEvents
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - codebuild:CreateReportGroup
+                  - codebuild:CreateReport
+                  - codebuild:UpdateReport
+                  - codebuild:BatchPutTestCases
+                  - codebuild:BatchPutCodeCoverages
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - cloudformation:*
+                  - lambda:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub ${InfrastructureBucket.Arn}/*
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                  - s3:*
+                  - appsync:*
+                  - cloudfront:*
+                  - events:*
+                  - apigateway:*
+                Resource: "*"
+                Condition:
+                  StringEqualsIfExists:
+                    iam:PassedToService:
+                      - cloudformation.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                  - iam:CreateRole
+                  - iam:CreatePolicy
+                  - iam:DetachRolePolicy
+                  - iam:GetRole
+                  - iam:CreateTags
+                  - iam:DeleteRole
+                  - iam:AttachRolePolicy
+                  - iam:GetPolicy
+                Resource: "*"
+                Condition:
+                  StringEqualsIfExists:
+                    iam:PassedToService:
+                      - cloudformation.amazonaws.com
+                      - iam.amazonaws.com
+                      - lambda.amazonaws.com
+                      - appsync.amazonaws.com
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub ${ProjectName}-${GitBranchName}-pipeline
+      RoleArn: !GetAtt CodePipelineExecutionRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref InfrastructureBucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceCodeRepo
+              Namespace: SourceCodeRepo
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: 1
+                Provider: CodeStarSourceConnection
+              OutputArtifacts:
+                - Name: SourceAsZip
+              Configuration:
+                BranchName: !Ref GitBranchName
+                ConnectionArn: !Ref CodeStarConnection
+                FullRepositoryId: !Ref FullRepositoryId
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: SourceAsZip
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+                EnvironmentVariables:
+                  !Join [
+                    "",
+                    [
+                      '[',
+                      '{"name":"GIT_BRANCH","value":"#{SourceCodeRepo.BranchName}","type":"PLAINTEXT"}',
+                      ',',
+                      '{"name":"INFRA_BUCKET_NAME","value":"',
+                      !Ref InfrastructureBucket,
+                      '","type":"PLAINTEXT"}',
+                      ']',
+                    ],
+                  ]
+
+                
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${ProjectName}-${GitBranchName}
+      ServiceRole: !GetAtt CodeBuildExecutionRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: infrastructure/buildspec.yaml
+
+Outputs:
+  InfrastructureBucketName:
+    Value: !Ref InfrastructureBucket
+    Export:
+      Name: WebAppInfrastructureBucketName
+  InfrastructureBucketArn:
+    Value: !GetAtt InfrastructureBucket.Arn
+    Export:
+      Name: WebAppInfrastructureBucketArn
