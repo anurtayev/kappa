@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": ". scripts/env.sh && aws --debug s3 sync s3://$HOSTING_BUCKET build"
+    "deploy": ". scripts/env.sh && aws s3 sync build s3://$HOSTING_BUCKET/kappa"
   },
   "eslintConfig": {
     "extends": "react-app"
