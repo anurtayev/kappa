@@ -1,4 +1,4 @@
-Description: Aspan backend pipeline (epsilon)
+Description: Aspan frontend pipeline (kappa)
 
 Parameters:
   ProjectName:
@@ -27,6 +27,11 @@ Resources:
           - Id: DeleteOldObjects
             Status: Enabled
             ExpirationInDays: 30
+          - Id: IntelligentTieringRule
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 1
+                StorageClass: INTELLIGENT_TIERING
 
   InfrastructureBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -67,20 +72,10 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: iam:PassRole
-                Resource: "*"
-                Condition:
-                  StringEqualsIfExists:
-                    iam:PassedToService:
-                      - cloudformation.amazonaws.com
-              - Effect: Allow
                 Action:
                   - cloudwatch:*
                   - s3:*
-                  - cloudformation:*
-                  - ssm:GetParameters
                   - iam:GetRole
-                  - lambda:*
                   - codestar-connections:UseConnection
                 Resource: "*"
               - Effect: "Allow"
@@ -123,46 +118,17 @@ Resources:
                 Resource: "*"
               - Effect: Allow
                 Action:
-                  - cloudformation:*
-                  - lambda:*
-                Resource: "*"
-              - Effect: Allow
-                Action:
                   - s3:GetObject
                   - s3:PutObject
                 Resource: !Sub ${InfrastructureBucket.Arn}/*
               - Effect: Allow
                 Action:
-                  - dynamodb:*
                   - s3:*
-                  - appsync:*
-                  - cloudfront:*
-                  - events:*
-                  - apigateway:*
                 Resource: "*"
                 Condition:
                   StringEqualsIfExists:
                     iam:PassedToService:
                       - cloudformation.amazonaws.com
-              - Effect: Allow
-                Action:
-                  - iam:PassRole
-                  - iam:CreateRole
-                  - iam:CreatePolicy
-                  - iam:DetachRolePolicy
-                  - iam:GetRole
-                  - iam:CreateTags
-                  - iam:DeleteRole
-                  - iam:AttachRolePolicy
-                  - iam:GetPolicy
-                Resource: "*"
-                Condition:
-                  StringEqualsIfExists:
-                    iam:PassedToService:
-                      - cloudformation.amazonaws.com
-                      - iam.amazonaws.com
-                      - lambda.amazonaws.com
-                      - appsync.amazonaws.com
 
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -206,16 +172,12 @@ Resources:
                     "",
                     [
                       '[',
-                      '{"name":"GIT_BRANCH","value":"#{SourceCodeRepo.BranchName}","type":"PLAINTEXT"}',
-                      ',',
-                      '{"name":"INFRA_BUCKET_NAME","value":"',
-                      !Ref InfrastructureBucket,
+                      '{"name":"HOSTING_BUCKET","value":"',
+                      !ImportValue WebsiteHostingBucketName,
                       '","type":"PLAINTEXT"}',
                       ']',
                     ],
                   ]
-
-                
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -231,13 +193,3 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: infrastructure/buildspec.yaml
-
-Outputs:
-  InfrastructureBucketName:
-    Value: !Ref InfrastructureBucket
-    Export:
-      Name: WebAppInfrastructureBucketName
-  InfrastructureBucketArn:
-    Value: !GetAtt InfrastructureBucket.Arn
-    Export:
-      Name: WebAppInfrastructureBucketArn
