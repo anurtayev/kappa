@@ -8,5 +8,4 @@ phases:
   build:
     commands:
       - npm run build
-      - printenv | sort
       - npm run deploy

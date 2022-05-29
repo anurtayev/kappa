@@ -38,7 +38,7 @@ export const SearchContainer = () => {
     searchInputDefaultValue
   );
 
-  const { data, loading, error } = useSearchQuery({
+  const { data, loading } = useSearchQuery({
     variables: {
       searchInput,
       pageSize,
