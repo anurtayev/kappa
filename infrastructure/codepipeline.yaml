@@ -129,6 +129,10 @@ Resources:
                   StringEqualsIfExists:
                     iam:PassedToService:
                       - cloudformation.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: "*"
 
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
