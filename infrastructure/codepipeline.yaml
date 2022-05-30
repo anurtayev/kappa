@@ -193,7 +193,7 @@ Resources:
     Type: AWS::CodeStarNotifications::NotificationRule
     Properties:
       Name: !Sub ${AWS::StackName}-notify
-      DetailType: FULL
+      DetailType: BASIC
       Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${ProjectName}-${GitBranchName}-pipeline
       EventTypeIds: 
         - codepipeline-pipeline-pipeline-execution-failed
@@ -208,19 +208,37 @@ Resources:
   NotificationTopicPolicy:
     Type: AWS::SNS::TopicPolicy
     Properties: 
+      Topics: 
+        - !Ref NotificationTopic
       PolicyDocument:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
+            Principal:
+              AWS: "*"
             Action:
-              - sns:Publish
+              - SNS:GetTopicAttributes
+              - SNS:SetTopicAttributes
+              - SNS:AddPermission
+              - SNS:RemovePermission
+              - SNS:DeleteTopic
+              - SNS:Subscribe
+              - SNS:ListSubscriptionsByTopic
+              - SNS:Publish
+              - SNS:Receive
             Resource: !Ref NotificationTopic
-            Principal: "*"
             Condition:
               StringEquals:
-                aws:PrincipalOrgID: o-kvc3hucixa
-      Topics: 
-        - !Ref NotificationTopic
+                aws:SourceOwner: !Sub ${AWS::AccountId}
+          - Effect: Allow
+            Sid: AWSCodeStarNotifications_publish
+            Principal:
+              Service: codestar-notifications.amazonaws.com
+            Action: SNS:Publish
+            Resource: !Ref NotificationTopic
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Sub ${AWS::AccountId}
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
