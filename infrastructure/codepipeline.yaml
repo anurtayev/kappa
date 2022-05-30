@@ -189,6 +189,39 @@ Resources:
                     ],
                   ]
 
+  CodeStarNotification:
+    Type: AWS::CodeStarNotifications::NotificationRule
+    Properties:
+      Name: !Sub ${AWS::StackName}-notify
+      DetailType: FULL
+      Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${ProjectName}-${GitBranchName}-pipeline
+      EventTypeIds: 
+        - codepipeline-pipeline-pipeline-execution-failed
+        - codepipeline-pipeline-pipeline-execution-succeeded
+      Targets: 
+        - TargetType: SNS 
+          TargetAddress: !Ref NotificationTopic
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties: 
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - sns:Publish
+            Resource: !Ref NotificationTopic
+            Principal: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalOrgID: o-kvc3hucixa
+      Topics: 
+        - !Ref NotificationTopic
+
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
