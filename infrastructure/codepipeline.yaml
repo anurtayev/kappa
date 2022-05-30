@@ -176,6 +176,8 @@ Resources:
                     "",
                     [
                       '[',
+                      '{"name":"GIT_BRANCH","value":"#{SourceCodeRepo.BranchName}","type":"PLAINTEXT"}',
+                      ',',
                       '{"name":"HOSTING_BUCKET","value":"',
                       !ImportValue WebsiteHostingBucketName,
                       '","type":"PLAINTEXT"}',
