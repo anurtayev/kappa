@@ -25,7 +25,7 @@ export const App = () => {
       <ApolloProvider
         client={
           new ApolloClient<NormalizedCacheObject>({
-            uri: "/graphql",
+            uri: process.env.REACT_APP_CLOUDFRONT_URL + "/graphql",
             cache,
             connectToDevTools: true,
           })
