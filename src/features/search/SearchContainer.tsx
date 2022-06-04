@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInputForm } from "./SearchInputForm";
+import { slides } from "cache";
 
 export const SearchContainer = () => {
   const [searchParams] = useSearchParams();
@@ -60,6 +61,8 @@ export const SearchContainer = () => {
     `/${appRoutes.search}?${PARAM_SEARCH_INPUT}=${locationKey}&${PARAM_NEXT_TOKEN}=${newNextToken}&${PARAM_PAGE_SIZE}=${pageSize}`;
   newNextToken &&
     sessionStorage.setItem(locationKey, JSON.stringify(searchInput));
+  const files = data?.search?.files;
+  slides(files);
 
   const navs: Array<NavItem> = [
     {
