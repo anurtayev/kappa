@@ -47,11 +47,13 @@ export const BrowseContainer = () => {
 
   setNavs([
     <Button
+      key={"1"}
       shape="circle"
       icon={<HomeOutlined />}
       onClick={() => saveScrollTopAndNavigate("/")}
     />,
     <Button
+      key={"2"}
       shape="circle"
       icon={<RollbackOutlined />}
       onClick={() => saveScrollTopAndNavigate(-1)}
@@ -59,6 +61,7 @@ export const BrowseContainer = () => {
     ...(nextPageUrl
       ? [
           <Button
+            key={"3"}
             shape="circle"
             icon={<FastForwardOutlined />}
             onClick={() => saveScrollTopAndNavigate(nextPageUrl)}
@@ -66,6 +69,7 @@ export const BrowseContainer = () => {
         ]
       : []),
     <Button
+      key={"4"}
       shape="circle"
       icon={<SearchOutlined />}
       onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
