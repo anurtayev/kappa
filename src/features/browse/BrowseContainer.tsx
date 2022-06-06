@@ -1,16 +1,18 @@
+import {
+  FastForwardOutlined,
+  HomeOutlined,
+  RollbackOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { Button } from "antd";
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
-import { Nav } from "features/nav";
-import {
-  appRoutes,
-  Characters,
-  NavItem,
-  useScrollRef,
-  useSlidesQuery,
-} from "lib";
+import { appRoutes, LayoutContext, useScrollRef, useSlidesQuery } from "lib";
+import { useContext } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
+  const { setNavs } = useContext(LayoutContext);
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 
@@ -43,41 +45,41 @@ export const BrowseContainer = () => {
   const files = data?.listFolder?.files;
   slides(files);
 
-  const navs: Array<NavItem> = [
-    {
-      title: "Home",
-      navFn: () => saveScrollTopAndNavigate("/"),
-      icon: Characters.home,
-    },
-    {
-      title: "Back",
-      navFn: () => saveScrollTopAndNavigate(-1),
-      icon: Characters.arrowLeft,
-    },
-  ];
-  nextPageUrl &&
-    navs.push({
-      title: "Next",
-      navFn: () => saveScrollTopAndNavigate(nextPageUrl),
-      icon: Characters.arrowRight,
-    });
-  navs.push({
-    title: "Search",
-    navFn: () => saveScrollTopAndNavigate(`/${appRoutes.search}`),
-    icon: Characters.magnifyingGlass,
-  });
+  setNavs([
+    <Button
+      shape="circle"
+      icon={<HomeOutlined />}
+      onClick={() => saveScrollTopAndNavigate("/")}
+    />,
+    <Button
+      shape="circle"
+      icon={<RollbackOutlined />}
+      onClick={() => saveScrollTopAndNavigate(-1)}
+    />,
+    ...(nextPageUrl
+      ? [
+          <Button
+            shape="circle"
+            icon={<FastForwardOutlined />}
+            onClick={() => saveScrollTopAndNavigate(nextPageUrl)}
+          />,
+        ]
+      : []),
+    <Button
+      shape="circle"
+      icon={<SearchOutlined />}
+      onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
+    />,
+  ]);
 
   return (
-    <>
-      <Nav navs={navs}></Nav>
-      <EntriesView
-        folders={data?.listFolder?.folders}
-        files={files}
-        nextPageUrl={nextPageUrl}
-        scrollTop={data?.listFolder?.scrollTop}
-        divRef={divRef}
-        saveScrollTopAndNavigate={saveScrollTopAndNavigate}
-      />
-    </>
+    <EntriesView
+      folders={data?.listFolder?.folders}
+      files={files}
+      nextPageUrl={nextPageUrl}
+      scrollTop={data?.listFolder?.scrollTop}
+      divRef={divRef}
+      saveScrollTopAndNavigate={saveScrollTopAndNavigate}
+    />
   );
 };
