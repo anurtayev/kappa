@@ -1,4 +1,11 @@
+import {
+  HomeOutlined,
+  RollbackOutlined,
+  StepBackwardOutlined,
+  StepForwardOutlined,
+} from "@ant-design/icons";
 import { useApolloClient } from "@apollo/client";
+import { Button } from "antd";
 import {
   Characters,
   GetSlideIdDocument,
@@ -7,7 +14,7 @@ import {
   LayoutContext,
   NavItem,
 } from "lib";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { URLSearchParams } from "url";
 import { SlideNavFn, SlideScreen } from "./SlideScreen";
@@ -38,45 +45,49 @@ export const SlidesContainer = () => {
     },
   });
 
-  if (!getSlideIdQueryResult) return <div>what the fuck?</div>;
+  const slideId = getSlideIdQueryResult?.slideId;
+  const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { slideId, numberOfSlides } = getSlideIdQueryResult;
+  useEffect(() => {
+    setNavs([
+      <Button
+        key={"1"}
+        shape="circle"
+        icon={<HomeOutlined />}
+        onClick={() => navigate("/")}
+      />,
+      <Button
+        key={"2"}
+        shape="circle"
+        icon={<RollbackOutlined />}
+        onClick={() => navigate(-1)}
+      />,
+      ...(index > 0
+        ? [
+            <Button
+              key={"3"}
+              shape="circle"
+              icon={<StepBackwardOutlined />}
+              onClick={() => setIndex(index - 1)}
+            />,
+          ]
+        : []),
+      ...(numberOfSlides && index < numberOfSlides - 1
+        ? [
+            <Button
+              key={"4"}
+              shape="circle"
+              icon={<StepForwardOutlined />}
+              onClick={() => setIndex(index + 1)}
+            />,
+          ]
+        : []),
+    ]);
+  }, [index]);
 
-  if (!slideId || !numberOfSlides) return <div>what the fuck 2?</div>;
+  if (!slideId) throw Error("Slides: no id");
 
-  const navs: Array<NavItem> = [
-    {
-      title: "Home",
-      navFn: () => navigate("/"),
-      icon: Characters.home,
-    },
-    {
-      title: "Back",
-      navFn: () => navigate(-1),
-      icon: Characters.arrowLeft,
-    },
-  ];
+  console.log("==> ", slideId, index);
 
-  const onClickNext: SlideNavFn =
-    index < numberOfSlides - 1
-      ? () => {
-          setIndex(index + 1);
-        }
-      : undefined;
-
-  const onClickPrev: SlideNavFn =
-    index > 0
-      ? () => {
-          setIndex(index - 1);
-        }
-      : undefined;
-
-  return (
-    <SlideScreen
-      id={slideId}
-      navs={navs}
-      onClickNext={onClickNext}
-      onClickPrev={onClickPrev}
-    />
-  );
+  return <SlideScreen id={slideId} />;
 };

@@ -23,26 +23,3 @@ export const Image = styled.img`
   width: auto;
   display: block;
 `;
-
-const SlideButton = styled.div`
-  position: absolute;
-  width: 5rem;
-  height: 5rem;
-  border: 1px solid;
-  border-radius: 2.5rem;
-  top: 50%;
-  font-size: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: aqua;
-  cursor: default;
-`;
-
-export const LeftSlideButton = styled(SlideButton)`
-  left: 5%;
-`;
-
-export const RightSlideButton = styled(SlideButton)`
-  right: 5%;
-`;
