@@ -8,7 +8,7 @@ import { Button } from "antd";
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
 import { appRoutes, LayoutContext, useScrollRef, useSlidesQuery } from "lib";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
@@ -35,9 +35,6 @@ export const BrowseContainer = () => {
     data?.listFolder?.scrollTop
   );
 
-  if (loading) return <p>Loading</p>;
-  if (error) throw error;
-
   const newNextToken = data?.listFolder?.nextToken;
   const nextPageUrl =
     newNextToken &&
@@ -45,36 +42,41 @@ export const BrowseContainer = () => {
   const files = data?.listFolder?.files;
   slides(files);
 
-  setNavs([
-    <Button
-      key={"1"}
-      shape="circle"
-      icon={<HomeOutlined />}
-      onClick={() => saveScrollTopAndNavigate("/")}
-    />,
-    <Button
-      key={"2"}
-      shape="circle"
-      icon={<RollbackOutlined />}
-      onClick={() => saveScrollTopAndNavigate(-1)}
-    />,
-    ...(nextPageUrl
-      ? [
-          <Button
-            key={"3"}
-            shape="circle"
-            icon={<FastForwardOutlined />}
-            onClick={() => saveScrollTopAndNavigate(nextPageUrl)}
-          />,
-        ]
-      : []),
-    <Button
-      key={"4"}
-      shape="circle"
-      icon={<SearchOutlined />}
-      onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
-    />,
-  ]);
+  useEffect(() => {
+    setNavs([
+      <Button
+        key={"1"}
+        shape="circle"
+        icon={<HomeOutlined />}
+        onClick={() => saveScrollTopAndNavigate("/")}
+      />,
+      <Button
+        key={"2"}
+        shape="circle"
+        icon={<RollbackOutlined />}
+        onClick={() => saveScrollTopAndNavigate(-1)}
+      />,
+      ...(nextPageUrl
+        ? [
+            <Button
+              key={"3"}
+              shape="circle"
+              icon={<FastForwardOutlined />}
+              onClick={() => saveScrollTopAndNavigate(nextPageUrl)}
+            />,
+          ]
+        : []),
+      <Button
+        key={"4"}
+        shape="circle"
+        icon={<SearchOutlined />}
+        onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
+      />,
+    ]);
+  }, []);
+
+  if (loading) return <p>Loading</p>;
+  if (error) throw error;
 
   return (
     <EntriesView
