@@ -10,6 +10,7 @@ import { EntriesView } from "features/entries";
 import { appRoutes, LayoutContext, useScrollRef, useSlidesQuery } from "lib";
 import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { Loading } from "features/loading";
 
 export const BrowseContainer = () => {
   const { setNavs } = useContext(LayoutContext);
@@ -73,9 +74,9 @@ export const BrowseContainer = () => {
         onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
       />,
     ]);
-  }, []);
+  }, [nextPageUrl, saveScrollTopAndNavigate, setNavs]);
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loading />;
   if (error) throw error;
 
   return (

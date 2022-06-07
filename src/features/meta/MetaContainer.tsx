@@ -7,6 +7,7 @@ import {
 } from "lib";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MetaDataInputForm } from "./MetaDataInputForm";
+import { Loading } from "features/loading";
 
 export const MetaContainer = () => {
   const client = useApolloClient();
@@ -35,7 +36,7 @@ export const MetaContainer = () => {
 
   const [updateMetaDataMutation] = useUpdateMetaDataMutation();
 
-  if (loading) return <div>Loading available metadata...</div>;
+  if (loading) return <Loading />;
   if (error) throw error;
 
   const availableAttributes = data?.attributes;

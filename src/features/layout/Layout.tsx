@@ -15,7 +15,7 @@ export const Layout = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [navs, setNavs] = useState<Array<ReactElement>>([]);
-  const title = id === null ? "no name" : getMediaName(id);
+  const title = id === null ? "" : getMediaName(id);
   const [ctx] = useState<LayoutContextType>({ setNavs });
 
   useEffect(() => {

@@ -1,15 +1,16 @@
 import { useApolloClient } from "@apollo/client";
 import {
   Characters,
-  NavItem,
   GetSlideIdDocument,
-  GetSlideIdQueryVariables,
   GetSlideIdQuery,
+  GetSlideIdQueryVariables,
+  LayoutContext,
+  NavItem,
 } from "lib";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { URLSearchParams } from "url";
-import { SlideScreen, SlideNavFn } from "./SlideScreen";
+import { SlideNavFn, SlideScreen } from "./SlideScreen";
 
 const getIndexFromParams = (params: URLSearchParams): number => {
   try {
@@ -21,6 +22,7 @@ const getIndexFromParams = (params: URLSearchParams): number => {
 export type SlidesContainerParams = {};
 
 export const SlidesContainer = () => {
+  const { setNavs } = useContext(LayoutContext);
   const client = useApolloClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

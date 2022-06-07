@@ -1,4 +1,5 @@
 import { Attributes } from "features/attributes";
+import { Loading } from "features/loading";
 import { ElemBox, ExistingItemsContainer } from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
@@ -81,7 +82,7 @@ export const SearchInputForm = ({
     fetchPolicy: "cache-and-network",
   });
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
 
   const availableTags = data?.tags;

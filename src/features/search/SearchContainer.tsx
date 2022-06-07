@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInputForm } from "./SearchInputForm";
 import { slides } from "cache";
+import { Loading } from "features/loading";
 
 export const SearchContainer = () => {
   const [searchParams] = useSearchParams();
@@ -52,7 +53,7 @@ export const SearchContainer = () => {
     data?.search?.scrollTop
   );
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loading />;
   // if (error) return <p>{error.message}</p>;
 
   const newNextToken = data?.search?.nextToken;
