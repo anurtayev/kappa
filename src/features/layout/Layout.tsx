@@ -13,10 +13,14 @@ export const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
   const [navs, setNavs] = useState<Array<ReactElement>>([]);
-  const title = id === null ? "" : getMediaName(id);
-  const [ctx] = useState<LayoutContextType>({ setNavs });
+  const [title, setTitle] = useState<string>();
+  const [ctx] = useState<LayoutContextType>({ setNavs, setTitle });
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    id && setTitle(getMediaName(id));
+  }, [searchParams]);
 
   useEffect(() => {
     location.pathname === "/" && navigate(appRoutes.browse);

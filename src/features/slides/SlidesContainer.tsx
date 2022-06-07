@@ -7,17 +7,16 @@ import {
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
 import {
-  Characters,
   GetSlideIdDocument,
   GetSlideIdQuery,
   GetSlideIdQueryVariables,
   LayoutContext,
-  NavItem,
 } from "lib";
+import { getMediaName } from "lib/util";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { URLSearchParams } from "url";
-import { SlideNavFn, SlideScreen } from "./SlideScreen";
+import { SlideScreen } from "./SlideScreen";
 
 const getIndexFromParams = (params: URLSearchParams): number => {
   try {
@@ -29,7 +28,7 @@ const getIndexFromParams = (params: URLSearchParams): number => {
 export type SlidesContainerParams = {};
 
 export const SlidesContainer = () => {
-  const { setNavs } = useContext(LayoutContext);
+  const { setNavs, setTitle } = useContext(LayoutContext);
   const client = useApolloClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -47,6 +46,10 @@ export const SlidesContainer = () => {
 
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
+
+  useEffect(() => {
+    slideId && setTitle(getMediaName(slideId));
+  }, [slideId]);
 
   useEffect(() => {
     setNavs([

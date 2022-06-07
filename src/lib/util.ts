@@ -65,8 +65,12 @@ export const PARAM_SEARCH_INPUT = "searchinput";
 export const PARAM_PAGE_SIZE = "pagesize";
 export const PARAM_NEXT_TOKEN = "nexttoken";
 
-export type LayoutContextType = { setNavs: Dispatch<Array<ReactElement>> };
+export type LayoutContextType = {
+  setNavs: Dispatch<Array<ReactElement>>;
+  setTitle: Dispatch<string>;
+};
 
 export const LayoutContext = createContext<LayoutContextType>({
   setNavs: () => {},
+  setTitle: () => {},
 });
