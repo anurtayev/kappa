@@ -7,13 +7,19 @@ import {
 import { Button } from "antd";
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
-import { appRoutes, LayoutContext, useScrollRef, useSlidesQuery } from "lib";
+import { Loading } from "features/loading";
+import {
+  appRoutes,
+  getMediaName,
+  LayoutContext,
+  useScrollRef,
+  useSlidesQuery,
+} from "lib";
 import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { Loading } from "features/loading";
 
 export const BrowseContainer = () => {
-  const { setNavs } = useContext(LayoutContext);
+  const { setNavs, setTitle } = useContext(LayoutContext);
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 
@@ -22,6 +28,10 @@ export const BrowseContainer = () => {
     searchParams.get("pagesize") || process.env.REACT_APP_PAGE_SIZE || "20"
   );
   const nextToken = searchParams.get("nexttoken");
+
+  useEffect(() => {
+    setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
+  }, [id]);
 
   const { data, loading, error } = useSlidesQuery({
     variables: {
