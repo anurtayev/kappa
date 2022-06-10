@@ -5,7 +5,7 @@ export const AuthContainer = () => {
   const { setTitle } = useContext(LayoutContext);
 
   useEffect(() => {
-    setTitle("Enter username/password");
+    setTitle("Sign In");
   });
 
   return <SignInForm />;

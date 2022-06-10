@@ -6,8 +6,10 @@ import { Button, Space } from "antd";
 export const FlexForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   padding-left: 1em;
+  height: 100%;
 `;
 
 const validationSchema = object({
