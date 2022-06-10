@@ -16,6 +16,7 @@ export enum appRoutes {
   image = "image",
   meta = "meta",
   slides = "slides",
+  auth = "auth",
 }
 
 export enum systemAttributes {

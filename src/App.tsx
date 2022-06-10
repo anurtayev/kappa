@@ -1,23 +1,20 @@
-import { StrictMode } from "react";
-import { Routes, Route } from "react-router-dom";
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client";
-import { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router } from "react-router-dom";
-
-import { BrowseContainer } from "features/browse";
-import { ImageScreen } from "features/image";
-import { SearchContainer } from "features/search";
-import { MetaContainer } from "features/meta";
-import { SlidesContainer } from "features/slides";
-import { ErrorBoundary } from "features/errorBoundary";
-import { Layout } from "./features/layout";
-import { appRoutes } from "lib";
-import { defaultTheme } from "lib";
 import { cache } from "cache";
+import { AuthContainer } from "features/auth";
+import { ErrorBoundary } from "features/errorBoundary";
+import { ImageScreen } from "features/image";
+import { Layout } from "features/layout";
+import { MetaContainer } from "features/meta";
+import { SearchContainer } from "features/search";
+import { SlidesContainer } from "features/slides";
+import { appRoutes, defaultTheme } from "lib";
+import { StrictMode } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 
 export const App = () => {
   return (
@@ -36,10 +33,7 @@ export const App = () => {
             <Router>
               <Routes>
                 <Route path="/" element={<Layout />}>
-                  <Route
-                    path={appRoutes.browse}
-                    element={<BrowseContainer />}
-                  />
+                  <Route path={appRoutes.auth} element={<AuthContainer />} />
                   <Route
                     path={appRoutes.search}
                     element={<SearchContainer />}

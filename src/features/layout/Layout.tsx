@@ -12,7 +12,7 @@ export const Layout = () => {
   const [ctx] = useState<LayoutContextType>({ setNavs, setTitle });
 
   useEffect(() => {
-    location.pathname === "/" && navigate(appRoutes.browse);
+    location.pathname === "/" && navigate(appRoutes.auth);
   }, [location, navigate]);
 
   return (
