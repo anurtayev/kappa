@@ -1,7 +1,16 @@
-import { Field, FieldArray, Formik, Form } from "formik";
-import { array, mixed, object, string, ValidationError } from "yup";
-import styled from "styled-components";
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
+import AWS, {
+  CognitoIdentityCredentials,
+  CognitoIdentityServiceProvider,
+} from "aws-sdk";
+import { Field, Form, Formik } from "formik";
+import styled from "styled-components";
+import { object, string } from "yup";
 
 export const FlexForm = styled(Form)`
   display: flex;
@@ -22,14 +31,83 @@ type SignInFormType = {
   password: string;
 };
 
+const AWS_REGION = "us-east-1";
+
+AWS.config.update({
+  region: AWS_REGION,
+  credentials: new CognitoIdentityCredentials({
+    IdentityPoolId: process.env.REACT_COGNITO_POOL_ID || "",
+  }),
+});
+
+const cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
+
+const userPool = new CognitoUserPool({
+  UserPoolId: process.env.REACT_COGNITO_POOL_ID || "",
+  ClientId: process.env.REACT_COGNITO_CLIENT_ID || "",
+});
+
 export const SignInForm = () => {
   return (
     <Formik<SignInFormType>
       initialValues={{
-        username: "",
-        password: "",
+        username: "email",
+        password: "pwd",
       }}
-      onSubmit={({ username, password }, { setSubmitting }) => {
+      onSubmit={async ({ username, password }, { setSubmitting }) => {
+        console.log("==> ", username, password);
+
+        const cognitoUser = new CognitoUser({
+          Username: username,
+          Pool: userPool,
+        });
+
+        cognitoUser.authenticateUser(
+          new AuthenticationDetails({ Username: username, Password: password }),
+          {
+            onFailure(err) {
+              console.log("==> onFailure", err);
+            },
+            onSuccess(result) {
+              console.log("==> onSuccess", result);
+            },
+            customChallenge(challengeParameters) {
+              console.log("==> customChallenge", challengeParameters);
+            },
+            mfaRequired(challengeName, challengeParameters) {
+              console.log(
+                "==> mfaRequired",
+                challengeName,
+                challengeParameters
+              );
+            },
+            newPasswordRequired(userAttributes, requiredAttributes) {
+              console.log(
+                "==> newPasswordRequired",
+                userAttributes,
+                requiredAttributes
+              );
+            },
+            mfaSetup(challengeName, challengeParameters) {
+              console.log("==> mfaSetup", challengeName, challengeParameters);
+            },
+            selectMFAType(challengeName, challengeParameters) {
+              console.log(
+                "==> selectMFAType",
+                challengeName,
+                challengeParameters
+              );
+            },
+            totpRequired(challengeName, challengeParameters) {
+              console.log(
+                "==> totpRequired",
+                challengeName,
+                challengeParameters
+              );
+            },
+          }
+        );
+
         setSubmitting(false);
       }}
       validationSchema={validationSchema}
@@ -39,7 +117,7 @@ export const SignInForm = () => {
           <FlexForm>
             <Space
               direction="vertical"
-              size="middle"
+              size="large"
               style={{ textAlign: "right" }}
             >
               <Space direction="vertical" size="middle">
@@ -53,7 +131,7 @@ export const SignInForm = () => {
                   <div style={{ width: "6rem", textAlign: "right" }}>
                     Password
                   </div>
-                  <Field name="password" />
+                  <Field name="password" type="password" />
                 </Space>
               </Space>
               <Button

@@ -49,7 +49,7 @@ export const SlidesContainer = () => {
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
-  }, [slideId]);
+  }, [slideId, setTitle]);
 
   useEffect(() => {
     setNavs([
@@ -86,7 +86,7 @@ export const SlidesContainer = () => {
           ]
         : []),
     ]);
-  }, [index]);
+  }, [index, navigate, numberOfSlides, setNavs, setIndex]);
 
   if (!slideId) throw Error("Slides: no id");
 
