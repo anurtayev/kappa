@@ -4,10 +4,7 @@ import {
   CognitoUserPool,
 } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
-import AWS, {
-  CognitoIdentityCredentials,
-  CognitoIdentityServiceProvider,
-} from "aws-sdk";
+import AWS, { CognitoIdentityCredentials } from "aws-sdk";
 import { Field, Form, Formik } from "formik";
 import styled from "styled-components";
 import { object, string } from "yup";
@@ -35,16 +32,17 @@ const AWS_REGION = "us-east-1";
 
 AWS.config.update({
   region: AWS_REGION,
-  credentials: new CognitoIdentityCredentials({
-    IdentityPoolId: process.env.REACT_COGNITO_POOL_ID || "",
-  }),
 });
 
-const cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
+console.log(
+  "==> ",
+  process.env.REACT_APP_COGNITO_POOL_ID,
+  process.env.REACT_APP_COGNITO_CLIENT_ID
+);
 
 const userPool = new CognitoUserPool({
-  UserPoolId: process.env.REACT_COGNITO_POOL_ID || "",
-  ClientId: process.env.REACT_COGNITO_CLIENT_ID || "",
+  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID || "",
+  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
 });
 
 export const SignInForm = () => {
