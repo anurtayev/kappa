@@ -4,7 +4,7 @@ import {
   CognitoUserPool,
 } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
-import AWS, { CognitoIdentityCredentials } from "aws-sdk";
+import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
 import styled from "styled-components";
 import { object, string } from "yup";
@@ -66,8 +66,8 @@ export const SignInForm = () => {
             onFailure(err) {
               console.log("==> onFailure", err);
             },
-            onSuccess(result) {
-              console.log("==> onSuccess", result);
+            onSuccess(session, userConfirmationNecessary) {
+              console.log("==> onSuccess", session, userConfirmationNecessary);
             },
             customChallenge(challengeParameters) {
               console.log("==> customChallenge", challengeParameters);
@@ -84,6 +84,19 @@ export const SignInForm = () => {
                 "==> newPasswordRequired",
                 userAttributes,
                 requiredAttributes
+              );
+
+              cognitoUser.completeNewPasswordChallenge(
+                "Newpassword1943#",
+                requiredAttributes,
+                {
+                  onFailure(err) {
+                    console.log("==> pooja onFailure", err);
+                  },
+                  onSuccess(result) {
+                    console.log("==> pooja!!", result);
+                  },
+                }
               );
             },
             mfaSetup(challengeName, challengeParameters) {
