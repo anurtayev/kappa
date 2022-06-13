@@ -1,5 +1,5 @@
 import { InMemoryCache, makeVar } from "@apollo/client";
-import { Maybe, MetaData } from "lib";
+import { Maybe, MetaData, UserProfile } from "lib";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
@@ -31,9 +31,15 @@ export const cache: InMemoryCache = new InMemoryCache({
             return slidesArray?.length;
           },
         },
+        userProfile: {
+          read() {
+            return userProfile();
+          },
+        },
       },
     },
   },
 });
 
 export const slides = makeVar<Maybe<Array<MetaData>> | undefined>(undefined);
+export const userProfile = makeVar<UserProfile | undefined>(undefined);

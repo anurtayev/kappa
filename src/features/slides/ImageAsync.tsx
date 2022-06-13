@@ -55,8 +55,6 @@ export const ImageAsync = ({ id }: ImageAsyncParams) => {
         .catch((err) => console.error(err));
   }, [id, isMeasured, measures.width, measures.height]);
 
-  console.log("==> ren");
-
   return (
     <ImagePane ref={frameRef}>
       {isMeasured &&

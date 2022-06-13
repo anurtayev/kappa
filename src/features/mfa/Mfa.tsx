@@ -8,8 +8,6 @@ import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
 import styled from "styled-components";
 import { object, string } from "yup";
-import { NavigateFunction } from "react-router-dom";
-import { appRoutes } from "lib";
 
 export const FlexForm = styled(Form)`
   display: flex;
@@ -41,11 +39,7 @@ const userPool = new CognitoUserPool({
   ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
 });
 
-export type SignInFormParams = {
-  navigate: NavigateFunction;
-};
-
-export const SignInForm = ({ navigate }: SignInFormParams) => {
+export const Mfa = () => {
   return (
     <Formik<SignInFormType>
       initialValues={{
@@ -53,6 +47,8 @@ export const SignInForm = ({ navigate }: SignInFormParams) => {
         password: "pwd",
       }}
       onSubmit={async ({ username, password }, { setSubmitting }) => {
+        console.log("==> ", username, password);
+
         const cognitoUser = new CognitoUser({
           Username: username,
           Pool: userPool,
@@ -71,9 +67,11 @@ export const SignInForm = ({ navigate }: SignInFormParams) => {
               console.log("==> customChallenge", challengeParameters);
             },
             mfaRequired(challengeName, challengeParameters) {
-              // SMS_MFA
-              // {CODE_DELIVERY_DELIVERY_MEDIUM: 'SMS', CODE_DELIVERY_DESTINATION: '+*******8884'}
-              navigate(appRoutes.authMfa);
+              console.log(
+                "==> mfaRequired",
+                challengeName,
+                challengeParameters
+              );
             },
             newPasswordRequired(userAttributes, requiredAttributes) {
               console.log(

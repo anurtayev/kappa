@@ -5,11 +5,13 @@ import {
 } from "@apollo/client";
 import { cache } from "cache";
 import { AuthContainer } from "features/auth";
+import { BrowseContainer } from "features/browse";
 import { ErrorBoundary } from "features/errorBoundary";
 import { ImageScreen } from "features/image";
 import { Layout } from "features/layout";
 import { MetaContainer } from "features/meta";
 import { SearchContainer } from "features/search";
+import { MfaContainer } from "features/mfa";
 import { SlidesContainer } from "features/slides";
 import { appRoutes, defaultTheme } from "lib";
 import { StrictMode } from "react";
@@ -34,6 +36,11 @@ export const App = () => {
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path={appRoutes.auth} element={<AuthContainer />} />
+                  <Route path={appRoutes.authMfa} element={<MfaContainer />} />
+                  <Route
+                    path={appRoutes.browse}
+                    element={<BrowseContainer />}
+                  />
                   <Route
                     path={appRoutes.search}
                     element={<SearchContainer />}

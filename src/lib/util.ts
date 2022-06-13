@@ -17,6 +17,8 @@ export enum appRoutes {
   meta = "meta",
   slides = "slides",
   auth = "auth",
+  authMfa = "auth/mfa",
+  authNewPwd = "auth/new_pwd",
 }
 
 export enum systemAttributes {
@@ -75,3 +77,7 @@ export const LayoutContext = createContext<LayoutContextType>({
   setNavs: () => {},
   setTitle: () => {},
 });
+
+export type UserProfile = {
+  email: string;
+};

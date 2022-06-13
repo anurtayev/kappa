@@ -5,4 +5,9 @@ type FolderConnection {
 type Query {
   slideId(index: Int!): String
   numberOfSlides: Int
+  userProfile: UserProfile
+}
+
+type UserProfile {
+  email: String!
 }
