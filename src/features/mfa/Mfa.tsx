@@ -25,12 +25,6 @@ type MfaFormType = {
   confirmationCode: string;
 };
 
-const AWS_REGION = "us-east-1";
-
-AWS.config.update({
-  region: AWS_REGION,
-});
-
 type MfaType = {
   cognitoUser: CognitoUser | undefined;
   navigate: NavigateFunction;

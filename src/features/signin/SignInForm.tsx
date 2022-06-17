@@ -27,12 +27,6 @@ type SignInFormType = {
   password: string;
 };
 
-const AWS_REGION = "us-east-1";
-
-AWS.config.update({
-  region: AWS_REGION,
-});
-
 export type SignInFormParams = {
   navigate: NavigateFunction;
   setCognitoUser: Dispatch<React.SetStateAction<CognitoUser | undefined>>;
