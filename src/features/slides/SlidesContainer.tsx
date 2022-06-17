@@ -10,7 +10,7 @@ import {
   GetSlideIdDocument,
   GetSlideIdQuery,
   GetSlideIdQueryVariables,
-  LayoutContext,
+  AppContext,
 } from "lib";
 import { getMediaName } from "lib/util";
 import { useContext, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ const getIndexFromParams = (params: URLSearchParams): number => {
 export type SlidesContainerParams = {};
 
 export const SlidesContainer = () => {
-  const { setNavs, setTitle } = useContext(LayoutContext);
+  const { setNavs, setTitle } = useContext(AppContext);
   const client = useApolloClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

@@ -45,7 +45,11 @@ const validationSchema = object({
   ({ filter: { attributes, tags } }) =>
     !!attributes?.length ||
     !!tags?.length ||
-    new ValidationError("at least one filter must be present", "", "filter")
+    new ValidationError(
+      "at least one filter must be present",
+      undefined,
+      "filter"
+    )
 );
 
 type SearchInputFormType = {

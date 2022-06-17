@@ -1,12 +1,14 @@
-import { LayoutContext } from "lib";
+import { useAppContext } from "lib";
 import { useContext, useEffect } from "react";
-import { SignInForm } from "../auth/SignInForm";
+import { useNavigate } from "react-router-dom";
+import { Mfa } from "./Mfa";
 export const MfaContainer = () => {
-  const { setTitle } = useContext(LayoutContext);
+  const { setTitle, cognitoUser } = useAppContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setTitle("OTP");
+    setTitle("MFA");
   });
 
-  return <SignInForm />;
+  return <Mfa cognitoUser={cognitoUser} navigate={navigate} />;
 };

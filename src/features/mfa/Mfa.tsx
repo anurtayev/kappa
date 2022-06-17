@@ -1,11 +1,9 @@
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from "amazon-cognito-identity-js";
+import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
+import { useLocationFrom } from "lib";
+import { NavigateFunction } from "react-router-dom";
 import styled from "styled-components";
 import { object, string } from "yup";
 
@@ -23,9 +21,8 @@ const validationSchema = object({
   password: string().trim().required(),
 });
 
-type SignInFormType = {
-  username: string;
-  password: string;
+type MfaFormType = {
+  confirmationCode: string;
 };
 
 const AWS_REGION = "us-east-1";
@@ -34,84 +31,30 @@ AWS.config.update({
   region: AWS_REGION,
 });
 
-const userPool = new CognitoUserPool({
-  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID || "",
-  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
-});
+type MfaType = {
+  cognitoUser: CognitoUser | undefined;
+  navigate: NavigateFunction;
+};
 
-export const Mfa = () => {
+export const Mfa = ({ cognitoUser, navigate }: MfaType) => {
+  const from = useLocationFrom();
+  if (!cognitoUser) throw Error("No CognitoUser");
+
   return (
-    <Formik<SignInFormType>
+    <Formik<MfaFormType>
       initialValues={{
-        username: "email",
-        password: "pwd",
+        confirmationCode: "",
       }}
-      onSubmit={async ({ username, password }, { setSubmitting }) => {
-        console.log("==> ", username, password);
-
-        const cognitoUser = new CognitoUser({
-          Username: username,
-          Pool: userPool,
+      onSubmit={async ({ confirmationCode }, { setSubmitting }) => {
+        cognitoUser.sendMFACode(confirmationCode, {
+          onFailure(err) {
+            console.log("==> onFailure", err);
+          },
+          onSuccess(session, userConfirmationNecessary) {
+            console.log("==> onSuccess", session, userConfirmationNecessary);
+            navigate(from, { replace: true });
+          },
         });
-
-        cognitoUser.authenticateUser(
-          new AuthenticationDetails({ Username: username, Password: password }),
-          {
-            onFailure(err) {
-              console.log("==> onFailure", err);
-            },
-            onSuccess(session, userConfirmationNecessary) {
-              console.log("==> onSuccess", session, userConfirmationNecessary);
-            },
-            customChallenge(challengeParameters) {
-              console.log("==> customChallenge", challengeParameters);
-            },
-            mfaRequired(challengeName, challengeParameters) {
-              console.log(
-                "==> mfaRequired",
-                challengeName,
-                challengeParameters
-              );
-            },
-            newPasswordRequired(userAttributes, requiredAttributes) {
-              console.log(
-                "==> newPasswordRequired",
-                userAttributes,
-                requiredAttributes
-              );
-
-              cognitoUser.completeNewPasswordChallenge(
-                "Newpassword1943#",
-                requiredAttributes,
-                {
-                  onFailure(err) {
-                    console.log("==> pooja onFailure", err);
-                  },
-                  onSuccess(result) {
-                    console.log("==> pooja!!", result);
-                  },
-                }
-              );
-            },
-            mfaSetup(challengeName, challengeParameters) {
-              console.log("==> mfaSetup", challengeName, challengeParameters);
-            },
-            selectMFAType(challengeName, challengeParameters) {
-              console.log(
-                "==> selectMFAType",
-                challengeName,
-                challengeParameters
-              );
-            },
-            totpRequired(challengeName, challengeParameters) {
-              console.log(
-                "==> totpRequired",
-                challengeName,
-                challengeParameters
-              );
-            },
-          }
-        );
 
         setSubmitting(false);
       }}

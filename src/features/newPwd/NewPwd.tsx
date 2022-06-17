@@ -1,13 +1,10 @@
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from "amazon-cognito-identity-js";
+import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
+import { NavigateFunction } from "react-router-dom";
 import styled from "styled-components";
-import { object, string } from "yup";
+import { object, string, ValidationError } from "yup";
 
 export const FlexForm = styled(Form)`
   display: flex;
@@ -21,32 +18,43 @@ export const FlexForm = styled(Form)`
 const validationSchema = object({
   newPassword: string().trim().required(),
   verifyPassword: string().trim().required(),
-});
+}).test(
+  "pwds-equality",
+  "",
+  ({ newPassword, verifyPassword }) =>
+    newPassword === verifyPassword ||
+    new ValidationError("password value must match", undefined, "")
+);
 
-type NewPwdType = {
+type NewPwdFormType = {
   newPassword: string;
   verifyPassword: string;
 };
 
-const AWS_REGION = "us-east-1";
+type NewPwdType = {
+  cognitoUser: CognitoUser | undefined;
+  navigate: NavigateFunction;
+};
 
-AWS.config.update({
-  region: AWS_REGION,
-});
+export const NewPwd = ({ cognitoUser }: NewPwdType) => {
+  if (!cognitoUser) throw Error("No CognitoUser");
 
-const userPool = new CognitoUserPool({
-  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID || "",
-  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
-});
-
-export const NewPwd = () => {
   return (
-    <Formik<NewPwdType>
+    <Formik<NewPwdFormType>
       initialValues={{
         newPassword: "",
         verifyPassword: "",
       }}
       onSubmit={async ({ newPassword, verifyPassword }, { setSubmitting }) => {
+        cognitoUser.completeNewPasswordChallenge(newPassword, null, {
+          onFailure(err) {
+            console.log("==> pooja onFailure", err);
+          },
+          onSuccess(result) {
+            console.log("==> pooja!!", result);
+          },
+        });
+
         setSubmitting(false);
       }}
       validationSchema={validationSchema}

@@ -1,15 +1,12 @@
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from "amazon-cognito-identity-js";
+import { AuthenticationDetails, CognitoUser } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
+import { appRoutes, AppContext, useLocationFrom } from "lib";
+import { Dispatch, useContext } from "react";
+import { NavigateFunction, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { object, string } from "yup";
-import { NavigateFunction } from "react-router-dom";
-import { appRoutes } from "lib";
 
 export const FlexForm = styled(Form)`
   display: flex;
@@ -36,16 +33,15 @@ AWS.config.update({
   region: AWS_REGION,
 });
 
-const userPool = new CognitoUserPool({
-  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID || "",
-  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
-});
-
 export type SignInFormParams = {
   navigate: NavigateFunction;
+  setCognitoUser: Dispatch<React.SetStateAction<CognitoUser | undefined>>;
 };
 
-export const SignInForm = ({ navigate }: SignInFormParams) => {
+export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
+  const { userPool, setEmail } = useContext(AppContext);
+  const from = useLocationFrom();
+
   return (
     <Formik<SignInFormType>
       initialValues={{
@@ -53,10 +49,12 @@ export const SignInForm = ({ navigate }: SignInFormParams) => {
         password: "pwd",
       }}
       onSubmit={async ({ username, password }, { setSubmitting }) => {
+        setEmail(username);
         const cognitoUser = new CognitoUser({
           Username: username,
           Pool: userPool,
         });
+        setCognitoUser(cognitoUser);
 
         cognitoUser.authenticateUser(
           new AuthenticationDetails({ Username: username, Password: password }),
@@ -66,6 +64,7 @@ export const SignInForm = ({ navigate }: SignInFormParams) => {
             },
             onSuccess(session, userConfirmationNecessary) {
               console.log("==> onSuccess", session, userConfirmationNecessary);
+              navigate(from, { replace: true });
             },
             customChallenge(challengeParameters) {
               console.log("==> customChallenge", challengeParameters);
@@ -73,27 +72,10 @@ export const SignInForm = ({ navigate }: SignInFormParams) => {
             mfaRequired(challengeName, challengeParameters) {
               // SMS_MFA
               // {CODE_DELIVERY_DELIVERY_MEDIUM: 'SMS', CODE_DELIVERY_DESTINATION: '+*******8884'}
-              navigate(appRoutes.authMfa);
+              navigate(appRoutes.authMfa, { replace: true });
             },
             newPasswordRequired(userAttributes, requiredAttributes) {
-              console.log(
-                "==> newPasswordRequired",
-                userAttributes,
-                requiredAttributes
-              );
-
-              cognitoUser.completeNewPasswordChallenge(
-                "Newpassword1943#",
-                requiredAttributes,
-                {
-                  onFailure(err) {
-                    console.log("==> pooja onFailure", err);
-                  },
-                  onSuccess(result) {
-                    console.log("==> pooja!!", result);
-                  },
-                }
-              );
+              navigate(appRoutes.authNewPwd);
             },
             mfaSetup(challengeName, challengeParameters) {
               console.log("==> mfaSetup", challengeName, challengeParameters);

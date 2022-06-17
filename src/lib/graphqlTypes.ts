@@ -91,7 +91,6 @@ export type Query = {
   search?: Maybe<FolderConnection>;
   slideId?: Maybe<Scalars['String']>;
   tags: Array<Scalars['String']>;
-  userProfile?: Maybe<UserProfile>;
 };
 
 
@@ -123,11 +122,6 @@ export enum SortOrder {
   Desc = 'DESC'
 }
 
-export type UserProfile = {
-  __typename?: 'UserProfile';
-  email: Scalars['String'];
-};
-
 export type SlidesQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
@@ -137,11 +131,6 @@ export type SlidesQueryVariables = Exact<{
 
 
 export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, scrollTop: number, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
-
-export type GetUserProfileQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUserProfileQuery = { __typename?: 'Query', userProfile?: { __typename?: 'UserProfile', email: string } | null };
 
 export type UpdateMetaDataMutationVariables = Exact<{
   id: Scalars['String'];
@@ -235,40 +224,6 @@ export function useSlidesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sli
 export type SlidesQueryHookResult = ReturnType<typeof useSlidesQuery>;
 export type SlidesLazyQueryHookResult = ReturnType<typeof useSlidesLazyQuery>;
 export type SlidesQueryResult = Apollo.QueryResult<SlidesQuery, SlidesQueryVariables>;
-export const GetUserProfileDocument = gql`
-    query GetUserProfile {
-  userProfile @client {
-    email
-  }
-}
-    `;
-
-/**
- * __useGetUserProfileQuery__
- *
- * To run a query within a React component, call `useGetUserProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetUserProfileQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetUserProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetUserProfileQuery, GetUserProfileQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserProfileQuery, GetUserProfileQueryVariables>(GetUserProfileDocument, options);
-      }
-export function useGetUserProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserProfileQuery, GetUserProfileQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserProfileQuery, GetUserProfileQueryVariables>(GetUserProfileDocument, options);
-        }
-export type GetUserProfileQueryHookResult = ReturnType<typeof useGetUserProfileQuery>;
-export type GetUserProfileLazyQueryHookResult = ReturnType<typeof useGetUserProfileLazyQuery>;
-export type GetUserProfileQueryResult = Apollo.QueryResult<GetUserProfileQuery, GetUserProfileQueryVariables>;
 export const UpdateMetaDataDocument = gql`
     mutation UpdateMetaData($id: String!, $metaDataInput: MetaDataInput) {
   updateMetaData(id: $id, metaDataInput: $metaDataInput) {

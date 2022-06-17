@@ -1,12 +1,15 @@
-import { LayoutContext } from "lib";
-import { useContext, useEffect } from "react";
-import { SignInForm } from "../auth/SignInForm";
+import { useAppContext } from "lib";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { NewPwd } from "./NewPwd";
+
 export const NewPwdContainer = () => {
-  const { setTitle } = useContext(LayoutContext);
+  const { setTitle, userPool, email, cognitoUser } = useAppContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTitle("New Password");
   });
 
-  return <SignInForm />;
+  return <NewPwd cognitoUser={cognitoUser} navigate={navigate} />;
 };

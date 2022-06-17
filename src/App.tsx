@@ -4,16 +4,16 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { cache } from "cache";
-import { AuthContainer } from "features/auth";
 import { BrowseContainer } from "features/browse";
 import { ErrorBoundary } from "features/errorBoundary";
 import { ImageScreen } from "features/image";
 import { Layout } from "features/layout";
 import { MetaContainer } from "features/meta";
-import { SearchContainer } from "features/search";
 import { MfaContainer } from "features/mfa";
+import { SearchContainer } from "features/search";
+import { AuthContainer } from "features/signin";
 import { SlidesContainer } from "features/slides";
-import { appRoutes, defaultTheme } from "lib";
+import { AppProvider, appRoutes, defaultTheme, RequireAuth } from "lib";
 import { StrictMode } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
@@ -32,28 +32,62 @@ export const App = () => {
       >
         <ThemeProvider theme={defaultTheme}>
           <ErrorBoundary>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route path={appRoutes.auth} element={<AuthContainer />} />
-                  <Route path={appRoutes.authMfa} element={<MfaContainer />} />
-                  <Route
-                    path={appRoutes.browse}
-                    element={<BrowseContainer />}
-                  />
-                  <Route
-                    path={appRoutes.search}
-                    element={<SearchContainer />}
-                  />
-                  <Route path={appRoutes.image} element={<ImageScreen />} />
-                  <Route path={appRoutes.meta} element={<MetaContainer />} />
-                  <Route
-                    path={appRoutes.slides}
-                    element={<SlidesContainer />}
-                  />
-                </Route>
-              </Routes>
-            </Router>
+            <AppProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route
+                      path={appRoutes.signin}
+                      element={<AuthContainer />}
+                    />
+                    <Route
+                      path={appRoutes.authMfa}
+                      element={<MfaContainer />}
+                    />
+                    <Route
+                      path={appRoutes.browse}
+                      element={
+                        <RequireAuth>
+                          <BrowseContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.search}
+                      element={
+                        <RequireAuth>
+                          <SearchContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.image}
+                      element={
+                        <RequireAuth>
+                          <ImageScreen />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.meta}
+                      element={
+                        <RequireAuth>
+                          <MetaContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.slides}
+                      element={
+                        <RequireAuth>
+                          <SlidesContainer />
+                        </RequireAuth>
+                      }
+                    />
+                  </Route>
+                </Routes>
+              </Router>
+            </AppProvider>
           </ErrorBoundary>
         </ThemeProvider>
       </ApolloProvider>

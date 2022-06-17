@@ -11,7 +11,7 @@ import { Loading } from "features/loading";
 import {
   appRoutes,
   getMediaName,
-  LayoutContext,
+  AppContext,
   useScrollRef,
   useSlidesQuery,
 } from "lib";
@@ -19,7 +19,7 @@ import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
-  const { setNavs, setTitle } = useContext(LayoutContext);
+  const { setNavs, setTitle } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 

@@ -1,4 +1,12 @@
-import { createContext, Dispatch, ReactElement } from "react";
+import { createContext, Dispatch, ReactElement, useContext } from "react";
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
+import { Maybe } from "./graphqlTypes";
+import { useState, ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 
 export enum EntryType {
   folder = "Folder",
@@ -16,7 +24,7 @@ export enum appRoutes {
   image = "image",
   meta = "meta",
   slides = "slides",
-  auth = "auth",
+  signin = "signin",
   authMfa = "auth/mfa",
   authNewPwd = "auth/new_pwd",
 }
@@ -68,16 +76,8 @@ export const PARAM_SEARCH_INPUT = "searchinput";
 export const PARAM_PAGE_SIZE = "pagesize";
 export const PARAM_NEXT_TOKEN = "nexttoken";
 
-export type LayoutContextType = {
-  setNavs: Dispatch<Array<ReactElement>>;
-  setTitle: Dispatch<string>;
-};
-
-export const LayoutContext = createContext<LayoutContextType>({
-  setNavs: () => {},
-  setTitle: () => {},
-});
-
-export type UserProfile = {
-  email: string;
+export const useLocationFrom = () => {
+  const location = useLocation();
+  const state: any = location.state;
+  return state?.from?.pathname || "/";
 };
