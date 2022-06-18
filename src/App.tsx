@@ -10,6 +10,7 @@ import { ImageScreen } from "features/image";
 import { Layout } from "features/layout";
 import { MetaContainer } from "features/meta";
 import { MfaContainer } from "features/mfa";
+import { NewPwdContainer } from "features/newPwd";
 import { SearchContainer } from "features/search";
 import { AuthContainer } from "features/signin";
 import { SlidesContainer } from "features/slides";
@@ -40,9 +41,10 @@ export const App = () => {
                       path={appRoutes.signin}
                       element={<AuthContainer />}
                     />
+                    <Route path={appRoutes.mfa} element={<MfaContainer />} />
                     <Route
-                      path={appRoutes.authMfa}
-                      element={<MfaContainer />}
+                      path={appRoutes.newpwd}
+                      element={<NewPwdContainer />}
                     />
                     <Route
                       path={appRoutes.browse}

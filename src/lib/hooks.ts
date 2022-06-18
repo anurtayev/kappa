@@ -1,4 +1,4 @@
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function useScrollRef(scrollTop: number | undefined) {
@@ -13,19 +13,21 @@ export function useScrollRef(scrollTop: number | undefined) {
     divRef.current && scrollTop && divRef.current.scrollTo(0, scrollTop);
   });
 
-  const saveScrollTopAndNavigate = (dest: string | number) => {
-    sessionStorage.setItem(
-      locationKey,
-      JSON.stringify({
-        scrollTop: divRef.current?.scrollTop as number,
-      })
-    );
-    if (typeof dest === "number") {
-      navigate(dest);
-    } else {
-      navigate(dest);
-    }
-  };
+  const saveScrollTopAndNavigate = useMemo(() => {
+    return (dest: string | number) => {
+      sessionStorage.setItem(
+        locationKey,
+        JSON.stringify({
+          scrollTop: divRef.current?.scrollTop as number,
+        })
+      );
+      if (typeof dest === "number") {
+        navigate(dest);
+      } else {
+        navigate(dest);
+      }
+    };
+  }, [locationKey, navigate, divRef.current?.scrollTop]);
 
   return { divRef, saveScrollTopAndNavigate };
 }

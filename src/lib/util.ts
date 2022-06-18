@@ -16,9 +16,9 @@ export enum appRoutes {
   image = "image",
   meta = "meta",
   slides = "slides",
-  signin = "signin",
-  authMfa = "auth/mfa",
-  authNewPwd = "auth/new_pwd",
+  signin = "/signin",
+  mfa = "/mfa",
+  newpwd = "/newpwd",
 }
 
 export enum systemAttributes {

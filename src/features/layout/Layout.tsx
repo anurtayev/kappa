@@ -6,7 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 export const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { title, navs, email } = useAppContext();
+  const { title, navs, session } = useAppContext();
 
   useEffect(() => {
     location.pathname === "/" && navigate(appRoutes.browse);
@@ -14,7 +14,11 @@ export const Layout = () => {
 
   return (
     <>
-      <PageHeader title={title} extra={navs} subTitle={email} />
+      <PageHeader
+        title={title}
+        extra={navs}
+        subTitle={session?.getIdToken().payload.email}
+      />
       <Outlet />
     </>
   );

@@ -32,17 +32,16 @@ export type SignInFormParams = {
 };
 
 export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
-  const { userPool, setEmail } = useContext(AppContext);
+  const { userPool } = useContext(AppContext);
   const from = useLocationFrom();
 
   return (
     <Formik<SignInFormType>
       initialValues={{
-        username: "email",
-        password: "pwd",
+        username: "",
+        password: "",
       }}
       onSubmit={async ({ username, password }, { setSubmitting }) => {
-        setEmail(username);
         const cognitoUser = new CognitoUser({
           Username: username,
           Pool: userPool,
@@ -65,10 +64,10 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
             mfaRequired(challengeName, challengeParameters) {
               // SMS_MFA
               // {CODE_DELIVERY_DELIVERY_MEDIUM: 'SMS', CODE_DELIVERY_DESTINATION: '+*******8884'}
-              navigate(appRoutes.authMfa, { replace: true });
+              navigate(appRoutes.mfa, { replace: true });
             },
             newPasswordRequired(userAttributes, requiredAttributes) {
-              navigate(appRoutes.authNewPwd);
+              navigate(appRoutes.newpwd, { replace: true });
             },
             mfaSetup(challengeName, challengeParameters) {
               console.log("==> mfaSetup", challengeName, challengeParameters);
@@ -113,7 +112,15 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
                   <div style={{ width: "6rem", textAlign: "right" }}>
                     Password
                   </div>
-                  <Field name="password" type="password" />
+                  <Field
+                    name="password"
+                    type="password"
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        submitForm();
+                      }
+                    }}
+                  />
                 </Space>
               </Space>
               <Button

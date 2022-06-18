@@ -1,4 +1,4 @@
-import { CognitoUser } from "amazon-cognito-identity-js";
+import { CognitoUser, CognitoUserSession } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import { Field, Form, Formik } from "formik";
 import { useLocationFrom } from "lib";
@@ -16,8 +16,7 @@ export const FlexForm = styled(Form)`
 `;
 
 const validationSchema = object({
-  username: string().trim().required(),
-  password: string().trim().required(),
+  confirmationCode: string().trim().required(),
 });
 
 type MfaFormType = {
@@ -27,9 +26,12 @@ type MfaFormType = {
 type MfaType = {
   cognitoUser: CognitoUser | undefined;
   navigate: NavigateFunction;
+  setSession: React.Dispatch<
+    React.SetStateAction<CognitoUserSession | undefined>
+  >;
 };
 
-export const Mfa = ({ cognitoUser, navigate }: MfaType) => {
+export const Mfa = ({ cognitoUser, navigate, setSession }: MfaType) => {
   const from = useLocationFrom();
   if (!cognitoUser) throw Error("No CognitoUser");
 
@@ -44,7 +46,7 @@ export const Mfa = ({ cognitoUser, navigate }: MfaType) => {
             console.log("==> onFailure", err);
           },
           onSuccess(session, userConfirmationNecessary) {
-            console.log("==> onSuccess", session, userConfirmationNecessary);
+            setSession(session);
             navigate(from, { replace: true });
           },
         });
@@ -63,16 +65,18 @@ export const Mfa = ({ cognitoUser, navigate }: MfaType) => {
             >
               <Space direction="vertical" size="middle">
                 <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    Username
+                  <div style={{ width: "9rem", textAlign: "right" }}>
+                    Confirmation Code
                   </div>
-                  <Field name="username" />
-                </Space>
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    Password
-                  </div>
-                  <Field name="password" type="password" />
+                  <Field
+                    name="confirmationCode"
+                    autoComplete="off"
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        submitForm();
+                      }
+                    }}
+                  />
                 </Space>
               </Space>
               <Button
@@ -80,7 +84,7 @@ export const Mfa = ({ cognitoUser, navigate }: MfaType) => {
                 onClick={() => submitForm()}
                 type="primary"
               >
-                Sign In
+                Submit
               </Button>
             </Space>
           </FlexForm>

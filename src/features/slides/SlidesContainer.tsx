@@ -90,7 +90,5 @@ export const SlidesContainer = () => {
 
   if (!slideId) throw Error("Slides: no id");
 
-  console.log("==> ", slideId, index);
-
   return <SlideScreen id={slideId} />;
 };

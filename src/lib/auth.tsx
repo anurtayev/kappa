@@ -1,4 +1,8 @@
-import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
+import {
+  CognitoUser,
+  CognitoUserPool,
+  CognitoUserSession,
+} from "amazon-cognito-identity-js";
 import {
   createContext,
   Dispatch,
@@ -20,10 +24,10 @@ export type AppContextType = {
   navs: ReactElement<any, string | React.JSXElementConstructor<any>>[];
 
   setTitle: Dispatch<string>;
-  title: string;
+  title: string | undefined;
 
-  setEmail: Dispatch<string>;
-  email: string;
+  setSession: Dispatch<React.SetStateAction<CognitoUserSession | undefined>>;
+  session: CognitoUserSession | undefined;
 
   userPool: CognitoUserPool;
 
@@ -36,9 +40,9 @@ export const AppContext = createContext<AppContextType>(undefined!);
 export const useAppContext = () => useContext(AppContext);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  let [email, setEmail] = useState<string>("");
+  const [session, setSession] = useState<CognitoUserSession>();
   const [navs, setNavs] = useState<Array<ReactElement>>([]);
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>();
   const [cognitoUser, setCognitoUser] = useState<CognitoUser>();
 
   return (
@@ -47,12 +51,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setNavs,
         setTitle,
         userPool,
-        email,
         title,
-        setEmail,
         navs,
         cognitoUser,
         setCognitoUser,
+        setSession,
+        session,
       }}
     >
       {children}
@@ -61,10 +65,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 }
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-  let { email } = useAppContext();
+  let { session } = useAppContext();
   let location = useLocation();
 
-  if (!email) {
+  if (!session) {
     return (
       <Navigate to={appRoutes.signin} state={{ from: location }} replace />
     );

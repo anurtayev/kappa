@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { NewPwd } from "./NewPwd";
 
 export const NewPwdContainer = () => {
-  const { setTitle, userPool, email, cognitoUser } = useAppContext();
+  const { setTitle, cognitoUser } = useAppContext();
   const navigate = useNavigate();
 
   useEffect(() => {

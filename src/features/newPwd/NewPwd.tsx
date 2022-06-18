@@ -2,6 +2,7 @@ import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
+import { appRoutes, useLocationFrom } from "lib";
 import { NavigateFunction } from "react-router-dom";
 import styled from "styled-components";
 import { object, string, ValidationError } from "yup";
@@ -36,7 +37,8 @@ type NewPwdType = {
   navigate: NavigateFunction;
 };
 
-export const NewPwd = ({ cognitoUser }: NewPwdType) => {
+export const NewPwd = ({ cognitoUser, navigate }: NewPwdType) => {
+  const from = useLocationFrom();
   if (!cognitoUser) throw Error("No CognitoUser");
 
   return (
@@ -52,6 +54,10 @@ export const NewPwd = ({ cognitoUser }: NewPwdType) => {
           },
           onSuccess(result) {
             console.log("==> pooja!!", result);
+            navigate(from, { replace: true });
+          },
+          mfaRequired(challengeName, challengeParameters) {
+            navigate(appRoutes.mfa, { replace: true });
           },
         });
 
@@ -72,13 +78,21 @@ export const NewPwd = ({ cognitoUser }: NewPwdType) => {
                   <div style={{ width: "6rem", textAlign: "right" }}>
                     New Password
                   </div>
-                  <Field name="username" />
+                  <Field name="newPassword" type="password" />
                 </Space>
                 <Space direction="horizontal" size="middle">
                   <div style={{ width: "6rem", textAlign: "right" }}>
                     Verify Password
                   </div>
-                  <Field name="password" type="password" />
+                  <Field
+                    name="verifyPassword"
+                    type="password"
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        submitForm();
+                      }
+                    }}
+                  />
                 </Space>
               </Space>
               <Button
