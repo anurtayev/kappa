@@ -68,7 +68,10 @@ export function RequireAuth({ children }: { children: JSX.Element }) {
   let { session } = useAppContext();
   let location = useLocation();
 
-  if (!session) {
+  if (
+    !session ||
+    Number(session.getIdToken().payload.exp) * 1000 < Date.now()
+  ) {
     return (
       <Navigate to={appRoutes.signin} state={{ from: location }} replace />
     );
