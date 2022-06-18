@@ -40,10 +40,10 @@ export const Mfa = ({ cognitoUser, navigate, setSession }: MfaType) => {
       initialValues={{
         confirmationCode: "",
       }}
-      onSubmit={async ({ confirmationCode }, { setSubmitting }) => {
+      onSubmit={async ({ confirmationCode }, { setSubmitting, setStatus }) => {
         cognitoUser.sendMFACode(confirmationCode, {
           onFailure(err) {
-            console.log("==> onFailure", err);
+            setStatus(err.message || JSON.stringify(err));
           },
           onSuccess(session, userConfirmationNecessary) {
             setSession(session);
@@ -55,39 +55,42 @@ export const Mfa = ({ cognitoUser, navigate, setSession }: MfaType) => {
       }}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, submitForm, errors }) => {
+      {({ isSubmitting, submitForm, status }) => {
         return (
-          <FlexForm>
-            <Space
-              direction="vertical"
-              size="large"
-              style={{ textAlign: "right" }}
-            >
-              <Space direction="vertical" size="middle">
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "9rem", textAlign: "right" }}>
-                    Confirmation Code
-                  </div>
-                  <Field
-                    name="confirmationCode"
-                    autoComplete="off"
-                    onKeyPress={(e: any) => {
-                      if (e.key === "Enter") {
-                        submitForm();
-                      }
-                    }}
-                  />
-                </Space>
-              </Space>
-              <Button
-                disabled={isSubmitting}
-                onClick={() => submitForm()}
-                type="primary"
+          <>
+            <p>{status}</p>
+            <FlexForm>
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ textAlign: "right" }}
               >
-                Submit
-              </Button>
-            </Space>
-          </FlexForm>
+                <Space direction="vertical" size="middle">
+                  <Space direction="horizontal" size="middle">
+                    <div style={{ width: "9rem", textAlign: "right" }}>
+                      Confirmation Code
+                    </div>
+                    <Field
+                      name="confirmationCode"
+                      autoComplete="off"
+                      onKeyPress={(e: any) => {
+                        if (e.key === "Enter") {
+                          submitForm();
+                        }
+                      }}
+                    />
+                  </Space>
+                </Space>
+                <Button
+                  disabled={isSubmitting}
+                  onClick={() => submitForm()}
+                  type="primary"
+                >
+                  Submit
+                </Button>
+              </Space>
+            </FlexForm>
+          </>
         );
       }}
     </Formik>
