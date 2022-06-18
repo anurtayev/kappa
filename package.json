@@ -33,7 +33,8 @@
     "pipeline:update": ". scripts/env.sh && aws cloudformation update-stack --stack-name $STACK_NAME-pipeline --template-body file://infrastructure/codepipeline.yaml  --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT ParameterKey=GitBranchName,ParameterValue=$GIT_BRANCH ParameterKey=FullRepositoryId,ParameterValue=$REPOSITORY_ID ParameterKey=PrincipalOrgID,ParameterValue=$PRINCIPAL_ORG_ID",
     "pipeline:delete": ". scripts/env.sh && aws cloudformation delete-stack --stack-name $STACK_NAME-pipeline",
     "codegen:generate": "graphql-codegen --config codegen.yml",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "deploy": ". scripts/env.sh && printenv | sort && aws s3 sync build s3://$HOSTING_BUCKET"
   },
   "eslintConfig": {
     "extends": "react-app"
