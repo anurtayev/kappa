@@ -27,7 +27,7 @@ export function useScrollRef(scrollTop: number | undefined) {
         navigate(dest);
       }
     };
-  }, [locationKey, navigate, divRef.current?.scrollTop]);
+  }, [locationKey, navigate, divRef]);
 
   return { divRef, saveScrollTopAndNavigate };
 }
