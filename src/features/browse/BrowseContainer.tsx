@@ -31,7 +31,7 @@ export const BrowseContainer = () => {
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
-  }, [id]);
+  }, [id, setTitle]);
 
   const { data, loading, error } = useSlidesQuery({
     variables: {

@@ -1,5 +1,4 @@
 import { InMemoryCache, makeVar } from "@apollo/client";
-import { CognitoUser } from "amazon-cognito-identity-js";
 import { Maybe, MetaData } from "lib";
 
 export const cache: InMemoryCache = new InMemoryCache({

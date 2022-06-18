@@ -1,11 +1,3 @@
-import { createContext, Dispatch, ReactElement, useContext } from "react";
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from "amazon-cognito-identity-js";
-import { Maybe } from "./graphqlTypes";
-import { useState, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 
 export enum EntryType {

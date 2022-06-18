@@ -1,10 +1,9 @@
 import { AuthenticationDetails, CognitoUser } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
-import AWS from "aws-sdk";
 import { Field, Form, Formik } from "formik";
-import { appRoutes, AppContext, useLocationFrom } from "lib";
+import { AppContext, appRoutes, useLocationFrom } from "lib";
 import { Dispatch, useContext } from "react";
-import { NavigateFunction, useLocation } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import styled from "styled-components";
 import { object, string } from "yup";
 
