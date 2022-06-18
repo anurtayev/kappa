@@ -46,13 +46,12 @@ export const NewPwd = ({ cognitoUser, navigate }: NewPwdType) => {
         newPassword: "",
         verifyPassword: "",
       }}
-      onSubmit={async ({ newPassword, verifyPassword }, { setSubmitting }) => {
+      onSubmit={async ({ newPassword }, { setSubmitting, setStatus }) => {
         cognitoUser.completeNewPasswordChallenge(newPassword, null, {
           onFailure(err) {
-            console.log("==> pooja onFailure", err);
+            setStatus(err.message || JSON.stringify(err));
           },
           onSuccess(result) {
-            console.log("==> pooja!!", result);
             navigate(from, { replace: true });
           },
           mfaRequired(challengeName, challengeParameters) {
@@ -64,45 +63,48 @@ export const NewPwd = ({ cognitoUser, navigate }: NewPwdType) => {
       }}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, submitForm, errors }) => {
+      {({ isSubmitting, submitForm, status }) => {
         return (
-          <FlexForm>
-            <Space
-              direction="vertical"
-              size="large"
-              style={{ textAlign: "right" }}
-            >
-              <Space direction="vertical" size="middle">
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    New Password
-                  </div>
-                  <Field name="newPassword" type="password" />
-                </Space>
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    Verify Password
-                  </div>
-                  <Field
-                    name="verifyPassword"
-                    type="password"
-                    onKeyPress={(e: any) => {
-                      if (e.key === "Enter") {
-                        submitForm();
-                      }
-                    }}
-                  />
-                </Space>
-              </Space>
-              <Button
-                disabled={isSubmitting}
-                onClick={() => submitForm()}
-                type="primary"
+          <>
+            <p>{status}</p>
+            <FlexForm>
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ textAlign: "right" }}
               >
-                Submit
-              </Button>
-            </Space>
-          </FlexForm>
+                <Space direction="vertical" size="middle">
+                  <Space direction="horizontal" size="middle">
+                    <div style={{ width: "6rem", textAlign: "right" }}>
+                      New Password
+                    </div>
+                    <Field name="newPassword" type="password" />
+                  </Space>
+                  <Space direction="horizontal" size="middle">
+                    <div style={{ width: "6rem", textAlign: "right" }}>
+                      Verify Password
+                    </div>
+                    <Field
+                      name="verifyPassword"
+                      type="password"
+                      onKeyPress={(e: any) => {
+                        if (e.key === "Enter") {
+                          submitForm();
+                        }
+                      }}
+                    />
+                  </Space>
+                </Space>
+                <Button
+                  disabled={isSubmitting}
+                  onClick={() => submitForm()}
+                  type="primary"
+                >
+                  Submit
+                </Button>
+              </Space>
+            </FlexForm>
+          </>
         );
       }}
     </Formik>

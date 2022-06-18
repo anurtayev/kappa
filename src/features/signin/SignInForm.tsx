@@ -41,7 +41,10 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
         username: "",
         password: "",
       }}
-      onSubmit={async ({ username, password }, { setSubmitting }) => {
+      onSubmit={async (
+        { username, password },
+        { setSubmitting, setStatus }
+      ) => {
         const cognitoUser = new CognitoUser({
           Username: username,
           Pool: userPool,
@@ -52,7 +55,7 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
           new AuthenticationDetails({ Username: username, Password: password }),
           {
             onFailure(err) {
-              console.log("==> onFailure", err);
+              setStatus(err.message || JSON.stringify(err));
             },
             onSuccess(session, userConfirmationNecessary) {
               console.log("==> onSuccess", session, userConfirmationNecessary);
@@ -93,45 +96,48 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
       }}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, submitForm, errors }) => {
+      {({ isSubmitting, submitForm, status }) => {
         return (
-          <FlexForm>
-            <Space
-              direction="vertical"
-              size="large"
-              style={{ textAlign: "right" }}
-            >
-              <Space direction="vertical" size="middle">
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    Username
-                  </div>
-                  <Field name="username" />
-                </Space>
-                <Space direction="horizontal" size="middle">
-                  <div style={{ width: "6rem", textAlign: "right" }}>
-                    Password
-                  </div>
-                  <Field
-                    name="password"
-                    type="password"
-                    onKeyPress={(e: any) => {
-                      if (e.key === "Enter") {
-                        submitForm();
-                      }
-                    }}
-                  />
-                </Space>
-              </Space>
-              <Button
-                disabled={isSubmitting}
-                onClick={() => submitForm()}
-                type="primary"
+          <>
+            <p>{status}</p>
+            <FlexForm>
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ textAlign: "right" }}
               >
-                Sign In
-              </Button>
-            </Space>
-          </FlexForm>
+                <Space direction="vertical" size="middle">
+                  <Space direction="horizontal" size="middle">
+                    <div style={{ width: "6rem", textAlign: "right" }}>
+                      Username
+                    </div>
+                    <Field name="username" />
+                  </Space>
+                  <Space direction="horizontal" size="middle">
+                    <div style={{ width: "6rem", textAlign: "right" }}>
+                      Password
+                    </div>
+                    <Field
+                      name="password"
+                      type="password"
+                      onKeyPress={(e: any) => {
+                        if (e.key === "Enter") {
+                          submitForm();
+                        }
+                      }}
+                    />
+                  </Space>
+                </Space>
+                <Button
+                  disabled={isSubmitting}
+                  onClick={() => submitForm()}
+                  type="primary"
+                >
+                  Sign In
+                </Button>
+              </Space>
+            </FlexForm>
+          </>
         );
       }}
     </Formik>
