@@ -3,7 +3,7 @@ import { Button, Space } from "antd";
 import { Field, Form, Formik } from "formik";
 import { AppContext, appRoutes, useLocationFrom } from "lib";
 import { Dispatch, useContext } from "react";
-import { NavigateFunction } from "react-router-dom";
+import { NavigateFunction, createSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { object, string } from "yup";
 
@@ -74,6 +74,20 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
             },
             mfaSetup(challengeName, challengeParameters) {
               console.log("==> mfaSetup", challengeName, challengeParameters);
+              cognitoUser.associateSoftwareToken({
+                associateSecretCode(secretCode) {
+                  navigate(
+                    {
+                      pathname: appRoutes.mfaSetup,
+                      search: `?${createSearchParams({ secretCode })}`,
+                    },
+                    { replace: true }
+                  );
+                },
+                onFailure(err) {
+                  setStatus(err.message || JSON.stringify(err));
+                },
+              });
             },
             selectMFAType(challengeName, challengeParameters) {
               console.log(

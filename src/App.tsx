@@ -14,6 +14,7 @@ import { NewPwdContainer } from "features/newPwd";
 import { SearchContainer } from "features/search";
 import { AuthContainer } from "features/signin";
 import { SlidesContainer } from "features/slides";
+import { MfaSetupContainer } from "features/mfaSetup";
 import { AppProvider, appRoutes, defaultTheme, RequireAuth } from "lib";
 import { StrictMode } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -42,6 +43,10 @@ export const App = () => {
                       element={<AuthContainer />}
                     />
                     <Route path={appRoutes.mfa} element={<MfaContainer />} />
+                    <Route
+                      path={appRoutes.mfaSetup}
+                      element={<MfaSetupContainer />}
+                    />
                     <Route
                       path={appRoutes.newpwd}
                       element={<NewPwdContainer />}

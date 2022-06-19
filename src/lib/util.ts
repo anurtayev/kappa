@@ -18,6 +18,7 @@ export enum appRoutes {
   slides = "slides",
   signin = "/signin",
   mfa = "/mfa",
+  mfaSetup = "/mfasetup",
   newpwd = "/newpwd",
 }
 

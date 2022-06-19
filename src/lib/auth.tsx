@@ -15,8 +15,8 @@ import { Navigate, useLocation } from "react-router-dom";
 import { appRoutes } from "./util";
 
 export const userPool = new CognitoUserPool({
-  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID || "",
-  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID || "",
+  UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID!,
+  ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID!,
 });
 
 export type AppContextType = {
