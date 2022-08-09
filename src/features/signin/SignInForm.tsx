@@ -102,6 +102,7 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
                 challengeName,
                 challengeParameters
               );
+              navigate({ pathname: appRoutes.totp }, { replace: true });
             },
           }
         );

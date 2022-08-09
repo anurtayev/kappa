@@ -11,15 +11,16 @@ export enum EntryAction {
 }
 
 export enum appRoutes {
-  browse = "browse",
-  search = "search",
-  image = "image",
-  meta = "meta",
-  slides = "slides",
+  browse = "/browse",
+  search = "/search",
+  image = "/image",
+  meta = "/meta",
+  slides = "/slides",
   signin = "/signin",
   mfa = "/mfa",
   mfaSetup = "/mfasetup",
   newpwd = "/newpwd",
+  totp = "/totp",
 }
 
 export enum systemAttributes {

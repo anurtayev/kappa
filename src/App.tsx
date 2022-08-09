@@ -11,6 +11,7 @@ import { Layout } from "features/layout";
 import { MetaContainer } from "features/meta";
 import { MfaContainer } from "features/mfa";
 import { NewPwdContainer } from "features/newPwd";
+import { TotpContainer } from "features/totp";
 import { SearchContainer } from "features/search";
 import { AuthContainer } from "features/signin";
 import { SlidesContainer } from "features/slides";
@@ -50,6 +51,10 @@ export const App = () => {
                     <Route
                       path={appRoutes.newpwd}
                       element={<NewPwdContainer />}
+                    />
+                    <Route
+                      path={appRoutes.totp}
+                      element={<TotpContainer />}
                     />
                     <Route
                       path={appRoutes.browse}
