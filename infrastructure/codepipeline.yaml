@@ -112,7 +112,7 @@ Resources:
       RoleArn: !GetAtt CodePipelineExecutionRole.Arn
       ArtifactStore:
         Type: S3
-        Location: !ImportValue InfrastructureBucketName,
+        Location: !ImportValue InfrastructureBucketName
 
       Stages:
         - Name: Source
