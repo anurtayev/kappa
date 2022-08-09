@@ -1,7 +1,7 @@
 import { CognitoUser, CognitoUserSession } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import { Field, Form, Formik } from "formik";
-import { useLocationFrom, appRoutes } from "lib";
+import { appRoutes } from "lib";
 
 import { NavigateFunction, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
@@ -33,8 +33,7 @@ type TotpType = {
 };
 
 export const Totp = ({ cognitoUser, navigate, setSession }: TotpType) => {
-  const from = useLocationFrom();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   if (!cognitoUser) throw Error("No CognitoUser");
 
   return (
