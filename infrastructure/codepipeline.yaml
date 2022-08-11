@@ -180,45 +180,7 @@ Resources:
         - codepipeline-pipeline-pipeline-execution-succeeded
       Targets: 
         - TargetType: SNS 
-          TargetAddress: !Ref NotificationTopic
-
-  NotificationTopic:
-    Type: AWS::SNS::Topic
-
-  NotificationTopicPolicy:
-    Type: AWS::SNS::TopicPolicy
-    Properties: 
-      Topics: 
-        - !Ref NotificationTopic
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: "*"
-            Action:
-              - SNS:GetTopicAttributes
-              - SNS:SetTopicAttributes
-              - SNS:AddPermission
-              - SNS:RemovePermission
-              - SNS:DeleteTopic
-              - SNS:Subscribe
-              - SNS:ListSubscriptionsByTopic
-              - SNS:Publish
-              - SNS:Receive
-            Resource: !Ref NotificationTopic
-            Condition:
-              StringEquals:
-                aws:SourceOwner: !Sub ${AWS::AccountId}
-          - Effect: Allow
-            Sid: AWSCodeStarNotifications_publish
-            Principal:
-              Service: codestar-notifications.amazonaws.com
-            Action: SNS:Publish
-            Resource: !Ref NotificationTopic
-            Condition:
-              StringEquals:
-                aws:SourceAccount: !Sub ${AWS::AccountId}
+          TargetAddress: !ImportValue NotificationTopicArn
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
