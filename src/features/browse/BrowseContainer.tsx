@@ -19,7 +19,7 @@ import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
-  const { setNavs, setTitle } = useContext(AppContext);
+  const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 
@@ -39,6 +39,11 @@ export const BrowseContainer = () => {
       id,
       nextToken,
       locationKey,
+    },
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken()}`,
+      },
     },
   });
 

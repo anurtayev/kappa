@@ -1,12 +1,14 @@
-import { createRef, useEffect, useState } from "react";
-import { ImagePane, Image } from "./styles";
 import { Skeleton } from "antd";
+import { AppContext } from "lib";
+import { createRef, useContext, useEffect, useState } from "react";
+import { Image, ImagePane } from "./styles";
 
 export type ImageAsyncParams = { id: string };
 
 const frameRef = createRef<HTMLDivElement>();
 
 export const ImageAsync = ({ id }: ImageAsyncParams) => {
+  const { session } = useContext(AppContext);
   const [measures, setMeasures] = useState<{ width: number; height: number }>({
     width: 0,
     height: 0,
@@ -28,7 +30,12 @@ export const ImageAsync = ({ id }: ImageAsyncParams) => {
     setSrc("");
     isMeasured &&
       fetch(
-        `${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${measures.width}&height=${measures.height}`
+        `${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${measures.width}&height=${measures.height}`,
+        {
+          headers: {
+            authorization: `Bearer ${session?.getIdToken()}`,
+          },
+        }
       )
         .then((response) => {
           const reader = response.body?.getReader();
