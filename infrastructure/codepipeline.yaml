@@ -159,7 +159,7 @@ Resources:
                       '","type":"PLAINTEXT"}',
                       ',',
                       '{"name":"REACT_APP_COGNITO_POOL_ID","value":"',
-                      !ImportValue CognitoUserPoolName,
+                      !ImportValue CognitoUserPoolId,
                       '","type":"PLAINTEXT"}',
                       ',',
                       '{"name":"REACT_APP_COGNITO_CLIENT_ID","value":"',
