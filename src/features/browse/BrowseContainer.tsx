@@ -42,7 +42,7 @@ export const BrowseContainer = () => {
     },
     context: {
       headers: {
-        authorization: `Bearer ${session?.getIdToken()}`,
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
       },
     },
   });
