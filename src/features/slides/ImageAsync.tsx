@@ -60,7 +60,7 @@ export const ImageAsync = ({ id }: ImageAsyncParams) => {
         .then((blob) => URL.createObjectURL(blob))
         .then((url) => setSrc(url))
         .catch((err) => console.error(err));
-  }, [id, isMeasured, measures.width, measures.height]);
+  }, [id, isMeasured, measures.width, measures.height, session]);
 
   return (
     <ImagePane ref={frameRef}>

@@ -37,7 +37,7 @@ export const MfaSetup = ({
   setSession,
 }: MfaSetupType) => {
   const from = useLocationFrom();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   if (!cognitoUser) throw Error("No CognitoUser");
 
   return (
