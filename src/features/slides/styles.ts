@@ -15,11 +15,3 @@ export const ImagePane = styled.div`
   width: 100%;
   display: block;
 `;
-
-export const Image = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
-  width: auto;
-  display: block;
-`;

@@ -2,6 +2,7 @@ import { appRoutes, FolderConnection, Maybe } from "lib";
 import { MouseEventHandler } from "react";
 import { MetaLink } from "./MetaLink";
 import { Entry, FolderScreenFrame, PaddedSpan, VerticalFrame } from "./styles";
+import { AsyncImage } from "features/AsyncImage";
 
 export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
@@ -49,9 +50,10 @@ export const EntriesView = ({
           ))}
           {files?.map(({ id }, index) => (
             <Entry key={id} onClick={onClickSlides(index)}>
-              <img
-                src={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
-                alt=""
+              <AsyncImage
+                id={id}
+                width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
+                height={Number(process.env.REACT_APP_ICON_HEIGHT || 0)}
               />
               <MetaLink onClickMeta={onClickMetaHof(id)} />
             </Entry>
