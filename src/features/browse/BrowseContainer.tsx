@@ -86,7 +86,7 @@ export const BrowseContainer = () => {
         key={"4"}
         shape="circle"
         icon={<SearchOutlined />}
-        onClick={() => saveScrollTopAndNavigate(`/${appRoutes.search}`)}
+        onClick={() => saveScrollTopAndNavigate(appRoutes.search)}
       />,
     ]);
   }, [nextPageUrl, saveScrollTopAndNavigate, setNavs]);

@@ -4,6 +4,7 @@ import { ElemBox, ExistingItemsContainer } from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
 import {
+  AppContext,
   AttributeSortTerm,
   AttributeValueInput,
   Characters,
@@ -15,6 +16,7 @@ import {
   SortOrder,
   useGetAllTagsAndAttributesQuery,
 } from "lib";
+import { useContext } from "react";
 import { array, mixed, object, string, ValidationError } from "yup";
 import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
 
@@ -82,8 +84,15 @@ export const SearchInputForm = ({
   searchInput,
   setSearchInput,
 }: SearchInputFormParams) => {
+  const { session } = useContext(AppContext);
+
   const { data, loading, error } = useGetAllTagsAndAttributesQuery({
     fetchPolicy: "cache-and-network",
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
+    },
   });
 
   if (loading) return <Loading />;

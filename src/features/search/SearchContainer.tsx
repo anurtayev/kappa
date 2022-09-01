@@ -1,6 +1,9 @@
+import { slides } from "cache";
 import { EntriesView } from "features/entries";
+import { Loading } from "features/loading";
 import { Nav } from "features/nav";
 import {
+  AppContext,
   appRoutes,
   Characters,
   getPageSizeFromURLSearchParams,
@@ -12,15 +15,14 @@ import {
   useScrollRef,
   useSearchQuery,
 } from "lib";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInputForm } from "./SearchInputForm";
-import { slides } from "cache";
-import { Loading } from "features/loading";
 
 export const SearchContainer = () => {
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
+  const { session } = useContext(AppContext);
 
   const pageSize = getPageSizeFromURLSearchParams(searchParams);
   const nextToken = searchParams.get(PARAM_NEXT_TOKEN);
@@ -46,6 +48,11 @@ export const SearchContainer = () => {
       pageSize,
       nextToken,
       locationKey,
+    },
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
     },
   });
 

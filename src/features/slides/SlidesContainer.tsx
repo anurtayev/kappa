@@ -44,7 +44,7 @@ export const SlidesContainer = () => {
 
   useEffect(() => {
     navigate(`${appRoutes.slides}?index=${index}`);
-  }, [index]);
+  }, [index, navigate]);
 
   useEffect(() => {
     setNavs([
