@@ -1,8 +1,10 @@
 import { Attributes } from "features/attributes";
+import { Loading } from "features/loading";
 import { ElemBox, ExistingItemsContainer } from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
 import {
+  AppContext,
   AttributeSortTerm,
   AttributeValueInput,
   Characters,
@@ -14,6 +16,7 @@ import {
   SortOrder,
   useGetAllTagsAndAttributesQuery,
 } from "lib";
+import { useContext } from "react";
 import { array, mixed, object, string, ValidationError } from "yup";
 import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
 
@@ -44,7 +47,11 @@ const validationSchema = object({
   ({ filter: { attributes, tags } }) =>
     !!attributes?.length ||
     !!tags?.length ||
-    new ValidationError("at least one filter must be present", "", "filter")
+    new ValidationError(
+      "at least one filter must be present",
+      undefined,
+      "filter"
+    )
 );
 
 type SearchInputFormType = {
@@ -77,11 +84,18 @@ export const SearchInputForm = ({
   searchInput,
   setSearchInput,
 }: SearchInputFormParams) => {
+  const { session } = useContext(AppContext);
+
   const { data, loading, error } = useGetAllTagsAndAttributesQuery({
     fetchPolicy: "cache-and-network",
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
+    },
   });
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
 
   const availableTags = data?.tags;

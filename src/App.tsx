@@ -1,23 +1,25 @@
-import { StrictMode } from "react";
-import { Routes, Route } from "react-router-dom";
 import {
   ApolloClient,
   ApolloProvider,
   NormalizedCacheObject,
 } from "@apollo/client";
-import { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router } from "react-router-dom";
-
-import { BrowseContainer } from "features/browse";
-import { ImageScreen } from "features/image";
-import { SearchContainer } from "features/search";
-import { MetaContainer } from "features/meta";
-import { SlidesContainer } from "features/slides";
-import { ErrorBoundary } from "features/errorBoundary";
-import { Layout } from "./features/layout";
-import { appRoutes } from "lib";
-import { defaultTheme } from "lib";
 import { cache } from "cache";
+import { BrowseContainer } from "features/browse";
+import { ErrorBoundary } from "features/errorBoundary";
+import { ImageScreen } from "features/image";
+import { Layout } from "features/layout";
+import { MetaContainer } from "features/meta";
+import { MfaContainer } from "features/mfa";
+import { NewPwdContainer } from "features/newPwd";
+import { TotpContainer } from "features/totp";
+import { SearchContainer } from "features/search";
+import { AuthContainer } from "features/signin";
+import { SlidesContainer } from "features/slides";
+import { MfaSetupContainer } from "features/mfaSetup";
+import { AppProvider, appRoutes, defaultTheme, RequireAuth } from "lib";
+import { StrictMode } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 
 export const App = () => {
   return (
@@ -25,7 +27,7 @@ export const App = () => {
       <ApolloProvider
         client={
           new ApolloClient<NormalizedCacheObject>({
-            uri: "/graphql",
+            uri: process.env.REACT_APP_CLOUDFRONT_URL + "/graphql",
             cache,
             connectToDevTools: true,
           })
@@ -33,26 +35,71 @@ export const App = () => {
       >
         <ThemeProvider theme={defaultTheme}>
           <ErrorBoundary>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route
-                    path={appRoutes.browse}
-                    element={<BrowseContainer />}
-                  />
-                  <Route
-                    path={appRoutes.search}
-                    element={<SearchContainer />}
-                  />
-                  <Route path={appRoutes.image} element={<ImageScreen />} />
-                  <Route path={appRoutes.meta} element={<MetaContainer />} />
-                  <Route
-                    path={appRoutes.slides}
-                    element={<SlidesContainer />}
-                  />
-                </Route>
-              </Routes>
-            </Router>
+            <AppProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route
+                      path={appRoutes.signin}
+                      element={<AuthContainer />}
+                    />
+                    <Route path={appRoutes.mfa} element={<MfaContainer />} />
+                    <Route
+                      path={appRoutes.mfaSetup}
+                      element={<MfaSetupContainer />}
+                    />
+                    <Route
+                      path={appRoutes.newpwd}
+                      element={<NewPwdContainer />}
+                    />
+                    <Route
+                      path={appRoutes.totp}
+                      element={<TotpContainer />}
+                    />
+                    <Route
+                      path={appRoutes.browse}
+                      element={
+                        <RequireAuth>
+                          <BrowseContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.search}
+                      element={
+                        <RequireAuth>
+                          <SearchContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.image}
+                      element={
+                        <RequireAuth>
+                          <ImageScreen />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.meta}
+                      element={
+                        <RequireAuth>
+                          <MetaContainer />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path={appRoutes.slides}
+                      element={
+                        <RequireAuth>
+                          <SlidesContainer />
+                        </RequireAuth>
+                      }
+                    />
+                  </Route>
+                </Routes>
+              </Router>
+            </AppProvider>
           </ErrorBoundary>
         </ThemeProvider>
       </ApolloProvider>

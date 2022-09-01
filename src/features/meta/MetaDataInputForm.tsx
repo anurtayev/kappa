@@ -1,3 +1,4 @@
+import { AsyncImage } from "features/AsyncImage";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
@@ -25,7 +26,6 @@ import {
   EntryName,
   ExistingItemsContainer,
   FlexForm,
-  Frame,
   HeaderContainer,
   SectionHeader,
   SubmitButton,
@@ -126,8 +126,10 @@ export const MetaDataInputForm = ({
         </HeaderContainer>
 
         {!isFolder(id) && (
-          <Frame
-            thumbImageUrl={`${process.env.REACT_APP_CLOUDFRONT_URL}/resizer?key=${id}&width=${process.env.REACT_APP_ICON_WIDTH}&height=${process.env.REACT_APP_ICON_HEIGHT}`}
+          <AsyncImage
+            id={id}
+            width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
+            height={Number(process.env.REACT_APP_ICON_HEIGHT || 0)}
           />
         )}
 

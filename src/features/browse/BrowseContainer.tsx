@@ -1,16 +1,25 @@
+import {
+  FastForwardOutlined,
+  HomeOutlined,
+  RollbackOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { Button } from "antd";
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
-import { Nav } from "features/nav";
+import { Loading } from "features/loading";
 import {
   appRoutes,
-  Characters,
-  NavItem,
+  getMediaName,
+  AppContext,
   useScrollRef,
   useSlidesQuery,
 } from "lib";
+import { useContext, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
+  const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
 
@@ -20,6 +29,10 @@ export const BrowseContainer = () => {
   );
   const nextToken = searchParams.get("nexttoken");
 
+  useEffect(() => {
+    setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
+  }, [id, setTitle]);
+
   const { data, loading, error } = useSlidesQuery({
     variables: {
       pageSize,
@@ -27,14 +40,16 @@ export const BrowseContainer = () => {
       nextToken,
       locationKey,
     },
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
+    },
   });
 
   const { divRef, saveScrollTopAndNavigate } = useScrollRef(
     data?.listFolder?.scrollTop
   );
-
-  if (loading) return <p>Loading</p>;
-  if (error) throw error;
 
   const newNextToken = data?.listFolder?.nextToken;
   const nextPageUrl =
@@ -43,41 +58,50 @@ export const BrowseContainer = () => {
   const files = data?.listFolder?.files;
   slides(files);
 
-  const navs: Array<NavItem> = [
-    {
-      title: "Home",
-      navFn: () => saveScrollTopAndNavigate("/"),
-      icon: Characters.home,
-    },
-    {
-      title: "Back",
-      navFn: () => saveScrollTopAndNavigate(-1),
-      icon: Characters.arrowLeft,
-    },
-  ];
-  nextPageUrl &&
-    navs.push({
-      title: "Next",
-      navFn: () => saveScrollTopAndNavigate(nextPageUrl),
-      icon: Characters.arrowRight,
-    });
-  navs.push({
-    title: "Search",
-    navFn: () => saveScrollTopAndNavigate(`/${appRoutes.search}`),
-    icon: Characters.magnifyingGlass,
-  });
+  useEffect(() => {
+    setNavs([
+      <Button
+        key={"1"}
+        shape="circle"
+        icon={<HomeOutlined />}
+        onClick={() => saveScrollTopAndNavigate("/")}
+      />,
+      <Button
+        key={"2"}
+        shape="circle"
+        icon={<RollbackOutlined />}
+        onClick={() => saveScrollTopAndNavigate(-1)}
+      />,
+      ...(nextPageUrl
+        ? [
+            <Button
+              key={"3"}
+              shape="circle"
+              icon={<FastForwardOutlined />}
+              onClick={() => saveScrollTopAndNavigate(nextPageUrl)}
+            />,
+          ]
+        : []),
+      <Button
+        key={"4"}
+        shape="circle"
+        icon={<SearchOutlined />}
+        onClick={() => saveScrollTopAndNavigate(appRoutes.search)}
+      />,
+    ]);
+  }, [nextPageUrl, saveScrollTopAndNavigate, setNavs]);
+
+  if (loading) return <Loading />;
+  if (error) throw error;
 
   return (
-    <>
-      <Nav navs={navs}></Nav>
-      <EntriesView
-        folders={data?.listFolder?.folders}
-        files={files}
-        nextPageUrl={nextPageUrl}
-        scrollTop={data?.listFolder?.scrollTop}
-        divRef={divRef}
-        saveScrollTopAndNavigate={saveScrollTopAndNavigate}
-      />
-    </>
+    <EntriesView
+      folders={data?.listFolder?.folders}
+      files={files}
+      nextPageUrl={nextPageUrl}
+      scrollTop={data?.listFolder?.scrollTop}
+      divRef={divRef}
+      saveScrollTopAndNavigate={saveScrollTopAndNavigate}
+    />
   );
 };

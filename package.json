@@ -3,27 +3,38 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.5.6",
     "@aspan/sigma": "^1.0.25",
+    "amazon-cognito-identity-js": "^5.2.9",
+    "antd": "^4.20.7",
     "aws-sdk": "^2.1116.0",
+    "crypto-browserify": "^3.12.0",
+    "domain-browser": "^4.22.0",
     "formik": "^2.2.9",
+    "https-browserify": "^1.0.0",
+    "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",
     "react-scripts": "^5.0.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "styled-components": "^5.3.5",
+    "util": "^0.12.4",
     "yup": "^0.32.11"
   },
   "scripts": {
+    "start": ". scripts/env.sh && react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "pipeline:create": ". scripts/env.sh && aws cloudformation create-stack --stack-name $STACK_NAME-pipeline --template-body file://infrastructure/codepipeline.yaml  --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT ParameterKey=GitBranchName,ParameterValue=$GIT_BRANCH ParameterKey=FullRepositoryId,ParameterValue=$REPOSITORY_ID ParameterKey=PrincipalOrgID,ParameterValue=$PRINCIPAL_ORG_ID",
     "pipeline:update": ". scripts/env.sh && aws cloudformation update-stack --stack-name $STACK_NAME-pipeline --template-body file://infrastructure/codepipeline.yaml  --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=ProjectName,ParameterValue=$PROJECT ParameterKey=GitBranchName,ParameterValue=$GIT_BRANCH ParameterKey=FullRepositoryId,ParameterValue=$REPOSITORY_ID ParameterKey=PrincipalOrgID,ParameterValue=$PRINCIPAL_ORG_ID",
     "pipeline:delete": ". scripts/env.sh && aws cloudformation delete-stack --stack-name $STACK_NAME-pipeline",
     "codegen:generate": "graphql-codegen --config codegen.yml",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": ". scripts/env.sh && printenv | sort && aws s3 sync build s3://$HOSTING_BUCKET"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "deploy": ". scripts/env.sh && printenv | sort && aws s3 sync build s3://$HOSTING_BUCKET --delete"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,6 +67,10 @@
     "@types/react-dom": "^16.9.0",
     "@types/styled-components": "^5.1.19",
     "dotenv-cli": "^5.1.0",
+    "source-map-explorer": "^2.5.2",
     "typescript": "^4.6.3"
+  },
+  "browser": {
+    "child_process": false
   }
 }

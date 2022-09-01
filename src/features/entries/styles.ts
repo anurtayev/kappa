@@ -5,6 +5,7 @@ export const FolderScreenFrame = styled.div`
   overflow: scroll;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 `;
 
 export const VerticalFrame = styled.div`

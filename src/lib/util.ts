@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+
 export enum EntryType {
   folder = "Folder",
   file = "File",
@@ -9,11 +11,16 @@ export enum EntryAction {
 }
 
 export enum appRoutes {
-  browse = "browse",
-  search = "search",
-  image = "image",
-  meta = "meta",
-  slides = "slides",
+  browse = "/browse",
+  search = "/search",
+  image = "/image",
+  meta = "/meta",
+  slides = "/slides",
+  signin = "/signin",
+  mfa = "/mfa",
+  mfaSetup = "/mfasetup",
+  newpwd = "/newpwd",
+  totp = "/totp",
 }
 
 export enum systemAttributes {
@@ -42,6 +49,7 @@ export type NavItem = {
   navFn: () => void;
   icon: Characters;
   title: string;
+  description?: string;
 };
 
 export type NavItems = Array<NavItem>;
@@ -49,7 +57,7 @@ export type NavItems = Array<NavItem>;
 export const isFolder = (id: string): boolean => id.slice(-1) === "/";
 
 export const getMediaName = (key: string): string =>
-  key.split("/").slice(-1)[0];
+  key.endsWith("/") ? key.split("/").slice(-2)[0] : key.split("/").slice(-1)[0];
 
 export const getPageSizeFromURLSearchParams = (
   searchParams: URLSearchParams
@@ -61,3 +69,9 @@ export const getPageSizeFromURLSearchParams = (
 export const PARAM_SEARCH_INPUT = "searchinput";
 export const PARAM_PAGE_SIZE = "pagesize";
 export const PARAM_NEXT_TOKEN = "nexttoken";
+
+export const useLocationFrom = () => {
+  const location = useLocation();
+  const state: any = location.state;
+  return state?.from?.pathname || "/";
+};

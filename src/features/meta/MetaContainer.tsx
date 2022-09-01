@@ -1,10 +1,13 @@
 import { gql, useApolloClient } from "@apollo/client";
+import { Loading } from "features/loading";
 import {
+  AppContext,
+  Maybe,
   MetaData,
   useGetAllTagsAndAttributesQuery,
   useUpdateMetaDataMutation,
-  Maybe,
 } from "lib";
+import { useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MetaDataInputForm } from "./MetaDataInputForm";
 
@@ -12,6 +15,7 @@ export const MetaContainer = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { session } = useContext(AppContext);
 
   const id = searchParams.get("id");
   if (!id) {
@@ -31,11 +35,16 @@ export const MetaContainer = () => {
 
   const { data, loading, error } = useGetAllTagsAndAttributesQuery({
     fetchPolicy: "cache-and-network",
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
+    },
   });
 
   const [updateMetaDataMutation] = useUpdateMetaDataMutation();
 
-  if (loading) return <div>Loading available metadata...</div>;
+  if (loading) return <Loading />;
   if (error) throw error;
 
   const availableAttributes = data?.attributes;

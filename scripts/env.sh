@@ -8,6 +8,9 @@ fi
 if [ -z $CODEBUILD_CI ]
 then
   export GIT_BRANCH=$(git status|head -n 1|cut -d ' ' -f3)
+  export REACT_APP_CLOUDFRONT_URL=$LOCAL_REACT_APP_CLOUDFRONT_URL
+  export REACT_APP_COGNITO_POOL_ID=$LOCAL_REACT_APP_COGNITO_POOL_ID
+  export REACT_APP_COGNITO_CLIENT_ID=$LOCAL_REACT_APP_COGNITO_CLIENT_ID
 fi
 
 export ASPAN_AWS_ACCOUNT=$(aws sts get-caller-identity --query 'Account' --output text)

@@ -6,3 +6,4 @@ type Query {
   slideId(index: Int!): String
   numberOfSlides: Int
 }
+

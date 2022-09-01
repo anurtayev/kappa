@@ -1,39 +1,38 @@
-import { Nav } from "features/nav";
-import { Characters, NavItem } from "lib";
-import { createRef } from "react";
-import { ImageAsync } from "./ImageAsync";
-import { Frame, LeftSlideButton, RightSlideButton } from "./styles";
+import { createRef, useEffect, useState } from "react";
+import { ImagePane } from "./styles";
+import { AsyncImage } from "features/AsyncImage";
+import { Frame } from "./styles";
 
 export type SlideScreenParams = {
   id: string;
-  navs: Array<NavItem>;
-  onClickNext: SlideNavFn;
-  onClickPrev: SlideNavFn;
 };
 
-const navRef = createRef<HTMLDivElement>();
-const frameRef = createRef<HTMLDivElement>();
+export const SlideScreen = ({ id }: SlideScreenParams) => {
+  const frameRef = createRef<HTMLDivElement>();
+  const [measures, setMeasures] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
+  const [isMeasured, setIsMeasured] = useState<boolean>(false);
 
-export const SlideScreen = ({
-  id,
-  navs,
-  onClickNext,
-  onClickPrev,
-}: SlideScreenParams) => (
-  <Frame ref={frameRef}>
-    <Nav navs={navs} navRef={navRef}></Nav>
-    <ImageAsync id={id} />
+  useEffect(() => {
+    if (frameRef.current && !isMeasured) {
+      setMeasures({
+        width: frameRef.current.clientWidth,
+        height: frameRef.current.clientHeight,
+      });
+      setIsMeasured(true);
+    }
+  }, [isMeasured, frameRef]);
 
-    {onClickPrev && (
-      <LeftSlideButton onClick={onClickPrev}>
-        {Characters.arrowLeft}
-      </LeftSlideButton>
-    )}
-    {onClickNext && (
-      <RightSlideButton onClick={onClickNext}>
-        {Characters.arrowRight}
-      </RightSlideButton>
-    )}
-  </Frame>
-);
+  return (
+    <Frame>
+      <ImagePane ref={frameRef}>
+        {isMeasured && (
+          <AsyncImage id={id} width={measures.width} height={measures.height} />
+        )}
+      </ImagePane>
+    </Frame>
+  );
+};
 export type SlideNavFn = (() => void) | undefined;
