@@ -59,7 +59,7 @@ export const SearchContainer = () => {
   const newNextToken = data?.search?.nextToken;
   const nextPageUrl =
     newNextToken &&
-    `/${appRoutes.search}?${PARAM_SEARCH_INPUT}=${locationKey}&${PARAM_NEXT_TOKEN}=${newNextToken}&${PARAM_PAGE_SIZE}=${pageSize}`;
+    `${appRoutes.search}?${PARAM_SEARCH_INPUT}=${locationKey}&${PARAM_NEXT_TOKEN}=${newNextToken}&${PARAM_PAGE_SIZE}=${pageSize}`;
   newNextToken &&
     sessionStorage.setItem(locationKey, JSON.stringify(searchInput));
   const files = data?.search?.files;
@@ -85,7 +85,7 @@ export const SearchContainer = () => {
     });
   navs.push({
     title: "Search",
-    navFn: () => saveScrollTopAndNavigate(`/${appRoutes.search}`),
+    navFn: () => saveScrollTopAndNavigate(`${appRoutes.search}`),
     icon: Characters.magnifyingGlass,
   });
 

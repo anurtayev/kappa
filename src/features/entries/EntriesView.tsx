@@ -22,20 +22,20 @@ export const EntriesView = ({
   const onClickSlides =
     (index: number): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`/${appRoutes.slides}?index=${index}`);
+      saveScrollTopAndNavigate(`${appRoutes.slides}?index=${index}`);
     };
 
   const onClickFolder =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`/${appRoutes.browse}?id=${id}`);
+      saveScrollTopAndNavigate(`${appRoutes.browse}?id=${id}`);
     };
 
   const onClickMetaHof =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
       event.stopPropagation();
-      saveScrollTopAndNavigate(`/${appRoutes.meta}?id=${id}`);
+      saveScrollTopAndNavigate(`${appRoutes.meta}?id=${id}`);
     };
 
   return (
