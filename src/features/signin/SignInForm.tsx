@@ -1,7 +1,7 @@
 import { AuthenticationDetails, CognitoUser } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import { Field, Form, Formik } from "formik";
-import { AppContext, appRoutes, useLocationFrom } from "lib";
+import { AppContext, appRoutes, useLocationFrom, cookieStorage } from "lib";
 import { Dispatch, useContext } from "react";
 import { NavigateFunction, createSearchParams } from "react-router-dom";
 import styled from "styled-components";
@@ -48,6 +48,7 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
         const cognitoUser = new CognitoUser({
           Username: username,
           Pool: userPool,
+          Storage: cookieStorage,
         });
         setCognitoUser(cognitoUser);
 

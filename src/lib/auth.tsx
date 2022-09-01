@@ -2,6 +2,7 @@ import {
   CognitoUser,
   CognitoUserPool,
   CognitoUserSession,
+  CookieStorage,
 } from "amazon-cognito-identity-js";
 import {
   createContext,
@@ -14,9 +15,14 @@ import {
 import { Navigate, useLocation } from "react-router-dom";
 import { appRoutes } from "./util";
 
+export const cookieStorage = new CookieStorage({
+  domain: process.env.REACT_APP_CLOUDFRONT_URL!.split("/").slice(-1)[0],
+});
+
 export const userPool = new CognitoUserPool({
   UserPoolId: process.env.REACT_APP_COGNITO_POOL_ID!,
   ClientId: process.env.REACT_APP_COGNITO_CLIENT_ID!,
+  Storage: cookieStorage,
 });
 
 export type AppContextType = {
