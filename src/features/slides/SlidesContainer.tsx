@@ -11,28 +11,19 @@ import {
   GetSlideIdQuery,
   GetSlideIdQueryVariables,
   AppContext,
+  appRoutes,
 } from "lib";
 import { getMediaName } from "lib/util";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { URLSearchParams } from "url";
 import { SlideScreen } from "./SlideScreen";
-
-const getIndexFromParams = (params: URLSearchParams): number => {
-  try {
-    return Number(params.get("index")) || 0;
-  } catch (error) {
-    return 0;
-  }
-};
-export type SlidesContainerParams = {};
 
 export const SlidesContainer = () => {
   const { setNavs, setTitle } = useContext(AppContext);
   const client = useApolloClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [index, setIndex] = useState(getIndexFromParams(searchParams));
+  const [index, setIndex] = useState(Number(searchParams.get("index")));
 
   const getSlideIdQueryResult = client.readQuery<
     GetSlideIdQuery,
@@ -50,6 +41,10 @@ export const SlidesContainer = () => {
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
   }, [slideId, setTitle]);
+
+  useEffect(() => {
+    navigate(`${appRoutes.slides}?index=${index}`);
+  }, [index]);
 
   useEffect(() => {
     setNavs([
@@ -71,7 +66,9 @@ export const SlidesContainer = () => {
               key={"3"}
               shape="circle"
               icon={<StepBackwardOutlined />}
-              onClick={() => setIndex(index - 1)}
+              onClick={() => {
+                setIndex(index - 1);
+              }}
             />,
           ]
         : []),
@@ -81,7 +78,9 @@ export const SlidesContainer = () => {
               key={"4"}
               shape="circle"
               icon={<StepForwardOutlined />}
-              onClick={() => setIndex(index + 1)}
+              onClick={() => {
+                setIndex(index + 1);
+              }}
             />,
           ]
         : []),
