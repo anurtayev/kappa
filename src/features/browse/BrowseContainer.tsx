@@ -54,7 +54,7 @@ export const BrowseContainer = () => {
   const newNextToken = data?.listFolder?.nextToken;
   const nextPageUrl =
     newNextToken &&
-    `/${appRoutes.browse}?id=${id}&nexttoken=${newNextToken}&pagesize=${pageSize}`;
+    `${appRoutes.browse}?id=${id}&nexttoken=${newNextToken}&pagesize=${pageSize}`;
   const files = data?.listFolder?.files;
   slides(files);
 
