@@ -107,7 +107,6 @@ export const SearchContainer = () => {
         files={data?.search?.files}
         folders={data?.search?.folders}
         scrollTop={data?.search?.scrollTop}
-        nextPageUrl={nextPageUrl}
         divRef={divRef}
         saveScrollTopAndNavigate={saveScrollTopAndNavigate}
       />

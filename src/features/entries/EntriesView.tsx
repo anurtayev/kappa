@@ -1,13 +1,12 @@
-import { appRoutes, FolderConnection, Maybe } from "lib";
+import { AsyncImage } from "features/AsyncImage";
+import { appRoutes, FolderConnection } from "lib";
 import { MouseEventHandler } from "react";
 import { MetaLink } from "./MetaLink";
 import { Entry, FolderScreenFrame, PaddedSpan, VerticalFrame } from "./styles";
-import { AsyncImage } from "features/AsyncImage";
 
 export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
   files: FolderConnection["files"];
-  nextPageUrl: Maybe<string> | undefined;
   scrollTop: number | undefined;
   divRef: React.RefObject<HTMLDivElement>;
   saveScrollTopAndNavigate: (dest: string | number) => void;
