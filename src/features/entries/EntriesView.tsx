@@ -1,4 +1,4 @@
-import { AsyncImage } from "features/AsyncImage";
+import { AsyncImage } from "features/asyncImage";
 import { appRoutes, FolderConnection } from "lib";
 import { MouseEventHandler } from "react";
 import { MetaLink } from "./MetaLink";

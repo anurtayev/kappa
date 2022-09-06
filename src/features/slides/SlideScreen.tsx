@@ -1,6 +1,6 @@
 import { createRef, useEffect, useState } from "react";
 import { ImagePane } from "./styles";
-import { AsyncImage } from "features/AsyncImage";
+import { AsyncImage } from "features/asyncImage";
 import { Frame } from "./styles";
 
 export type SlideScreenParams = {
