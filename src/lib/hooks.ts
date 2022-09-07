@@ -14,20 +14,16 @@ export function useScrollRef(scrollTop: number | undefined) {
   });
 
   const saveScrollTopAndNavigate = useMemo(() => {
-    return (dest: string | number) => {
+    return (dest: string) => {
       sessionStorage.setItem(
         locationKey,
         JSON.stringify({
           scrollTop: divRef.current?.scrollTop as number,
         })
       );
-      if (typeof dest === "number") {
-        navigate(dest);
-      } else {
-        navigate(dest);
-      }
+      navigate(dest);
     };
   }, [locationKey, navigate, divRef]);
 
-  return { divRef, saveScrollTopAndNavigate };
+  return { divRef, saveScrollTopAndNavigate, navigate };
 }

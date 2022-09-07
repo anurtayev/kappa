@@ -9,7 +9,7 @@ export type FolderScreenParameters = {
   files: FolderConnection["files"];
   scrollTop: number | undefined;
   divRef: React.RefObject<HTMLDivElement>;
-  saveScrollTopAndNavigate: (dest: string | number) => void;
+  saveScrollTopAndNavigate: (dest: string) => void;
 };
 
 export const EntriesView = ({
@@ -21,7 +21,7 @@ export const EntriesView = ({
   const onClickSlides =
     (index: number): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`${appRoutes.slides}?index=${index}`);
+      saveScrollTopAndNavigate(`${appRoutes.slides}/${String(index)}`);
     };
 
   const onClickFolder =

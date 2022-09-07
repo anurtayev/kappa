@@ -7,23 +7,23 @@ import {
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
 import {
+  AppContext,
+  appRoutes,
   GetSlideIdDocument,
   GetSlideIdQuery,
   GetSlideIdQueryVariables,
-  AppContext,
-  appRoutes,
+  useScrollRef,
 } from "lib";
 import { getMediaName } from "lib/util";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { SlideScreen } from "./SlideScreen";
 
 export const SlidesContainer = () => {
   const { setNavs, setTitle } = useContext(AppContext);
   const client = useApolloClient();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [index, setIndex] = useState(Number(searchParams.get("index")));
+  const { id } = useParams();
+  const index = Number(id) || 0;
 
   const getSlideIdQueryResult = client.readQuery<
     GetSlideIdQuery,
@@ -38,13 +38,11 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
+  const { saveScrollTopAndNavigate, navigate } = useScrollRef(undefined);
+
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
   }, [slideId, setTitle]);
-
-  useEffect(() => {
-    navigate(`${appRoutes.slides}?index=${index}`);
-  }, [index, navigate]);
 
   useEffect(() => {
     setNavs([
@@ -52,7 +50,7 @@ export const SlidesContainer = () => {
         key={"1"}
         shape="circle"
         icon={<HomeOutlined />}
-        onClick={() => navigate("/")}
+        onClick={() => saveScrollTopAndNavigate("/")}
       />,
       <Button
         key={"2"}
@@ -67,7 +65,9 @@ export const SlidesContainer = () => {
               shape="circle"
               icon={<StepBackwardOutlined />}
               onClick={() => {
-                setIndex(index - 1);
+                saveScrollTopAndNavigate(
+                  `${appRoutes.slides}/${String(index - 1)}`
+                );
               }}
             />,
           ]
@@ -79,13 +79,15 @@ export const SlidesContainer = () => {
               shape="circle"
               icon={<StepForwardOutlined />}
               onClick={() => {
-                setIndex(index + 1);
+                saveScrollTopAndNavigate(
+                  `${appRoutes.slides}/${String(index + 1)}`
+                );
               }}
             />,
           ]
         : []),
     ]);
-  }, [index, navigate, numberOfSlides, setNavs, setIndex]);
+  }, [index, navigate, numberOfSlides, setNavs, saveScrollTopAndNavigate]);
 
   if (!slideId) throw Error("Slides: no id");
 

@@ -52,10 +52,7 @@ export const App = () => {
                       path={appRoutes.newpwd}
                       element={<NewPwdContainer />}
                     />
-                    <Route
-                      path={appRoutes.totp}
-                      element={<TotpContainer />}
-                    />
+                    <Route path={appRoutes.totp} element={<TotpContainer />} />
                     <Route
                       path={appRoutes.browse}
                       element={
@@ -89,7 +86,7 @@ export const App = () => {
                       }
                     />
                     <Route
-                      path={appRoutes.slides}
+                      path={`${appRoutes.slides}/:id`}
                       element={
                         <RequireAuth>
                           <SlidesContainer />

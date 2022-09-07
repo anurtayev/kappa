@@ -56,7 +56,7 @@ export const SearchContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate } = useScrollRef(
+  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef(
     data?.search?.scrollTop
   );
 
@@ -80,7 +80,7 @@ export const SearchContainer = () => {
     },
     {
       title: "Back",
-      navFn: () => saveScrollTopAndNavigate(-1),
+      navFn: () => navigate(-1),
       icon: Characters.arrowLeft,
     },
   ];

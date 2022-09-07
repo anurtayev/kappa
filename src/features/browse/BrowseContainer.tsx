@@ -49,7 +49,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate } = useScrollRef(
+  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef(
     data?.listFolder?.scrollTop
   );
 
@@ -79,7 +79,7 @@ export const BrowseContainer = () => {
         key={"2"}
         shape="circle"
         icon={<RollbackOutlined />}
-        onClick={() => saveScrollTopAndNavigate(-1)}
+        onClick={() => navigate(-1)}
       />,
       ...(token
         ? [
@@ -121,7 +121,15 @@ export const BrowseContainer = () => {
         onClick={() => saveScrollTopAndNavigate(appRoutes.search)}
       />,
     ]);
-  }, [nextToken, saveScrollTopAndNavigate, setNavs, id, token, pageSize]);
+  }, [
+    nextToken,
+    saveScrollTopAndNavigate,
+    setNavs,
+    id,
+    token,
+    pageSize,
+    navigate,
+  ]);
 
   if (loading) return <Loading />;
   if (error) throw error;
