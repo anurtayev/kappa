@@ -1,4 +1,4 @@
-import { AsyncImage } from "features/asyncImage";
+import { AsyncImage } from "features/asyncImage2";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
