@@ -50,10 +50,6 @@ export const Totp = ({ cognitoUser, navigate, setSession }: TotpType) => {
             },
             onSuccess(session) {
               setSession(session);
-              console.log("==> id", session.getIdToken());
-              console.log("==> access", session.getAccessToken());
-              console.log("==> refresh", session.getRefreshToken());
-
               navigate(appRoutes.browse, { replace: true });
             },
           },

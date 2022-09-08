@@ -59,12 +59,9 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
               setStatus(err.message || JSON.stringify(err));
             },
             onSuccess(session, userConfirmationNecessary) {
-              console.log("==> onSuccess", session, userConfirmationNecessary);
               navigate(from, { replace: true });
             },
-            customChallenge(challengeParameters) {
-              console.log("==> customChallenge", challengeParameters);
-            },
+            customChallenge(challengeParameters) {},
             mfaRequired(challengeName, challengeParameters) {
               // SMS_MFA
               // {CODE_DELIVERY_DELIVERY_MEDIUM: 'SMS', CODE_DELIVERY_DESTINATION: '+*******8884'}
@@ -74,7 +71,6 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
               navigate(appRoutes.newpwd, { replace: true });
             },
             mfaSetup(challengeName, challengeParameters) {
-              console.log("==> mfaSetup", challengeName, challengeParameters);
               cognitoUser.associateSoftwareToken({
                 associateSecretCode(secretCode) {
                   navigate(
@@ -90,19 +86,8 @@ export const SignInForm = ({ navigate, setCognitoUser }: SignInFormParams) => {
                 },
               });
             },
-            selectMFAType(challengeName, challengeParameters) {
-              console.log(
-                "==> selectMFAType",
-                challengeName,
-                challengeParameters
-              );
-            },
+            selectMFAType(challengeName, challengeParameters) {},
             totpRequired(challengeName, challengeParameters) {
-              console.log(
-                "==> totpRequired",
-                challengeName,
-                challengeParameters
-              );
               navigate({ pathname: appRoutes.totp }, { replace: true });
             },
           }

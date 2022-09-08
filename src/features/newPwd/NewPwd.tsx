@@ -58,7 +58,6 @@ export const NewPwd = ({ cognitoUser, navigate }: NewPwdType) => {
             navigate(appRoutes.mfa, { replace: true });
           },
           mfaSetup(challengeName, challengeParameters) {
-            console.log("==> mfaSetup", challengeName, challengeParameters);
             cognitoUser.associateSoftwareToken({
               associateSecretCode(secretCode) {
                 navigate(
