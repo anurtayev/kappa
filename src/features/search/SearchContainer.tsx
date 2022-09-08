@@ -47,7 +47,6 @@ export const SearchContainer = () => {
       searchInput,
       pageSize,
       nextToken,
-      locationKey,
     },
     context: {
       headers: {
@@ -56,9 +55,7 @@ export const SearchContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef(
-    data?.search?.scrollTop
-  );
+  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef();
 
   if (loading) return <Loading />;
   // if (error) return <p>{error.message}</p>;
@@ -106,7 +103,6 @@ export const SearchContainer = () => {
       <EntriesView
         files={data?.search?.files}
         folders={data?.search?.folders}
-        scrollTop={data?.search?.scrollTop}
         divRef={divRef}
         saveScrollTopAndNavigate={saveScrollTopAndNavigate}
       />

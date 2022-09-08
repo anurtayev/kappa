@@ -7,7 +7,6 @@ import { Entry, FolderScreenFrame, PaddedSpan, VerticalFrame } from "./styles";
 export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
   files: FolderConnection["files"];
-  scrollTop: number | undefined;
   divRef: React.RefObject<HTMLDivElement>;
   saveScrollTopAndNavigate: (dest: string) => void;
 };

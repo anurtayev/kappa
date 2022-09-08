@@ -47,12 +47,6 @@ export type FolderConnection = {
   files?: Maybe<Array<MetaData>>;
   folders?: Maybe<Array<MetaData>>;
   nextToken?: Maybe<Scalars['String']>;
-  scrollTop: Scalars['Int'];
-};
-
-
-export type FolderConnectionScrollTopArgs = {
-  locationKey: Scalars['String'];
 };
 
 export enum InputType {
@@ -126,11 +120,10 @@ export type SlidesQueryVariables = Exact<{
   id?: InputMaybe<Scalars['String']>;
   pageSize: Scalars['Int'];
   nextToken?: InputMaybe<Scalars['String']>;
-  locationKey: Scalars['String'];
 }>;
 
 
-export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, scrollTop: number, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
+export type SlidesQuery = { __typename?: 'Query', listFolder?: { __typename?: 'FolderConnection', nextToken?: string | null, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 export type UpdateMetaDataMutationVariables = Exact<{
   id: Scalars['String'];
@@ -149,11 +142,10 @@ export type SearchQueryVariables = Exact<{
   searchInput?: InputMaybe<SearchInput>;
   pageSize: Scalars['Int'];
   nextToken?: InputMaybe<Scalars['String']>;
-  locationKey: Scalars['String'];
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, scrollTop: number, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
+export type SearchQuery = { __typename?: 'Query', search?: { __typename?: 'FolderConnection', nextToken?: string | null, folders?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null, files?: Array<{ __typename?: 'MetaData', id: string, tags?: Array<string> | null, attributes?: Array<{ __typename?: 'AttributeValue', value: string, attribute: { __typename?: 'Attribute', name: string, type: InputType } }> | null }> | null } | null };
 
 export type GetSlideIdQueryVariables = Exact<{
   index: Scalars['Int'];
@@ -164,7 +156,7 @@ export type GetSlideIdQuery = { __typename?: 'Query', slideId?: string | null, n
 
 
 export const SlidesDocument = gql`
-    query Slides($id: String, $pageSize: Int!, $nextToken: String, $locationKey: String!) {
+    query Slides($id: String, $pageSize: Int!, $nextToken: String) {
   listFolder(id: $id, nextToken: $nextToken, pageSize: $pageSize) {
     folders {
       id
@@ -189,7 +181,6 @@ export const SlidesDocument = gql`
       tags
     }
     nextToken
-    scrollTop(locationKey: $locationKey) @client
   }
 }
     `;
@@ -209,7 +200,6 @@ export const SlidesDocument = gql`
  *      id: // value for 'id'
  *      pageSize: // value for 'pageSize'
  *      nextToken: // value for 'nextToken'
- *      locationKey: // value for 'locationKey'
  *   },
  * });
  */
@@ -303,7 +293,7 @@ export type GetAllTagsAndAttributesQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllTagsAndAttributesLazyQueryHookResult = ReturnType<typeof useGetAllTagsAndAttributesLazyQuery>;
 export type GetAllTagsAndAttributesQueryResult = Apollo.QueryResult<GetAllTagsAndAttributesQuery, GetAllTagsAndAttributesQueryVariables>;
 export const SearchDocument = gql`
-    query Search($searchInput: SearchInput, $pageSize: Int!, $nextToken: String, $locationKey: String!) {
+    query Search($searchInput: SearchInput, $pageSize: Int!, $nextToken: String) {
   search(searchInput: $searchInput, pageSize: $pageSize, nextToken: $nextToken) {
     folders {
       attributes {
@@ -328,7 +318,6 @@ export const SearchDocument = gql`
       tags
     }
     nextToken
-    scrollTop(locationKey: $locationKey) @client
   }
 }
     `;
@@ -348,7 +337,6 @@ export const SearchDocument = gql`
  *      searchInput: // value for 'searchInput'
  *      pageSize: // value for 'pageSize'
  *      nextToken: // value for 'nextToken'
- *      locationKey: // value for 'locationKey'
  *   },
  * });
  */

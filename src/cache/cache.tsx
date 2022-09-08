@@ -3,15 +3,6 @@ import { Maybe, MetaData } from "lib";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
-    FolderConnection: {
-      fields: {
-        scrollTop: {
-          read(_, { variables, args }) {
-            return 0;
-          },
-        },
-      },
-    },
     Query: {
       fields: {
         slideId: {

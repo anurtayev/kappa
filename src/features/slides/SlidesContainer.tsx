@@ -38,7 +38,7 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { saveScrollTopAndNavigate, navigate } = useScrollRef(undefined);
+  const { saveScrollTopAndNavigate, navigate } = useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));

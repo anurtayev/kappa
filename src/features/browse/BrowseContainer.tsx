@@ -17,12 +17,11 @@ import {
   useSlidesQuery,
 } from "lib";
 import { useContext, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
   const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
-  const { key: locationKey } = useLocation();
 
   const id = searchParams.get("id") || process.env.REACT_APP_MEDIA_ROOT || "";
   const pageSize = Number(
@@ -40,7 +39,6 @@ export const BrowseContainer = () => {
       pageSize,
       id,
       nextToken: token,
-      locationKey,
     },
     context: {
       headers: {
@@ -49,9 +47,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef(
-    data?.listFolder?.scrollTop
-  );
+  const { divRef, saveScrollTopAndNavigate, goBack } = useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -79,7 +75,7 @@ export const BrowseContainer = () => {
         key={"2"}
         shape="circle"
         icon={<RollbackOutlined />}
-        onClick={() => navigate(-1)}
+        onClick={() => goBack()}
       />,
       ...(token
         ? [
@@ -123,12 +119,12 @@ export const BrowseContainer = () => {
     ]);
   }, [
     nextToken,
-    saveScrollTopAndNavigate,
-    setNavs,
     id,
     token,
     pageSize,
-    navigate,
+    saveScrollTopAndNavigate,
+    setNavs,
+    goBack,
   ]);
 
   if (loading) return <Loading />;
@@ -138,7 +134,6 @@ export const BrowseContainer = () => {
     <EntriesView
       folders={data?.listFolder?.folders}
       files={files}
-      scrollTop={data?.listFolder?.scrollTop}
       divRef={divRef}
       saveScrollTopAndNavigate={saveScrollTopAndNavigate}
     />
