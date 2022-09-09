@@ -42,7 +42,13 @@ export const MetaContainer = () => {
     },
   });
 
-  const [updateMetaDataMutation] = useUpdateMetaDataMutation();
+  const [updateMetaDataMutation] = useUpdateMetaDataMutation({
+    context: {
+      headers: {
+        authorization: `Bearer ${session?.getIdToken().getJwtToken()}`,
+      },
+    },
+  });
 
   if (loading) return <Loading />;
   if (error) throw error;
