@@ -27,7 +27,7 @@ export function useScrollRef() {
 
       navigate(dest);
     };
-  }, [locationKey, navigate, divRef]);
+  }, [locationKey, navigate, divRef, pathname, search]);
 
   return {
     divRef,

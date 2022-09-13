@@ -17,12 +17,11 @@ import {
   useSlidesQuery,
 } from "lib";
 import { useContext, useEffect } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
   const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
-  const location = useLocation();
 
   const id = searchParams.get("id") || process.env.REACT_APP_MEDIA_ROOT || "";
 
@@ -49,7 +48,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, goBack, navigate } = useScrollRef();
+  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -133,7 +132,7 @@ export const BrowseContainer = () => {
     pageSize,
     saveScrollTopAndNavigate,
     setNavs,
-    goBack,
+    navigate,
   ]);
 
   if (loading) return <Loading />;

@@ -1,9 +1,8 @@
 import {
+  CloseOutlined,
   HomeOutlined,
-  RollbackOutlined,
   StepBackwardOutlined,
   StepForwardOutlined,
-  CloseOutlined,
 } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
@@ -39,7 +38,7 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { saveScrollTopAndNavigate, navigate, goBack } = useScrollRef();
+  const { saveScrollTopAndNavigate, navigate } = useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
