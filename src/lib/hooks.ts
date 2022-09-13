@@ -2,7 +2,7 @@ import { createRef, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function useScrollRef() {
-  const { key: locationKey } = useLocation();
+  const { key: locationKey, pathname, search } = useLocation();
 
   const navigate = useNavigate();
   const goBack = useMemo(() => () => navigate(-1), [navigate]);
@@ -22,6 +22,9 @@ export function useScrollRef() {
         locationKey,
         String(divRef.current?.scrollTop || 0)
       );
+      sessionStorage.setItem("lastFolder", pathname + search);
+      console.log("==> saved", pathname + search);
+
       navigate(dest);
     };
   }, [locationKey, navigate, divRef]);

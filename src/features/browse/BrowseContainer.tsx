@@ -2,8 +2,8 @@ import {
   FastBackwardOutlined,
   FastForwardOutlined,
   HomeOutlined,
-  RollbackOutlined,
   SearchOutlined,
+  UpOutlined,
 } from "@ant-design/icons";
 import { Button } from "antd";
 import { slides } from "cache";
@@ -17,13 +17,15 @@ import {
   useSlidesQuery,
 } from "lib";
 import { useContext, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 
 export const BrowseContainer = () => {
   const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const id = searchParams.get("id") || process.env.REACT_APP_MEDIA_ROOT || "";
+
   const pageSize = Number(
     searchParams.get("pagesize") || process.env.REACT_APP_PAGE_SIZE || "20"
   );
@@ -47,7 +49,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, goBack } = useScrollRef();
+  const { divRef, saveScrollTopAndNavigate, goBack, navigate } = useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -66,17 +68,25 @@ export const BrowseContainer = () => {
 
     setNavs([
       <Button
-        key={"1"}
+        key="1"
         shape="circle"
         icon={<HomeOutlined />}
         onClick={() => saveScrollTopAndNavigate("/")}
       />,
-      <Button
-        key={"2"}
-        shape="circle"
-        icon={<RollbackOutlined />}
-        onClick={() => goBack()}
-      />,
+      ...(id && id !== process.env.REACT_APP_MEDIA_ROOT
+        ? [
+            <Button
+              key="2"
+              shape="circle"
+              icon={<UpOutlined />}
+              onClick={() => {
+                const lastFolder = sessionStorage.getItem("lastFolder");
+                lastFolder && navigate(lastFolder);
+              }}
+            />,
+          ]
+        : []),
+
       ...(token
         ? [
             <Button
@@ -84,7 +94,7 @@ export const BrowseContainer = () => {
               shape="circle"
               icon={<FastBackwardOutlined />}
               onClick={() =>
-                saveScrollTopAndNavigate(
+                navigate(
                   `${appRoutes.browse}?id=${id}&pagesize=${pageSize}${
                     prevToken ? `&token=${encodeURIComponent(prevToken)}` : ""
                   }`
@@ -93,7 +103,6 @@ export const BrowseContainer = () => {
             />,
           ]
         : []),
-
       ...(nextToken
         ? [
             <Button
@@ -101,7 +110,7 @@ export const BrowseContainer = () => {
               shape="circle"
               icon={<FastForwardOutlined />}
               onClick={() =>
-                saveScrollTopAndNavigate(
+                navigate(
                   `${appRoutes.browse}?id=${id}&token=${encodeURIComponent(
                     nextToken
                   )}&pagesize=${pageSize}`

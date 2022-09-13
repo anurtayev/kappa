@@ -3,6 +3,7 @@ import {
   RollbackOutlined,
   StepBackwardOutlined,
   StepForwardOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
@@ -38,7 +39,7 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { saveScrollTopAndNavigate, navigate } = useScrollRef();
+  const { saveScrollTopAndNavigate, navigate, goBack } = useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
@@ -47,27 +48,19 @@ export const SlidesContainer = () => {
   useEffect(() => {
     setNavs([
       <Button
-        key={"1"}
+        key="1"
         shape="circle"
         icon={<HomeOutlined />}
         onClick={() => saveScrollTopAndNavigate("/")}
       />,
-      <Button
-        key={"2"}
-        shape="circle"
-        icon={<RollbackOutlined />}
-        onClick={() => navigate(-1)}
-      />,
       ...(index > 0
         ? [
             <Button
-              key={"3"}
+              key="3"
               shape="circle"
               icon={<StepBackwardOutlined />}
               onClick={() => {
-                saveScrollTopAndNavigate(
-                  `${appRoutes.slides}/${String(index - 1)}`
-                );
+                navigate(`${appRoutes.slides}/${String(index - 1)}`);
               }}
             />,
           ]
@@ -75,17 +68,24 @@ export const SlidesContainer = () => {
       ...(numberOfSlides && index < numberOfSlides - 1
         ? [
             <Button
-              key={"4"}
+              key="4"
               shape="circle"
               icon={<StepForwardOutlined />}
               onClick={() => {
-                saveScrollTopAndNavigate(
-                  `${appRoutes.slides}/${String(index + 1)}`
-                );
+                navigate(`${appRoutes.slides}/${String(index + 1)}`);
               }}
             />,
           ]
         : []),
+      <Button
+        key="5"
+        shape="circle"
+        icon={<CloseOutlined />}
+        onClick={() => {
+          const lastFolder = sessionStorage.getItem("lastFolder");
+          lastFolder && navigate(lastFolder);
+        }}
+      />,
     ]);
   }, [index, navigate, numberOfSlides, setNavs, saveScrollTopAndNavigate]);
 

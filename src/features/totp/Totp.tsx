@@ -49,6 +49,7 @@ export const Totp = ({ cognitoUser, navigate, setSession }: TotpType) => {
               setStatus(err.message || JSON.stringify(err));
             },
             onSuccess(session) {
+              console.log("==> id", session.getIdToken());
               setSession(session);
               navigate(appRoutes.browse, { replace: true });
             },
