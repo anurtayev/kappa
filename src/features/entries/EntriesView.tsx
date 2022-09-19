@@ -8,32 +8,32 @@ export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
   files: FolderConnection["files"];
   divRef: React.RefObject<HTMLDivElement>;
-  saveScrollTopAndNavigate: (dest: string) => void;
+  saveNavigate: (dest: string) => void;
 };
 
 export const EntriesView = ({
   folders,
   files,
   divRef,
-  saveScrollTopAndNavigate,
+  saveNavigate,
 }: FolderScreenParameters) => {
   const onClickSlides =
     (index: number): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`${appRoutes.slides}/${String(index)}`);
+      saveNavigate(`${appRoutes.slides}/${String(index)}`);
     };
 
   const onClickFolder =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`${appRoutes.browse}?id=${id}`);
+      saveNavigate(`${appRoutes.browse}/${id}`);
     };
 
   const onClickMetaHof =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
       event.stopPropagation();
-      saveScrollTopAndNavigate(`${appRoutes.meta}?id=${id}`);
+      saveNavigate(`${appRoutes.meta}/${id}`);
     };
 
   return (

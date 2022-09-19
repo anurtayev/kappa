@@ -17,19 +17,24 @@ import {
   useSlidesQuery,
 } from "lib";
 import { useContext, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
   const { setNavs, setTitle, session } = useContext(AppContext);
   const [searchParams] = useSearchParams();
+  const params = useParams();
+  const { key } = useLocation();
 
-  const id = searchParams.get("id") || process.env.REACT_APP_MEDIA_ROOT || "";
+  const id = params["*"] || process.env.REACT_APP_MEDIA_ROOT;
+  if (!id) {
+    throw new Error("no folder specified");
+  }
 
   const pageSize = Number(
     searchParams.get("pagesize") || process.env.REACT_APP_PAGE_SIZE || "20"
   );
-  const encodedToken = searchParams.get("token");
-  const token = encodedToken ? decodeURIComponent(encodedToken) : encodedToken;
+  const returnPathKey = searchParams.get("returnkey") || "";
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
@@ -48,7 +53,8 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef();
+  const { divRef, navigateSave, navigate, navigateBackToPath, navigateBack } =
+    useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -56,84 +62,57 @@ export const BrowseContainer = () => {
   const nextToken = data?.listFolder?.nextToken;
 
   useEffect(() => {
-    // previous page token for next page
-    // 1st page has no token
-    nextToken &&
-      token &&
-      nextToken !== token &&
-      sessionStorage.setItem(id + nextToken, token);
-
-    const prevToken = token ? sessionStorage.getItem(id + token) : token;
-
     setNavs([
       <Button
         key="1"
         shape="circle"
         icon={<HomeOutlined />}
-        onClick={() => saveScrollTopAndNavigate("/")}
+        onClick={() => navigateSave("/")}
       />,
-      ...(id && id !== process.env.REACT_APP_MEDIA_ROOT
+      ...(id !== process.env.REACT_APP_MEDIA_ROOT
         ? [
             <Button
               key="2"
               shape="circle"
               icon={<UpOutlined />}
-              onClick={() => {
-                const lastFolder = sessionStorage.getItem("lastFolder");
-                lastFolder && navigate(lastFolder);
-              }}
+              onClick={() => navigateBackToPath()}
             />,
           ]
         : []),
-
       ...(token
         ? [
             <Button
-              key={"3"}
+              key="3"
               shape="circle"
               icon={<FastBackwardOutlined />}
-              onClick={() =>
-                navigate(
-                  `${appRoutes.browse}?id=${id}&pagesize=${pageSize}${
-                    prevToken ? `&token=${encodeURIComponent(prevToken)}` : ""
-                  }`
-                )
-              }
+              onClick={() => navigateBack()}
             />,
           ]
         : []),
       ...(nextToken
         ? [
             <Button
-              key={"4"}
+              key="4"
               shape="circle"
               icon={<FastForwardOutlined />}
               onClick={() =>
                 navigate(
-                  `${appRoutes.browse}?id=${id}&token=${encodeURIComponent(
+                  `${appRoutes.browse}/${id}?token=${encodeURIComponent(
                     nextToken
-                  )}&pagesize=${pageSize}`
+                  )}&pagesize=${pageSize}&returnkey=${returnPathKey}`
                 )
               }
             />,
           ]
         : []),
       <Button
-        key={"5"}
+        key="5"
         shape="circle"
         icon={<SearchOutlined />}
-        onClick={() => saveScrollTopAndNavigate(appRoutes.search)}
+        onClick={() => navigateSave(`${appRoutes.search}?returnkey=${key}`)}
       />,
     ]);
-  }, [
-    nextToken,
-    id,
-    token,
-    pageSize,
-    saveScrollTopAndNavigate,
-    setNavs,
-    navigate,
-  ]);
+  }, [nextToken, id, token, pageSize, navigateSave, setNavs, navigate]);
 
   if (loading) return <Loading />;
   if (error) throw error;
@@ -143,7 +122,7 @@ export const BrowseContainer = () => {
       folders={data?.listFolder?.folders}
       files={files}
       divRef={divRef}
-      saveScrollTopAndNavigate={saveScrollTopAndNavigate}
+      saveNavigate={navigateSave}
     />
   );
 };

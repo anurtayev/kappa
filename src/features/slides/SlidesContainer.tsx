@@ -1,5 +1,5 @@
 import {
-  CloseOutlined,
+  UpOutlined,
   HomeOutlined,
   StepBackwardOutlined,
   StepForwardOutlined,
@@ -16,14 +16,17 @@ import {
 } from "lib";
 import { getMediaName } from "lib/util";
 import { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { SlideScreen } from "./SlideScreen";
 
 export const SlidesContainer = () => {
   const { setNavs, setTitle } = useContext(AppContext);
+  const [searchParams] = useSearchParams();
   const client = useApolloClient();
   const { id } = useParams();
   const index = Number(id) || 0;
+  const returnPathKey = searchParams.get("returnkey") || "";
+  const { key } = useLocation();
 
   const getSlideIdQueryResult = client.readQuery<
     GetSlideIdQuery,
@@ -38,7 +41,8 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { saveScrollTopAndNavigate, navigate } = useScrollRef();
+  const { divRef, navigateSave, navigate, navigateBackToPath, navigateBack } =
+    useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
@@ -50,7 +54,13 @@ export const SlidesContainer = () => {
         key="1"
         shape="circle"
         icon={<HomeOutlined />}
-        onClick={() => saveScrollTopAndNavigate("/")}
+        onClick={() => navigateSave("/")}
+      />,
+      <Button
+        key="5"
+        shape="circle"
+        icon={<UpOutlined />}
+        onClick={() => navigateBackToPath()}
       />,
       ...(index > 0
         ? [
@@ -58,9 +68,7 @@ export const SlidesContainer = () => {
               key="3"
               shape="circle"
               icon={<StepBackwardOutlined />}
-              onClick={() => {
-                navigate(`${appRoutes.slides}/${String(index - 1)}`);
-              }}
+              onClick={() => navigateBack()}
             />,
           ]
         : []),
@@ -71,22 +79,17 @@ export const SlidesContainer = () => {
               shape="circle"
               icon={<StepForwardOutlined />}
               onClick={() => {
-                navigate(`${appRoutes.slides}/${String(index + 1)}`);
+                navigate(
+                  `${appRoutes.slides}/${String(
+                    index + 1
+                  )}?returnkey=${returnPathKey}`
+                );
               }}
             />,
           ]
         : []),
-      <Button
-        key="5"
-        shape="circle"
-        icon={<CloseOutlined />}
-        onClick={() => {
-          const lastFolder = sessionStorage.getItem("lastFolder");
-          lastFolder && navigate(lastFolder);
-        }}
-      />,
     ]);
-  }, [index, navigate, numberOfSlides, setNavs, saveScrollTopAndNavigate]);
+  }, [index, navigate, numberOfSlides, setNavs, navigateSave]);
 
   if (!slideId) throw Error("Slides: no id");
 

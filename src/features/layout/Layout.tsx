@@ -1,7 +1,12 @@
 import { PageHeader } from "antd";
 import { appRoutes, useAppContext } from "lib";
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  ScrollRestoration,
+} from "react-router-dom";
 
 export const Layout = () => {
   const location = useLocation();
@@ -9,7 +14,7 @@ export const Layout = () => {
   const { title, navs, session } = useAppContext();
 
   useEffect(() => {
-    location.pathname === "/" && navigate(appRoutes.browse);
+    location.pathname === "/" && navigate(appRoutes.browse, { replace: true });
   }, [location, navigate]);
 
   return (
@@ -20,6 +25,7 @@ export const Layout = () => {
         subTitle={session?.getIdToken().payload.email}
       />
       <Outlet />
+      <ScrollRestoration />
     </>
   );
 };

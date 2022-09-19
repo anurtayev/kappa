@@ -55,7 +55,7 @@ export const SearchContainer = () => {
     },
   });
 
-  const { divRef, saveScrollTopAndNavigate, navigate } = useScrollRef();
+  const { divRef, navigateSave: saveNavigate, navigate } = useScrollRef();
 
   if (loading) return <Loading />;
   // if (error) return <p>{error.message}</p>;
@@ -72,7 +72,7 @@ export const SearchContainer = () => {
   const navs: Array<NavItem> = [
     {
       title: "Home",
-      navFn: () => saveScrollTopAndNavigate("/"),
+      navFn: () => saveNavigate("/"),
       icon: Characters.home,
     },
     {
@@ -84,12 +84,12 @@ export const SearchContainer = () => {
   nextPageUrl &&
     navs.push({
       title: "Next",
-      navFn: () => saveScrollTopAndNavigate(nextPageUrl),
+      navFn: () => saveNavigate(nextPageUrl),
       icon: Characters.arrowRight,
     });
   navs.push({
     title: "Search",
-    navFn: () => saveScrollTopAndNavigate(`${appRoutes.search}`),
+    navFn: () => saveNavigate(`${appRoutes.search}`),
     icon: Characters.magnifyingGlass,
   });
 
@@ -104,7 +104,7 @@ export const SearchContainer = () => {
         files={data?.search?.files}
         folders={data?.search?.folders}
         divRef={divRef}
-        saveScrollTopAndNavigate={saveScrollTopAndNavigate}
+        saveNavigate={saveNavigate}
       />
     </>
   );

@@ -6,16 +6,15 @@ import {
 import { cache } from "cache";
 import { BrowseContainer } from "features/browse";
 import { ErrorBoundary } from "features/errorBoundary";
-import { ImageScreen } from "features/image";
 import { Layout } from "features/layout";
 import { MetaContainer } from "features/meta";
 import { MfaContainer } from "features/mfa";
+import { MfaSetupContainer } from "features/mfaSetup";
 import { NewPwdContainer } from "features/newPwd";
-import { TotpContainer } from "features/totp";
 import { SearchContainer } from "features/search";
 import { AuthContainer } from "features/signin";
 import { SlidesContainer } from "features/slides";
-import { MfaSetupContainer } from "features/mfaSetup";
+import { TotpContainer } from "features/totp";
 import { AppProvider, appRoutes, defaultTheme, RequireAuth } from "lib";
 import { StrictMode } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -54,7 +53,7 @@ export const App = () => {
                     />
                     <Route path={appRoutes.totp} element={<TotpContainer />} />
                     <Route
-                      path={appRoutes.browse}
+                      path={`${appRoutes.browse}/*`}
                       element={
                         <RequireAuth>
                           <BrowseContainer />
@@ -62,7 +61,7 @@ export const App = () => {
                       }
                     />
                     <Route
-                      path={appRoutes.search}
+                      path={`${appRoutes.search}/:search`}
                       element={
                         <RequireAuth>
                           <SearchContainer />
@@ -70,15 +69,7 @@ export const App = () => {
                       }
                     />
                     <Route
-                      path={appRoutes.image}
-                      element={
-                        <RequireAuth>
-                          <ImageScreen />
-                        </RequireAuth>
-                      }
-                    />
-                    <Route
-                      path={appRoutes.meta}
+                      path={`${appRoutes.meta}/*`}
                       element={
                         <RequireAuth>
                           <MetaContainer />

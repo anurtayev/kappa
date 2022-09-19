@@ -1,38 +1,60 @@
 import { createRef, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+type LocationState = {
+  pathname: string;
+  scrollTop: number;
+  search: string;
+};
 
 export function useScrollRef() {
-  const { key: locationKey, pathname, search } = useLocation();
+  const { key, pathname, search, state } = useLocation();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
-  const goBack = useMemo(() => () => navigate(-1), [navigate]);
+
+  const navigateBack = useMemo(() => () => navigate(-1), [navigate]);
+
+  const navigateBackToPath = useMemo(
+    () => () => {
+      const { scrollTop, pathname, search } = state as LocationState;
+      navigate(
+        pathname + search
+          ? search + "&scrollTop=" + String(scrollTop)
+          : "?scrollTop=" + String(scrollTop)
+      );
+    },
+    [navigate]
+  );
 
   const [divRef] = useState<React.RefObject<HTMLDivElement>>(
     createRef<HTMLDivElement>()
   );
 
   useEffect(() => {
-    const scrollTop = sessionStorage.getItem(locationKey);
-    divRef.current && divRef.current.scrollTo(0, Number(scrollTop));
-  });
+    const scrollTop = searchParams.get("scrollTop");
+    divRef.current &&
+      scrollTop &&
+      divRef.current.scrollTo(0, Number(scrollTop));
+  }, [divRef, searchParams]);
 
-  const saveScrollTopAndNavigate = useMemo(() => {
+  const navigateSave = useMemo(() => {
     return (dest: string) => {
-      sessionStorage.setItem(
-        locationKey,
-        String(divRef.current?.scrollTop || 0)
-      );
-      sessionStorage.setItem("lastFolder", pathname + search);
-      console.log("==> saved", pathname + search);
-
-      navigate(dest);
+      navigate(dest, {
+        state: {
+          scrollTop: String(divRef.current?.scrollTop || 0),
+          pathname,
+          search,
+        },
+      });
     };
-  }, [locationKey, navigate, divRef, pathname, search]);
+  }, [key, navigate, divRef, pathname, search]);
 
   return {
     divRef,
-    saveScrollTopAndNavigate,
+    navigateSave,
     navigate,
-    goBack,
+    navigateBack,
+    navigateBackToPath,
   };
 }
