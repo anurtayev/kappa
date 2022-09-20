@@ -3,43 +3,38 @@ import { appRoutes, FolderConnection } from "lib";
 import { MouseEventHandler } from "react";
 import { MetaLink } from "./MetaLink";
 import { Entry, FolderScreenFrame, PaddedSpan, VerticalFrame } from "./styles";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
   files: FolderConnection["files"];
-  divRef: React.RefObject<HTMLDivElement>;
-  saveScrollTopAndNavigate: (dest: string) => void;
 };
 
-export const EntriesView = ({
-  folders,
-  files,
-  divRef,
-  saveScrollTopAndNavigate,
-}: FolderScreenParameters) => {
+export const EntriesView = ({ folders, files }: FolderScreenParameters) => {
+  const navigate = useNavigate();
   const onClickSlides =
     (index: number): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`${appRoutes.slides}/${String(index)}`);
+      navigate(`${appRoutes.slides}/${String(index)}`);
     };
 
   const onClickFolder =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
-      saveScrollTopAndNavigate(`${appRoutes.browse}?id=${id}`);
+      navigate(`${appRoutes.browse}/${id}`);
     };
 
   const onClickMetaHof =
     (id: string): MouseEventHandler<HTMLDivElement> =>
     (event) => {
       event.stopPropagation();
-      saveScrollTopAndNavigate(`${appRoutes.meta}?id=${id}`);
+      navigate(`${appRoutes.meta}/${id}`);
     };
 
   return (
     <VerticalFrame>
       {folders || files ? (
-        <FolderScreenFrame ref={divRef}>
+        <FolderScreenFrame>
           {folders?.map(({ id }) => (
             <Entry key={id} onClick={onClickFolder(id)}>
               <PaddedSpan>{id.split("/").slice(1, -1)}</PaddedSpan>

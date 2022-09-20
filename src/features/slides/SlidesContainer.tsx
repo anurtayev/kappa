@@ -1,8 +1,8 @@
 import {
-  CloseOutlined,
+  UpOutlined,
   HomeOutlined,
-  StepBackwardOutlined,
-  StepForwardOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
@@ -52,12 +52,21 @@ export const SlidesContainer = () => {
         icon={<HomeOutlined />}
         onClick={() => saveScrollTopAndNavigate("/")}
       />,
+      <Button
+        key="5"
+        shape="circle"
+        icon={<UpOutlined />}
+        onClick={() => {
+          const lastFolder = sessionStorage.getItem("lastFolder");
+          lastFolder && navigate(lastFolder);
+        }}
+      />,
       ...(index > 0
         ? [
             <Button
               key="3"
               shape="circle"
-              icon={<StepBackwardOutlined />}
+              icon={<LeftOutlined />}
               onClick={() => {
                 navigate(`${appRoutes.slides}/${String(index - 1)}`);
               }}
@@ -69,22 +78,13 @@ export const SlidesContainer = () => {
             <Button
               key="4"
               shape="circle"
-              icon={<StepForwardOutlined />}
+              icon={<RightOutlined />}
               onClick={() => {
                 navigate(`${appRoutes.slides}/${String(index + 1)}`);
               }}
             />,
           ]
         : []),
-      <Button
-        key="5"
-        shape="circle"
-        icon={<CloseOutlined />}
-        onClick={() => {
-          const lastFolder = sessionStorage.getItem("lastFolder");
-          lastFolder && navigate(lastFolder);
-        }}
-      />,
     ]);
   }, [index, navigate, numberOfSlides, setNavs, saveScrollTopAndNavigate]);
 
