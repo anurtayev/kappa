@@ -39,6 +39,9 @@ export type AppContextType = {
 
   setCognitoUser: Dispatch<React.SetStateAction<CognitoUser | undefined>>;
   cognitoUser: CognitoUser | undefined;
+
+  pageSize: number;
+  setPageSize: Dispatch<number>;
 };
 
 export const AppContext = createContext<AppContextType>(undefined!);
@@ -50,6 +53,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [navs, setNavs] = useState<Array<ReactElement>>([]);
   const [title, setTitle] = useState<string>();
   const [cognitoUser, setCognitoUser] = useState<CognitoUser>();
+  const [pageSize, setPageSize] = useState<number>(
+    Number(process.env.REACT_APP_PAGE_SIZE || "20")
+  );
 
   return (
     <AppContext.Provider
@@ -63,6 +69,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setCognitoUser,
         setSession,
         session,
+        pageSize,
+        setPageSize,
       }}
     >
       {children}

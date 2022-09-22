@@ -1,6 +1,6 @@
 import {
-  FastBackwardOutlined,
-  FastForwardOutlined,
+  LeftOutlined,
+  RightOutlined,
   HomeOutlined,
   SearchOutlined,
   UpOutlined,
@@ -15,26 +15,23 @@ import {
   getMediaName,
   useScrollRef,
   useSlidesQuery,
+  STARTER_ROUTE,
 } from "lib";
 import { useContext, useEffect } from "react";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
 
 export const BrowseContainer = () => {
-  const { setNavs, setTitle, session } = useContext(AppContext);
+  const { setNavs, setTitle, session, pageSize } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const params = useParams();
-  const { key } = useLocation();
+  const { pathname, search } = useLocation();
 
-  const id = params["*"] || process.env.REACT_APP_MEDIA_ROOT;
+  const id = params["*"];
   if (!id) {
     throw new Error("no folder specified");
   }
 
-  const pageSize = Number(
-    searchParams.get("pagesize") || process.env.REACT_APP_PAGE_SIZE || "20"
-  );
-  const returnPathKey = searchParams.get("returnkey") || "";
-  const token = decodeURIComponent(searchParams.get("token") || "");
+  const token = searchParams.get("token");
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
@@ -53,8 +50,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, navigateSave, navigate, navigateBackToPath, navigateBack } =
-    useScrollRef();
+  const { divRef, navigate, navigateUp } = useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -67,7 +63,7 @@ export const BrowseContainer = () => {
         key="1"
         shape="circle"
         icon={<HomeOutlined />}
-        onClick={() => navigateSave("/")}
+        onClick={() => navigate("/")}
       />,
       ...(id !== process.env.REACT_APP_MEDIA_ROOT
         ? [
@@ -75,7 +71,7 @@ export const BrowseContainer = () => {
               key="2"
               shape="circle"
               icon={<UpOutlined />}
-              onClick={() => navigateBackToPath()}
+              onClick={() => navigateUp()}
             />,
           ]
         : []),
@@ -84,8 +80,8 @@ export const BrowseContainer = () => {
             <Button
               key="3"
               shape="circle"
-              icon={<FastBackwardOutlined />}
-              onClick={() => navigateBack()}
+              icon={<LeftOutlined />}
+              onClick={() => navigate(-1)}
             />,
           ]
         : []),
@@ -94,14 +90,10 @@ export const BrowseContainer = () => {
             <Button
               key="4"
               shape="circle"
-              icon={<FastForwardOutlined />}
-              onClick={() =>
-                navigate(
-                  `${appRoutes.browse}/${id}?token=${encodeURIComponent(
-                    nextToken
-                  )}&pagesize=${pageSize}&returnkey=${returnPathKey}`
-                )
-              }
+              icon={<RightOutlined />}
+              onClick={() => {
+                navigate(`${appRoutes.browse}/${id}`);
+              }}
             />,
           ]
         : []),
@@ -109,10 +101,10 @@ export const BrowseContainer = () => {
         key="5"
         shape="circle"
         icon={<SearchOutlined />}
-        onClick={() => navigateSave(`${appRoutes.search}?returnkey=${key}`)}
+        onClick={() => navigate(appRoutes.search)}
       />,
     ]);
-  }, [nextToken, id, token, pageSize, navigateSave, setNavs, navigate]);
+  }, [nextToken, id, token, pageSize, setNavs, navigate]);
 
   if (loading) return <Loading />;
   if (error) throw error;
@@ -122,7 +114,7 @@ export const BrowseContainer = () => {
       folders={data?.listFolder?.folders}
       files={files}
       divRef={divRef}
-      saveNavigate={navigateSave}
+      saveNavigate={navigate}
     />
   );
 };

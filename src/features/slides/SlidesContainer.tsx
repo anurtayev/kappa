@@ -1,8 +1,8 @@
 import {
   UpOutlined,
   HomeOutlined,
-  StepBackwardOutlined,
-  StepForwardOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { useApolloClient } from "@apollo/client";
 import { Button } from "antd";
@@ -41,8 +41,13 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const { divRef, navigateSave, navigate, navigateBackToPath, navigateBack } =
-    useScrollRef();
+  const {
+    divRef,
+    navigateForward: navigateSave,
+    navigate,
+    navigateUp: navigateBackToPath,
+    navigateBack,
+  } = useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
@@ -67,7 +72,7 @@ export const SlidesContainer = () => {
             <Button
               key="3"
               shape="circle"
-              icon={<StepBackwardOutlined />}
+              icon={<LeftOutlined />}
               onClick={() => navigateBack()}
             />,
           ]
@@ -77,7 +82,7 @@ export const SlidesContainer = () => {
             <Button
               key="4"
               shape="circle"
-              icon={<StepForwardOutlined />}
+              icon={<RightOutlined />}
               onClick={() => {
                 navigate(
                   `${appRoutes.slides}/${String(

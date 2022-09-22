@@ -1,7 +1,7 @@
 import { CognitoUser, CognitoUserSession } from "amazon-cognito-identity-js";
 import { Button, Space } from "antd";
 import { Field, Form, Formik } from "formik";
-import { appRoutes } from "lib";
+import { STARTER_ROUTE } from "lib";
 
 import { NavigateFunction, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
@@ -51,7 +51,9 @@ export const Totp = ({ cognitoUser, navigate, setSession }: TotpType) => {
             onSuccess(session) {
               console.log("==> id", session.getIdToken());
               setSession(session);
-              navigate(appRoutes.browse, { replace: true });
+              navigate(STARTER_ROUTE, {
+                replace: true,
+              });
             },
           },
           "SOFTWARE_TOKEN_MFA"

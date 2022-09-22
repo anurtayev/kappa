@@ -1,5 +1,5 @@
 import { PageHeader } from "antd";
-import { appRoutes, useAppContext } from "lib";
+import { appRoutes, useAppContext, STARTER_ROUTE } from "lib";
 import { useEffect } from "react";
 import {
   Outlet,
@@ -14,7 +14,15 @@ export const Layout = () => {
   const { title, navs, session } = useAppContext();
 
   useEffect(() => {
-    location.pathname === "/" && navigate(appRoutes.browse, { replace: true });
+    if (location.pathname === "/") {
+      if (!process.env.REACT_APP_MEDIA_ROOT) {
+        throw new Error("REACT_APP_MEDIA_ROOT is missing");
+      }
+
+      navigate(STARTER_ROUTE, {
+        replace: true,
+      });
+    }
   }, [location, navigate]);
 
   return (
@@ -25,7 +33,6 @@ export const Layout = () => {
         subTitle={session?.getIdToken().payload.email}
       />
       <Outlet />
-      <ScrollRestoration />
     </>
   );
 };

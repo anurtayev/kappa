@@ -23,6 +23,9 @@ export enum appRoutes {
   totp = "/totp",
 }
 
+export const STARTER_ROUTE =
+  appRoutes.browse + "/" + process.env.REACT_APP_MEDIA_ROOT;
+
 export enum systemAttributes {
   favorite = "favorite",
   hidden = "hidden",

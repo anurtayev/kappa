@@ -1,60 +1,53 @@
 import { createRef, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-type LocationState = {
+type Destination = {
   pathname: string;
-  scrollTop: number;
-  search: string;
+  token: string;
+};
+
+type LocationState = {
+  backLong?: Destination;
+  backShort?: Destination;
+  token?: string;
 };
 
 export function useScrollRef() {
-  const { key, pathname, search, state } = useLocation();
-  const [searchParams] = useSearchParams();
+  const { pathname, state, key } = useLocation();
+  console.log("==>", pathname, key);
 
   const navigate = useNavigate();
-
-  const navigateBack = useMemo(() => () => navigate(-1), [navigate]);
-
-  const navigateBackToPath = useMemo(
-    () => () => {
-      const { scrollTop, pathname, search } = state as LocationState;
-      navigate(
-        pathname + search
-          ? search + "&scrollTop=" + String(scrollTop)
-          : "?scrollTop=" + String(scrollTop)
-      );
-    },
-    [navigate]
-  );
-
   const [divRef] = useState<React.RefObject<HTMLDivElement>>(
     createRef<HTMLDivElement>()
   );
 
-  useEffect(() => {
-    const scrollTop = searchParams.get("scrollTop");
-    divRef.current &&
-      scrollTop &&
-      divRef.current.scrollTo(0, Number(scrollTop));
-  }, [divRef, searchParams]);
+  const navigateBackLong = useMemo(
+    () => () => {
+      const { backLong } = state as LocationState;
+      backLong && navigate(backLong);
+    },
+    [navigate, state]
+  );
 
   const navigateSave = useMemo(() => {
-    return (dest: string) => {
-      navigate(dest, {
-        state: {
-          scrollTop: String(divRef.current?.scrollTop || 0),
-          pathname,
-          search,
-        },
-      });
+    return (dest: string | number) => {
+      sessionStorage.set();
+      if (typeof dest === "number") {
+        navigate(-1);
+      } else {
+        navigate(dest);
+      }
     };
-  }, [key, navigate, divRef, pathname, search]);
+  }, [navigate, divRef, pathname]);
+
+  useEffect(() => {
+    const scrollTop = state.scrollTop;
+    divRef.current && scrollTop && divRef.current.scrollTo(0, scrollTop);
+  }, [divRef, state]);
 
   return {
     divRef,
-    navigateSave,
     navigate,
-    navigateBack,
-    navigateBackToPath,
+    navigateUp: navigateBackLong,
   };
 }

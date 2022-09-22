@@ -55,7 +55,7 @@ export const SearchContainer = () => {
     },
   });
 
-  const { divRef, navigateSave: saveNavigate, navigate } = useScrollRef();
+  const { divRef, navigateForward: saveNavigate, navigate } = useScrollRef();
 
   if (loading) return <Loading />;
   // if (error) return <p>{error.message}</p>;
