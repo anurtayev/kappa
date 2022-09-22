@@ -36,7 +36,7 @@ export function useScrollRef() {
 
   useEffect(() => {
     const scrollTop = Number(sessionStorage.getItem(pathname + search) || 0);
-    divRef.current && divRef.current.scrollTo(0, scrollTop);
+    divRef.current?.scrollTo(0, scrollTop);
   }, [divRef, pathname, search]);
 
   return {

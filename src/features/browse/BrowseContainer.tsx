@@ -31,9 +31,9 @@ export const BrowseContainer = () => {
     throw new Error("no folder specified");
   }
   const hasParent = id !== process.env.REACT_APP_MEDIA_ROOT;
-  const parentPath = id.split("/").slice(0, -1).join("/");
+  const parentPath = id.split("/").slice(0, -2).join("/") + "/";
 
-  const token = searchParams.get("token");
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
@@ -94,7 +94,11 @@ export const BrowseContainer = () => {
               shape="circle"
               icon={<RightOutlined />}
               onClick={() => {
-                navigateSave(`${appRoutes.browse}/${id}?token=${nextToken}`);
+                navigateSave(
+                  `${appRoutes.browse}/${id}?token=${encodeURIComponent(
+                    nextToken
+                  )}`
+                );
               }}
             />,
           ]
