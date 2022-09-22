@@ -30,6 +30,8 @@ export const BrowseContainer = () => {
   if (!id) {
     throw new Error("no folder specified");
   }
+  const hasParent = id !== process.env.REACT_APP_MEDIA_ROOT;
+  const parentPath = id.split("/").slice(0, -1).join("/");
 
   const token = searchParams.get("token");
 
@@ -50,7 +52,7 @@ export const BrowseContainer = () => {
     },
   });
 
-  const { divRef, navigate, navigateUp } = useScrollRef();
+  const { divRef, navigateSave } = useScrollRef();
 
   const files = data?.listFolder?.files;
   slides(files);
@@ -63,15 +65,15 @@ export const BrowseContainer = () => {
         key="1"
         shape="circle"
         icon={<HomeOutlined />}
-        onClick={() => navigate("/")}
+        onClick={() => navigateSave("/")}
       />,
-      ...(id !== process.env.REACT_APP_MEDIA_ROOT
+      ...(hasParent
         ? [
             <Button
               key="2"
               shape="circle"
               icon={<UpOutlined />}
-              onClick={() => navigateUp()}
+              onClick={() => navigateSave(parentPath)}
             />,
           ]
         : []),
@@ -81,7 +83,7 @@ export const BrowseContainer = () => {
               key="3"
               shape="circle"
               icon={<LeftOutlined />}
-              onClick={() => navigate(-1)}
+              onClick={() => navigateSave(-1)}
             />,
           ]
         : []),
@@ -92,7 +94,7 @@ export const BrowseContainer = () => {
               shape="circle"
               icon={<RightOutlined />}
               onClick={() => {
-                navigate(`${appRoutes.browse}/${id}`);
+                navigateSave(`${appRoutes.browse}/${id}?token=${nextToken}`);
               }}
             />,
           ]
@@ -101,10 +103,10 @@ export const BrowseContainer = () => {
         key="5"
         shape="circle"
         icon={<SearchOutlined />}
-        onClick={() => navigate(appRoutes.search)}
+        onClick={() => navigateSave(appRoutes.search)}
       />,
     ]);
-  }, [nextToken, id, token, pageSize, setNavs, navigate]);
+  }, [nextToken, id, setNavs, navigateSave]);
 
   if (loading) return <Loading />;
   if (error) throw error;
@@ -114,7 +116,7 @@ export const BrowseContainer = () => {
       folders={data?.listFolder?.folders}
       files={files}
       divRef={divRef}
-      saveNavigate={navigate}
+      saveNavigate={navigateSave}
     />
   );
 };

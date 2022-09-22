@@ -25,8 +25,6 @@ export const SlidesContainer = () => {
   const client = useApolloClient();
   const { id } = useParams();
   const index = Number(id) || 0;
-  const returnPathKey = searchParams.get("returnkey") || "";
-  const { key } = useLocation();
 
   const getSlideIdQueryResult = client.readQuery<
     GetSlideIdQuery,
@@ -41,13 +39,7 @@ export const SlidesContainer = () => {
   const slideId = getSlideIdQueryResult?.slideId;
   const numberOfSlides = getSlideIdQueryResult?.numberOfSlides;
 
-  const {
-    divRef,
-    navigateForward: navigateSave,
-    navigate,
-    navigateUp: navigateBackToPath,
-    navigateBack,
-  } = useScrollRef();
+  const { navigateSave } = useScrollRef();
 
   useEffect(() => {
     slideId && setTitle(getMediaName(slideId));
@@ -65,7 +57,7 @@ export const SlidesContainer = () => {
         key="5"
         shape="circle"
         icon={<UpOutlined />}
-        onClick={() => navigateBackToPath()}
+        onClick={() => navigateSave(+1)}
       />,
       ...(index > 0
         ? [
@@ -73,7 +65,7 @@ export const SlidesContainer = () => {
               key="3"
               shape="circle"
               icon={<LeftOutlined />}
-              onClick={() => navigateBack()}
+              onClick={() => navigateSave(-1)}
             />,
           ]
         : []),
@@ -84,17 +76,13 @@ export const SlidesContainer = () => {
               shape="circle"
               icon={<RightOutlined />}
               onClick={() => {
-                navigate(
-                  `${appRoutes.slides}/${String(
-                    index + 1
-                  )}?returnkey=${returnPathKey}`
-                );
+                navigateSave(`${appRoutes.slides}/${String(index + 1)}`);
               }}
             />,
           ]
         : []),
     ]);
-  }, [index, navigate, numberOfSlides, setNavs, navigateSave]);
+  }, [index, numberOfSlides, setNavs, navigateSave]);
 
   if (!slideId) throw Error("Slides: no id");
 
