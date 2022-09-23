@@ -16,12 +16,11 @@ import {
 } from "lib";
 import { getMediaName } from "lib/util";
 import { useContext, useEffect } from "react";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SlideScreen } from "./SlideScreen";
 
 export const SlidesContainer = () => {
   const { setNavs, setTitle } = useContext(AppContext);
-  const [searchParams] = useSearchParams();
   const client = useApolloClient();
   const { id } = useParams();
   const index = Number(id) || 0;
@@ -57,7 +56,9 @@ export const SlidesContainer = () => {
         key="5"
         shape="circle"
         icon={<UpOutlined />}
-        onClick={() => navigateSave(+1)}
+        onClick={() => {
+          navigateSave(sessionStorage.getItem("slidesReturn") || "/");
+        }}
       />,
       ...(index > 0
         ? [

@@ -1,16 +1,5 @@
 import { createRef, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-
-type Destination = {
-  pathname: string;
-  token: string;
-};
-
-type LocationState = {
-  backLong?: Destination;
-  backShort?: Destination;
-  token?: string;
-};
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function useScrollRef() {
   const { pathname, search } = useLocation();

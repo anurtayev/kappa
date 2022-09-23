@@ -15,7 +15,6 @@ import {
   getMediaName,
   useScrollRef,
   useSlidesQuery,
-  STARTER_ROUTE,
 } from "lib";
 import { useContext, useEffect } from "react";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
@@ -34,6 +33,12 @@ export const BrowseContainer = () => {
   const parentPath = id.split("/").slice(0, -2).join("/") + "/";
 
   const token = decodeURIComponent(searchParams.get("token") || "");
+
+  useEffect(() => {
+    sessionStorage.setItem("slidesReturn", pathname + search);
+
+    setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
+  }, [id, setTitle, pathname, search]);
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
@@ -110,7 +115,7 @@ export const BrowseContainer = () => {
         onClick={() => navigateSave(appRoutes.search)}
       />,
     ]);
-  }, [nextToken, id, setNavs, navigateSave]);
+  }, [nextToken, id, setNavs, navigateSave, hasParent, parentPath, token]);
 
   if (loading) return <Loading />;
   if (error) throw error;

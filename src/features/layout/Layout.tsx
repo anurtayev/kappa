@@ -1,12 +1,7 @@
 import { PageHeader } from "antd";
-import { appRoutes, useAppContext, STARTER_ROUTE } from "lib";
+import { useAppContext, STARTER_ROUTE } from "lib";
 import { useEffect } from "react";
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  ScrollRestoration,
-} from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export const Layout = () => {
   const location = useLocation();
