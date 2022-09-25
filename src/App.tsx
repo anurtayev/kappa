@@ -61,7 +61,7 @@ export const App = () => {
                       }
                     />
                     <Route
-                      path={`${appRoutes.search}/:search`}
+                      path={`${appRoutes.search}`}
                       element={
                         <RequireAuth>
                           <SearchContainer />
@@ -84,6 +84,7 @@ export const App = () => {
                         </RequireAuth>
                       }
                     />
+                    <Route path={"*"} element={<div>no route</div>} />
                   </Route>
                 </Routes>
               </Router>

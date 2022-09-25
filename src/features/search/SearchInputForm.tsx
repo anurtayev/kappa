@@ -1,6 +1,7 @@
+import { Button, Card, Image, Space, Tag } from "antd";
 import { Attributes } from "features/attributes";
 import { Loading } from "features/loading";
-import { ElemBox, ExistingItemsContainer } from "features/meta/styles";
+import { ExistingItemsContainer } from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
 import {
@@ -158,7 +159,7 @@ export const SearchInputForm = ({
                     <ExistingItemsContainer>
                       {tags.map((tag, index) => (
                         <FormBrick key={index}>
-                          <ElemBox>{tag}</ElemBox>
+                          <Tag>{tag}</Tag>
                           <SmallButton onClick={() => remove(index)}>
                             {Characters.multiply}
                           </SmallButton>
@@ -208,15 +209,10 @@ export const SearchInputForm = ({
                   <>
                     <ExistingItemsContainer>
                       {attributes.map((attributeValueInput, index) => (
-                        <FormBrick key={index}>
-                          <ElemBox>
-                            {attributeValueInput.attribute.name}
-                          </ElemBox>
-                          <ElemBox>{attributeValueInput.value}</ElemBox>
-                          <SmallButton onClick={() => remove(index)}>
-                            {Characters.multiply}
-                          </SmallButton>
-                        </FormBrick>
+                        <Tag key={index}>
+                          {attributeValueInput.attribute.name}:
+                          {attributeValueInput.value}
+                        </Tag>
                       ))}
                     </ExistingItemsContainer>
 
@@ -288,13 +284,10 @@ export const SearchInputForm = ({
                   <>
                     <ExistingItemsContainer>
                       {sorter.map((attributeSortTerm, index) => (
-                        <FormBrick key={index}>
-                          <ElemBox>{attributeSortTerm.attribute}</ElemBox>
-                          <ElemBox>{attributeSortTerm.sortOrder}</ElemBox>
-                          <SmallButton onClick={() => remove(index)}>
-                            {Characters.multiply}
-                          </SmallButton>
-                        </FormBrick>
+                        <Tag key={index} closable>
+                          {attributeSortTerm.attribute}:{" "}
+                          {attributeSortTerm.sortOrder}
+                        </Tag>
                       ))}
                     </ExistingItemsContainer>
 

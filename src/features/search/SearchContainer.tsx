@@ -1,13 +1,10 @@
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
 import { Loading } from "features/loading";
-import { Nav } from "features/nav";
 import {
   AppContext,
   appRoutes,
-  Characters,
   getPageSizeFromURLSearchParams,
-  NavItem,
   PARAM_NEXT_TOKEN,
   PARAM_PAGE_SIZE,
   PARAM_SEARCH_INPUT,
@@ -69,33 +66,8 @@ export const SearchContainer = () => {
   const files = data?.search?.files;
   slides(files);
 
-  const navs: Array<NavItem> = [
-    {
-      title: "Home",
-      navFn: () => navigateSave("/"),
-      icon: Characters.home,
-    },
-    {
-      title: "Back",
-      navFn: () => navigateSave(-1),
-      icon: Characters.arrowLeft,
-    },
-  ];
-  nextPageUrl &&
-    navs.push({
-      title: "Next",
-      navFn: () => navigateSave(nextPageUrl),
-      icon: Characters.arrowRight,
-    });
-  navs.push({
-    title: "Search",
-    navFn: () => navigateSave(`${appRoutes.search}`),
-    icon: Characters.magnifyingGlass,
-  });
-
   return (
     <>
-      <Nav navs={navs}></Nav>
       <SearchInputForm
         setSearchInput={setSearchInput}
         searchInput={searchInput}

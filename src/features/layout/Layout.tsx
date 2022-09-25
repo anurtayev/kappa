@@ -6,7 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 export const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { title, navs, session } = useAppContext();
+  const { title, navs, session, subTitle } = useAppContext();
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -22,11 +22,7 @@ export const Layout = () => {
 
   return (
     <>
-      <PageHeader
-        title={title}
-        extra={navs}
-        subTitle={session?.getIdToken().payload.email}
-      />
+      <PageHeader title={title} extra={navs} subTitle={subTitle} />
       <Outlet />
     </>
   );

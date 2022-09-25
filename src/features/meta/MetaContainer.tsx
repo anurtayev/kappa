@@ -1,3 +1,4 @@
+import { Breadcrumb } from "antd";
 import { gql, useApolloClient } from "@apollo/client";
 import { Loading } from "features/loading";
 import {
@@ -8,19 +9,30 @@ import {
   useUpdateMetaDataMutation,
 } from "lib";
 import { useContext } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MetaDataInputForm } from "./MetaDataInputForm";
+import { useEffect } from "react";
 
 export const MetaContainer = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { session } = useContext(AppContext);
+  const params = useParams();
+  const { session, setTitle } = useContext(AppContext);
 
-  const id = searchParams.get("id");
+  const id = params["*"];
   if (!id) {
     throw new Error("id is missing");
   }
+
+  useEffect(() => {
+    setTitle(
+      <Breadcrumb>
+        {id.split("/").map((el) => (
+          <Breadcrumb.Item key={el}>{el}</Breadcrumb.Item>
+        ))}
+      </Breadcrumb>
+    );
+  }, [setTitle, id]);
 
   const metaData: Maybe<MetaData> = client.readFragment({
     id: `MetaData:${id}`,

@@ -29,8 +29,11 @@ export type AppContextType = {
   setNavs: Dispatch<Array<ReactElement>>;
   navs: ReactElement<any, string | React.JSXElementConstructor<any>>[];
 
-  setTitle: Dispatch<string>;
-  title: string | undefined;
+  setTitle: Dispatch<ReactNode>;
+  title: ReactNode | undefined;
+
+  setSubTitle: Dispatch<string>;
+  subTitle: string | undefined;
 
   setSession: Dispatch<React.SetStateAction<CognitoUserSession | undefined>>;
   session: CognitoUserSession | undefined;
@@ -51,7 +54,8 @@ export const useAppContext = () => useContext(AppContext);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<CognitoUserSession>();
   const [navs, setNavs] = useState<Array<ReactElement>>([]);
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<ReactNode>();
+  const [subTitle, setSubTitle] = useState<string>();
   const [cognitoUser, setCognitoUser] = useState<CognitoUser>();
   const [pageSize, setPageSize] = useState<number>(
     Number(process.env.REACT_APP_PAGE_SIZE || "20")
@@ -71,6 +75,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         session,
         pageSize,
         setPageSize,
+        subTitle,
+        setSubTitle,
       }}
     >
       {children}

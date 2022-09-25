@@ -36,9 +36,7 @@ export const BrowseContainer = () => {
 
   useEffect(() => {
     sessionStorage.setItem("slidesReturn", pathname + search);
-
-    setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
-  }, [id, setTitle, pathname, search]);
+  }, [pathname, search]);
 
   useEffect(() => {
     setTitle(getMediaName(id === process.env.REACT_APP_MEDIA_ROOT ? "" : id));
@@ -99,6 +97,8 @@ export const BrowseContainer = () => {
               shape="circle"
               icon={<RightOutlined />}
               onClick={() => {
+                sessionStorage.setItem(pathname, token);
+
                 navigateSave(
                   `${appRoutes.browse}/${id}?token=${encodeURIComponent(
                     nextToken
@@ -115,7 +115,16 @@ export const BrowseContainer = () => {
         onClick={() => navigateSave(appRoutes.search)}
       />,
     ]);
-  }, [nextToken, id, setNavs, navigateSave, hasParent, parentPath, token]);
+  }, [
+    nextToken,
+    id,
+    setNavs,
+    navigateSave,
+    hasParent,
+    parentPath,
+    token,
+    pathname,
+  ]);
 
   if (loading) return <Loading />;
   if (error) throw error;

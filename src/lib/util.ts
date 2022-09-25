@@ -48,15 +48,6 @@ export enum Characters {
   ellipsis = "\u{2026}",
 }
 
-export type NavItem = {
-  navFn: () => void;
-  icon: Characters;
-  title: string;
-  description?: string;
-};
-
-export type NavItems = Array<NavItem>;
-
 export const isFolder = (id: string): boolean => id.slice(-1) === "/";
 
 export const getMediaName = (key: string): string =>
