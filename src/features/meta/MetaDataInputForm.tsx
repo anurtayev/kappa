@@ -1,4 +1,5 @@
-import { Button, Card, Image, Space, Tag } from "antd";
+import { Button, Card, Space, Tag } from "antd";
+import { AsyncImage } from "features/asyncImage";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
@@ -106,21 +107,13 @@ export const MetaDataInputForm = ({
       <FlexForm>
         <Space direction="vertical" size="middle">
           {!isFolder(id) && (
-            <Image
-              width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
-              src={`${process.env.REACT_APP_CLOUDFRONT_URL}/media/${id}`}
-              placeholder={
-                <Image
-                  preview={false}
-                  src={`${
-                    process.env.REACT_APP_CLOUDFRONT_URL
-                  }/resizer?key=${id}&width=${Number(
-                    process.env.REACT_APP_ICON_WIDTH || 0
-                  )}&height=${Number(process.env.REACT_APP_ICON_HEIGHT || 0)}`}
-                  width={200}
-                />
-              }
-            />
+            <Card>
+              <AsyncImage
+                id={id}
+                width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
+                height={Number(process.env.REACT_APP_ICON_HEIGHT || 0)}
+              />
+            </Card>
           )}
 
           <Card>
@@ -157,6 +150,7 @@ export const MetaDataInputForm = ({
                       {Characters.check}
                     </button>
                   </FormBrick>
+
                   <Tags
                     tags={availableTags
                       ?.filter(
@@ -261,14 +255,16 @@ export const MetaDataInputForm = ({
             />
           </Card>
 
-          <Space size="middle">
-            <Button type="primary" disabled={isSubmitting}>
-              Submit
-            </Button>
-            <Button type="default" onClick={() => navigate(-1)}>
-              Cancel
-            </Button>
-          </Space>
+          <Card>
+            <Space size="middle">
+              <Button type="primary" disabled={isSubmitting}>
+                Submit
+              </Button>
+              <Button type="default" onClick={() => navigate(-1)}>
+                Cancel
+              </Button>
+            </Space>
+          </Card>
         </Space>
       </FlexForm>
     )}
