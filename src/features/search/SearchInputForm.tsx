@@ -1,7 +1,6 @@
 import { Button, Card, Image, Space, Tag } from "antd";
 import { Attributes } from "features/attributes";
 import { Loading } from "features/loading";
-import { ExistingItemsContainer } from "features/meta/styles";
 import { Tags } from "features/tags";
 import { Field, FieldArray, Formik } from "formik";
 import {
@@ -156,16 +155,14 @@ export const SearchInputForm = ({
                 name="filter.tags"
                 render={({ remove, push }) => (
                   <>
-                    <ExistingItemsContainer>
-                      {tags.map((tag, index) => (
-                        <FormBrick key={index}>
-                          <Tag>{tag}</Tag>
-                          <SmallButton onClick={() => remove(index)}>
-                            {Characters.multiply}
-                          </SmallButton>
-                        </FormBrick>
-                      ))}
-                    </ExistingItemsContainer>
+                    {tags.map((tag, index) => (
+                      <FormBrick key={index}>
+                        <Tag>{tag}</Tag>
+                        <SmallButton onClick={() => remove(index)}>
+                          {Characters.multiply}
+                        </SmallButton>
+                      </FormBrick>
+                    ))}
 
                     <Field name="tagInput" autoComplete="off" />
                     <button
@@ -207,14 +204,12 @@ export const SearchInputForm = ({
                 name="filter.attributes"
                 render={({ remove, push }) => (
                   <>
-                    <ExistingItemsContainer>
-                      {attributes.map((attributeValueInput, index) => (
-                        <Tag key={index}>
-                          {attributeValueInput.attribute.name}:
-                          {attributeValueInput.value}
-                        </Tag>
-                      ))}
-                    </ExistingItemsContainer>
+                    {attributes.map((attributeValueInput, index) => (
+                      <Tag key={index}>
+                        {attributeValueInput.attribute.name}:
+                        {attributeValueInput.value}
+                      </Tag>
+                    ))}
 
                     <Field name="attributeInput.attribute.name" />
                     <Field name="attributeInput.attribute.type" as="select">
@@ -282,14 +277,12 @@ export const SearchInputForm = ({
                 name="sorter"
                 render={({ remove, push }) => (
                   <>
-                    <ExistingItemsContainer>
-                      {sorter.map((attributeSortTerm, index) => (
-                        <Tag key={index} closable>
-                          {attributeSortTerm.attribute}:{" "}
-                          {attributeSortTerm.sortOrder}
-                        </Tag>
-                      ))}
-                    </ExistingItemsContainer>
+                    {sorter.map((attributeSortTerm, index) => (
+                      <Tag key={index} closable>
+                        {attributeSortTerm.attribute}:{" "}
+                        {attributeSortTerm.sortOrder}
+                      </Tag>
+                    ))}
 
                     <Field name="sortInput.attribute" />
                     <Field name="sortInput.sortOrder" as="select">

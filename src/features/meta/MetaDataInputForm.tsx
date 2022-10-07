@@ -1,14 +1,16 @@
-import { Button, Card, Space, Tag } from "antd";
+import { Button, Card, Space, Tag, Select, Divider, Input } from "antd";
+import type { InputRef } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { AsyncImage } from "features/asyncImage";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
-import { Field, FieldArray, Formik } from "formik";
+import { Field, FieldArray, Formik, FieldProps } from "formik";
+import React, { useEffect, useState, ChangeEvent, useRef } from "react";
+import type { CustomTagProps } from "rc-select/lib/BaseSelect";
 import {
   Attribute,
   AttributeValue,
   AttributeValueInput,
-  Characters,
-  FormBrick,
   InputType,
   isFolder,
   Maybe,
@@ -18,14 +20,15 @@ import {
 } from "lib";
 import { NavigateFunction } from "react-router-dom";
 import { array, mixed, object, string } from "yup";
-import { ExistingItemsContainer, FlexForm } from "./styles";
+
+const { Option } = Select;
 
 const attributeInputInitValue: AttributeValueInput = {
   attribute: { name: "", type: InputType.String },
   value: "",
 };
 
-const tagSchema = string().trim().required();
+const tagSchema = string().trim().lowercase().required();
 
 const attributeSchema = object({
   attribute: object({
@@ -63,210 +66,162 @@ export const MetaDataInputForm = ({
   navigate,
   availableAttributes,
   availableTags,
-}: MetaDataInputFormParams) => (
-  <Formik<Values>
-    initialValues={{
-      attributes:
-        metaData?.attributes?.map(({ attribute: { name, type }, value }) => ({
-          attribute: { name, type },
-          value,
-        })) || [],
-      tags: metaData?.tags || [],
-      tagInput: "",
-      attributeInput: attributeInputInitValue,
-    }}
-    onSubmit={async ({ attributes, tags }, { setSubmitting }) => {
-      try {
-        await updateMetaDataMutation({
-          variables: {
-            id,
-            ...(attributes.length || tags.length
-              ? {
-                  metaDataInput: {
-                    ...(attributes.length ? { attributes } : {}),
-                    ...(tags.length ? { tags } : {}),
-                  },
-                }
-              : {}),
-          },
-        });
+}: MetaDataInputFormParams) => {
+  const [inputVisible, setInputVisible] = useState<boolean>(false);
+  const inputRef = useRef(null);
 
-        setSubmitting(false);
-        navigate(-1);
-      } catch (error) {
-        console.error(error);
-      }
-    }}
-    validationSchema={validationSchema}
-  >
-    {({
-      values: { tags, attributes, tagInput, attributeInput },
-      isSubmitting,
-      setFieldValue,
-    }) => (
-      <FlexForm>
-        <Space direction="vertical" size="middle">
-          {!isFolder(id) && (
-            <Card>
-              <AsyncImage
-                id={id}
-                width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
-                height={Number(process.env.REACT_APP_ICON_HEIGHT || 0)}
-              />
+  return (
+    <Formik<Values>
+      initialValues={{
+        attributes:
+          metaData?.attributes?.map(({ attribute: { name, type }, value }) => ({
+            attribute: { name, type },
+            value,
+          })) || [],
+        tags: metaData?.tags || [],
+        tagInput: "",
+        attributeInput: attributeInputInitValue,
+      }}
+      onSubmit={async ({ attributes, tags }, { setSubmitting }) => {
+        try {
+          await updateMetaDataMutation({
+            variables: {
+              id,
+              ...(attributes.length || tags.length
+                ? {
+                    metaDataInput: {
+                      ...(attributes.length ? { attributes } : {}),
+                      ...(tags.length ? { tags } : {}),
+                    },
+                  }
+                : {}),
+            },
+          });
+
+          setSubmitting(false);
+          navigate(-1);
+        } catch (error) {
+          console.error(error);
+        }
+      }}
+      validationSchema={validationSchema}
+    >
+      {({
+        values: { tags, attributes, tagInput, attributeInput },
+        isSubmitting,
+        setFieldValue,
+        handleChange,
+      }) => {
+        return (
+          <Space
+            direction="vertical"
+            size="middle"
+            style={{ width: "100%", padding: "1rem" }}
+          >
+            {!isFolder(id) && (
+              <Card>
+                <AsyncImage
+                  id={id}
+                  width={Number(process.env.REACT_APP_ICON_WIDTH || 0)}
+                  height={Number(process.env.REACT_APP_ICON_HEIGHT || 0)}
+                />
+              </Card>
+            )}
+
+            <Card title="Tags">
+              <Select
+                mode="tags"
+                size="small"
+                defaultValue={tags}
+                style={{ width: "100%" }}
+                onChange={(tags: string[]) => {
+                  setFieldValue("tags", tags);
+                }}
+              >
+                {availableTags?.map((tag) => (
+                  <Option key={tag}>{tag}</Option>
+                ))}
+              </Select>
             </Card>
-          )}
 
-          <Card>
-            <FieldArray
-              name="tags"
-              render={({ remove, push }) => (
-                <>
-                  <ExistingItemsContainer>
-                    {tags &&
-                      tags.map((tag: string, index: number) => (
-                        <FormBrick key={index}>
-                          <Tag closable>{tag}</Tag>
-                        </FormBrick>
-                      ))}
-                  </ExistingItemsContainer>
+            <Card title="Attributes">
+              <Select
+                ref={inputRef}
+                mode="multiple"
+                size="small"
+                defaultValue={
+                  attributes &&
+                  attributes.map(
+                    (attributeValue: AttributeValue) =>
+                      attributeValue.attribute.name +
+                      ": " +
+                      attributeValue.value
+                  )
+                }
+                style={{ width: "100%" }}
+                onChange={(tags: string[]) => {
+                  console.log("==> onChange", tags);
 
-                  <FormBrick>
-                    <Field name="tagInput" autoComplete="off" />
-                    <button
-                      type="button"
-                      onClick={() => setFieldValue("tagInput", "")}
+                  setFieldValue("tags", tags);
+                }}
+                tagRender={(props: CustomTagProps) => {
+                  const { label, value, closable, onClose } = props;
+                  const onPreventMouseDown = (
+                    event: React.MouseEvent<HTMLSpanElement>
+                  ) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  };
+                  return (
+                    <Tag
+                      onMouseDown={onPreventMouseDown}
+                      closable={closable}
+                      onClose={onClose}
+                      style={{ marginRight: 3 }}
                     >
-                      {Characters.multiply}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (await tagSchema.isValid(tagInput)) {
-                          push(tagInput);
-                          setFieldValue("tagInput", "");
-                        }
-                      }}
-                    >
-                      {Characters.check}
-                    </button>
-                  </FormBrick>
+                      {label}
+                    </Tag>
+                  );
+                }}
+                open={inputVisible}
+                onFocus={() => {
+                  setInputVisible(true);
+                }}
+                onSelect={() => {
+                  setInputVisible(false);
+                }}
+                onInputKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Escape") {
+                    setInputVisible(false);
+                    console.log("==> e", e.target, inputRef.current);
+                    const r = inputRef.current as unknown as {
+                      blur: () => void;
+                    };
+                    r.blur();
+                  } else {
+                    setInputVisible(true);
+                  }
+                }}
+              >
+                {availableAttributes?.map((attribute) => (
+                  <Option key={attribute.name}>{attribute.name}</Option>
+                ))}
+              </Select>
+            </Card>
 
-                  <Tags
-                    tags={availableTags
-                      ?.filter(
-                        (availableTag) =>
-                          !tags.includes(availableTag) &&
-                          availableTag.startsWith(tagInput) &&
-                          availableTag !== tagInput
-                      )
-                      .sort()}
-                    onClick={(tag) => {
-                      push(tag);
-                    }}
-                  />
-                </>
-              )}
-            />
-          </Card>
-
-          <Card>
-            <FieldArray
-              name="attributes"
-              render={({ remove, push }) => (
-                <>
-                  <ExistingItemsContainer>
-                    {attributes &&
-                      attributes.map(
-                        (attributeValue: AttributeValue, index: number) => (
-                          <Tag key={index} closable>
-                            {attributeValue.attribute.name}:{" "}
-                            {attributeValue.value}
-                          </Tag>
-                        )
-                      )}{" "}
-                  </ExistingItemsContainer>
-
-                  <FormBrick>
-                    <Field name="attributeInput.attribute.name" />
-                    <Field name="attributeInput.attribute.type" as="select">
-                      <option value={InputType.String}>
-                        {InputType.String}
-                      </option>
-                      <option value={InputType.Number}>
-                        {InputType.Number}
-                      </option>
-                    </Field>
-                    <Field name="attributeInput.value" />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFieldValue("attributeInput", attributeInputInitValue)
-                      }
-                    >
-                      {Characters.multiply}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (
-                          (await attributeSchema.isValid(attributeInput)) &&
-                          !attributes?.find(
-                            (attributeValue) =>
-                              attributeValue.attribute.name ===
-                              attributeInput.attribute.name
-                          )
-                        ) {
-                          push(attributeInput);
-                          setFieldValue(
-                            "attributeInput",
-                            attributeInputInitValue
-                          );
-                        }
-                      }}
-                    >
-                      {Characters.check}
-                    </button>
-                  </FormBrick>
-                  <Attributes
-                    attributes={availableAttributes
-                      ?.filter(
-                        (availableAttribute) =>
-                          !attributes.find(
-                            (attribute) =>
-                              attribute.attribute.name ===
-                              availableAttribute.name
-                          ) &&
-                          availableAttribute.name.includes(
-                            attributeInput.attribute.name
-                          ) &&
-                          availableAttribute.name !==
-                            attributeInput.attribute.name
-                      )
-                      .sort()}
-                    onClick={(attribute) => {
-                      setFieldValue("attributeInput", {
-                        attribute,
-                        value: "",
-                      });
-                    }}
-                  />
-                </>
-              )}
-            />
-          </Card>
-
-          <Card>
-            <Space size="middle">
-              <Button type="primary" disabled={isSubmitting}>
-                Submit
-              </Button>
-              <Button type="default" onClick={() => navigate(-1)}>
-                Cancel
-              </Button>
-            </Space>
-          </Card>
-        </Space>
-      </FlexForm>
-    )}
-  </Formik>
-);
+            <Card>
+              <Space size="middle">
+                <Button type="primary" disabled={isSubmitting}>
+                  Submit
+                </Button>
+                <Button type="default" onClick={() => navigate(-1)}>
+                  Cancel
+                </Button>
+              </Space>
+            </Card>
+          </Space>
+        );
+      }}
+    </Formik>
+  );
+};
