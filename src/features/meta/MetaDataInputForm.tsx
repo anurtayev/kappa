@@ -1,6 +1,17 @@
-import { Button, Card, Space, Tag, Select, Divider, Input } from "antd";
+import {
+  Button,
+  Card,
+  Space,
+  Tag,
+  Select,
+  Divider,
+  Input,
+  Switch,
+  Radio,
+  RadioChangeEvent,
+} from "antd";
 import type { InputRef } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import { AsyncImage } from "features/asyncImage";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
@@ -32,7 +43,7 @@ const tagSchema = string().trim().lowercase().required();
 
 const attributeSchema = object({
   attribute: object({
-    name: string().trim().required(),
+    name: string().trim().lowercase().required(),
     type: mixed().oneOf([InputType.String, InputType.Number]),
   }),
   value: string().trim().required(),
@@ -69,6 +80,12 @@ export const MetaDataInputForm = ({
 }: MetaDataInputFormParams) => {
   const [inputVisible, setInputVisible] = useState<boolean>(false);
   const inputRef = useRef(null);
+
+  const [attributeName, setAttributeName] = useState<string>();
+  const [attributeInputType, setAttributeInputType] = useState<InputType>(
+    InputType.String
+  );
+  const [attributeValue, setAttributeValue] = useState<string>();
 
   return (
     <Formik<Values>
@@ -144,70 +161,122 @@ export const MetaDataInputForm = ({
               </Select>
             </Card>
 
-            <Card title="Attributes">
-              <Select
-                ref={inputRef}
-                mode="multiple"
-                size="small"
-                defaultValue={
-                  attributes &&
-                  attributes.map(
-                    (attributeValue: AttributeValue) =>
-                      attributeValue.attribute.name +
-                      ": " +
-                      attributeValue.value
-                  )
-                }
-                style={{ width: "100%" }}
-                onChange={(tags: string[]) => {
-                  console.log("==> onChange", tags);
+            <FieldArray
+              name="attributes"
+              render={({ remove, push }) => (
+                <Card title="Attributes" bodyStyle={{ display: "flex" }}>
+                  {attributes.map(({ attribute, value }) => {
+                    return (
+                      <Card
+                        bodyStyle={{
+                          padding: "0px",
+                          display: "flex",
+                        }}
+                        style={{ marginRight: "5px" }}
+                        key={attribute.name}
+                      >
+                        <Tag
+                          color="purple"
+                          style={{
+                            margin: "0px",
+                            border: "0px",
+                            height: "24px",
+                          }}
+                        >
+                          {attribute.name}
+                        </Tag>
+                        <Tag
+                          closable={true}
+                          onClose={(e) => {
+                            console.log(e);
+                          }}
+                          style={{
+                            margin: "0px",
+                            border: "0px",
+                            height: "24px",
+                          }}
+                        >
+                          {value}
+                        </Tag>
+                      </Card>
+                    );
+                  })}
 
-                  setFieldValue("tags", tags);
-                }}
-                tagRender={(props: CustomTagProps) => {
-                  const { label, value, closable, onClose } = props;
-                  const onPreventMouseDown = (
-                    event: React.MouseEvent<HTMLSpanElement>
-                  ) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                  };
-                  return (
-                    <Tag
-                      onMouseDown={onPreventMouseDown}
-                      closable={closable}
-                      onClose={onClose}
-                      style={{ marginRight: 3 }}
+                  {!inputVisible && (
+                    <PlusOutlined
+                      style={{ fontSize: 24 }}
+                      onClick={() => {
+                        setInputVisible(true);
+                      }}
+                    />
+                  )}
+
+                  {inputVisible && (
+                    <Card
+                      bodyStyle={{
+                        display: "flex",
+                        height: "24px",
+                        padding: 0,
+                        margin: 0,
+                      }}
                     >
-                      {label}
-                    </Tag>
-                  );
-                }}
-                open={inputVisible}
-                onFocus={() => {
-                  setInputVisible(true);
-                }}
-                onSelect={() => {
-                  setInputVisible(false);
-                }}
-                onInputKeyDown={(e: React.KeyboardEvent) => {
-                  if (e.key === "Escape") {
-                    setInputVisible(false);
-                    console.log("==> e", e.target, inputRef.current);
-                    const r = inputRef.current as unknown as {
-                      blur: () => void;
-                    };
-                    r.blur();
-                  } else {
-                    setInputVisible(true);
-                  }
-                }}
-              >
-                {availableAttributes?.map((attribute) => (
-                  <Option key={attribute.name}>{attribute.name}</Option>
-                ))}
-              </Select>
-            </Card>
+                      <Select
+                        showSearch
+                        showArrow={false}
+                        size="small"
+                        options={(availableAttributes || []).map(
+                          (attribute) => ({
+                            value: attribute.name,
+                            label: attribute.name,
+                          })
+                        )}
+                        style={{ width: "100%" }}
+                        onChange={(value) => {
+                          setAttributeName(value);
+                        }}
+                      />
+                      <Radio.Group
+                        onChange={(e: RadioChangeEvent) => {
+                          setAttributeInputType(e.target.value);
+                        }}
+                        style={{
+                          display: "flex",
+                        }}
+                        value={attributeInputType}
+                      >
+                        <Radio value={InputType.String}>STR</Radio>
+                        <Radio value={InputType.Number}>NUM</Radio>
+                      </Radio.Group>
+                      <Input
+                        ref={inputRef}
+                        value={attributeValue}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                          setAttributeValue(e.target.value);
+                        }}
+                      />
+                      <CheckOutlined
+                        style={{ fontSize: 24 }}
+                        onClick={() => {
+                          if (attributeName && attributeValue) {
+                            push({
+                              attribute: {
+                                name: attributeName,
+                                type: attributeInputType,
+                              },
+                              value: attributeValue,
+                            });
+                            setAttributeName("");
+                            setAttributeInputType(InputType.String);
+                            setAttributeValue("");
+                            setInputVisible(false);
+                          }
+                        }}
+                      />
+                    </Card>
+                  )}
+                </Card>
+              )}
+            />
 
             <Card>
               <Space size="middle">
