@@ -6,12 +6,13 @@ import {
   Select,
   Divider,
   Input,
+  InputNumber,
   Switch,
   Radio,
   RadioChangeEvent,
 } from "antd";
 import type { InputRef } from "antd";
-import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
+import { PlusOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { AsyncImage } from "features/asyncImage";
 import { Attributes } from "features/attributes";
 import { Tags } from "features/tags";
@@ -79,13 +80,18 @@ export const MetaDataInputForm = ({
   availableTags,
 }: MetaDataInputFormParams) => {
   const [inputVisible, setInputVisible] = useState<boolean>(false);
+  const [inputError, setInputError] = useState<
+    "" | "error" | "warning" | undefined
+  >();
   const inputRef = useRef(null);
+  const [typeSelectionEnabled, setTypeSelectionEnabled] =
+    useState<boolean>(true);
 
   const [attributeName, setAttributeName] = useState<string>();
   const [attributeInputType, setAttributeInputType] = useState<InputType>(
     InputType.String
   );
-  const [attributeValue, setAttributeValue] = useState<string>();
+  const [attributeValue, setAttributeValue] = useState<string | number>();
 
   return (
     <Formik<Values>
@@ -128,6 +134,8 @@ export const MetaDataInputForm = ({
         isSubmitting,
         setFieldValue,
         handleChange,
+        handleSubmit,
+        submitForm,
       }) => {
         return (
           <Space
@@ -163,124 +171,204 @@ export const MetaDataInputForm = ({
 
             <FieldArray
               name="attributes"
-              render={({ remove, push }) => (
-                <Card title="Attributes" bodyStyle={{ display: "flex" }}>
-                  {attributes.map(({ attribute, value }) => {
-                    return (
-                      <Card
-                        bodyStyle={{
-                          padding: "0px",
-                          display: "flex",
-                        }}
-                        style={{ marginRight: "5px" }}
-                        key={attribute.name}
-                      >
-                        <Tag
-                          color="purple"
-                          style={{
-                            margin: "0px",
-                            border: "0px",
-                            height: "24px",
-                          }}
-                        >
-                          {attribute.name}
-                        </Tag>
-                        <Tag
-                          closable={true}
-                          onClose={(e) => {
-                            console.log(e);
-                          }}
-                          style={{
-                            margin: "0px",
-                            border: "0px",
-                            height: "24px",
-                          }}
-                        >
-                          {value}
-                        </Tag>
-                      </Card>
-                    );
-                  })}
+              render={({ remove, push }) => {
+                const handleChange = () => {
+                  if (attributeName && attributeValue && !inputError) {
+                    push({
+                      attribute: {
+                        name: attributeName,
+                        type: attributeInputType,
+                      },
+                      value: attributeValue,
+                    });
+                    setAttributeName("");
+                    setAttributeInputType(InputType.String);
+                    setAttributeValue("");
+                    setInputVisible(false);
+                  }
+                };
+                const handleCancel = () => setInputVisible(false);
 
-                  {!inputVisible && (
-                    <PlusOutlined
-                      style={{ fontSize: 24 }}
-                      onClick={() => {
-                        setInputVisible(true);
-                      }}
-                    />
-                  )}
+                return (
+                  <Card title="Attributes" bodyStyle={{ display: "flex" }}>
+                    {attributes.map(({ attribute, value }) => {
+                      return (
+                        <Card
+                          bodyStyle={{
+                            padding: "0px",
+                            display: "flex",
+                          }}
+                          style={{ marginRight: "5px" }}
+                          key={attribute.name}
+                        >
+                          <Tag
+                            color="purple"
+                            style={{
+                              margin: "0px",
+                              border: "0px",
+                              height: "24px",
+                            }}
+                          >
+                            {attribute.name}
+                          </Tag>
+                          <Tag
+                            closable={true}
+                            onClose={(e) => {
+                              remove(
+                                attributes.findIndex(
+                                  ({ attribute: { name } }) =>
+                                    name === attribute.name
+                                )
+                              );
+                            }}
+                            style={{
+                              margin: "0px",
+                              border: "0px",
+                              height: "24px",
+                            }}
+                          >
+                            {value}
+                          </Tag>
+                        </Card>
+                      );
+                    })}
 
-                  {inputVisible && (
-                    <Card
-                      bodyStyle={{
-                        display: "flex",
-                        height: "24px",
-                        padding: 0,
-                        margin: 0,
-                      }}
-                    >
-                      <Select
-                        showSearch
-                        showArrow={false}
-                        size="small"
-                        options={(availableAttributes || []).map(
-                          (attribute) => ({
-                            value: attribute.name,
-                            label: attribute.name,
-                          })
-                        )}
-                        style={{ width: "100%" }}
-                        onChange={(value) => {
-                          setAttributeName(value);
-                        }}
-                      />
-                      <Radio.Group
-                        onChange={(e: RadioChangeEvent) => {
-                          setAttributeInputType(e.target.value);
-                        }}
-                        style={{
-                          display: "flex",
-                        }}
-                        value={attributeInputType}
-                      >
-                        <Radio value={InputType.String}>STR</Radio>
-                        <Radio value={InputType.Number}>NUM</Radio>
-                      </Radio.Group>
-                      <Input
-                        ref={inputRef}
-                        value={attributeValue}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                          setAttributeValue(e.target.value);
-                        }}
-                      />
-                      <CheckOutlined
+                    {!inputVisible && (
+                      <PlusOutlined
                         style={{ fontSize: 24 }}
                         onClick={() => {
-                          if (attributeName && attributeValue) {
-                            push({
-                              attribute: {
-                                name: attributeName,
-                                type: attributeInputType,
-                              },
-                              value: attributeValue,
-                            });
-                            setAttributeName("");
-                            setAttributeInputType(InputType.String);
-                            setAttributeValue("");
-                            setInputVisible(false);
-                          }
+                          setInputVisible(true);
                         }}
                       />
-                    </Card>
-                  )}
-                </Card>
-              )}
+                    )}
+
+                    {inputVisible && (
+                      <Card
+                        bodyStyle={{
+                          display: "flex",
+                          height: "24px",
+                          padding: 0,
+                          margin: 0,
+                        }}
+                      >
+                        <Select
+                          value={attributeName}
+                          status={inputError}
+                          allowClear
+                          showSearch
+                          showArrow={false}
+                          size="small"
+                          options={(availableAttributes || []).map(
+                            (attribute) => ({
+                              value: attribute.name,
+                              label: attribute.name,
+                            })
+                          )}
+                          style={{ width: "100%", marginRight: "1rem" }}
+                          onChange={(value) => {}}
+                          onSelect={(value: any) => {
+                            setAttributeName(value);
+                            setTypeSelectionEnabled(false);
+                            setAttributeInputType(
+                              availableAttributes?.find(
+                                (att) => att.name === value
+                              )?.type || InputType.String
+                            );
+
+                            if (
+                              attributes.find(
+                                (att) => att.attribute.name === value
+                              )
+                            ) {
+                              console.log("==> onChange err");
+                              setInputError("error");
+                            } else {
+                              console.log("==> onChange ok");
+                              setInputError("");
+                            }
+                          }}
+                          onInputKeyDown={(
+                            e: React.KeyboardEvent<HTMLInputElement>
+                          ) => {
+                            if (e.key === "Enter") {
+                              setAttributeName(e.currentTarget.value);
+                              setTypeSelectionEnabled(true);
+                            }
+                          }}
+                        />
+                        <Radio.Group
+                          disabled={!typeSelectionEnabled}
+                          onChange={(e: RadioChangeEvent) => {
+                            setAttributeInputType(e.target.value);
+                          }}
+                          style={{
+                            display: "flex",
+                          }}
+                          value={attributeInputType}
+                        >
+                          <Radio value={InputType.String}>STR</Radio>
+                          <Radio value={InputType.Number}>NUM</Radio>
+                        </Radio.Group>
+                        {attributeInputType === InputType.String ? (
+                          <Input
+                            ref={inputRef}
+                            value={attributeValue}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                              setAttributeValue(e.target.value);
+                            }}
+                            onKeyDown={(
+                              e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                              if (e.key === "Enter") {
+                                handleChange();
+                              } else if (e.key === "Escape") {
+                                handleCancel();
+                              }
+                            }}
+                          />
+                        ) : (
+                          <InputNumber
+                            style={{ width: "100%" }}
+                            size="small"
+                            ref={inputRef}
+                            value={attributeValue}
+                            onChange={(value) => {
+                              console.log(value);
+                              setAttributeValue(value);
+                            }}
+                            onKeyDown={(
+                              e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                              if (e.key === "Enter") {
+                                handleChange();
+                              } else if (e.key === "Escape") {
+                                handleCancel();
+                              }
+                            }}
+                          />
+                        )}
+                        <CheckOutlined
+                          style={{ fontSize: 24 }}
+                          onClick={handleChange}
+                        />
+                        <CloseOutlined
+                          style={{ fontSize: 24 }}
+                          onClick={handleCancel}
+                        />
+                      </Card>
+                    )}
+                  </Card>
+                );
+              }}
             />
 
             <Card>
               <Space size="middle">
-                <Button type="primary" disabled={isSubmitting}>
+                <Button
+                  type="primary"
+                  disabled={isSubmitting}
+                  onClick={() => submitForm()}
+                >
                   Submit
                 </Button>
                 <Button type="default" onClick={() => navigate(-1)}>
