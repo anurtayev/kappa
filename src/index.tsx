@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 
 import "./index.css";
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 import { App } from "./App";
 import AWS from "aws-sdk";
 

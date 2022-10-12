@@ -1,8 +1,11 @@
+import { Card } from "antd";
+import { Skeleton } from "antd";
+
 import { AsyncImage } from "features/asyncImage";
 import { appRoutes, FolderConnection } from "lib";
 import { MouseEventHandler } from "react";
 import { MetaLink } from "./MetaLink";
-import { Entry, FolderScreenFrame, PaddedSpan, VerticalFrame } from "./styles";
+import { Entry, FolderScreenFrame, PaddedSpan } from "./styles";
 
 export type FolderScreenParameters = {
   folders: FolderConnection["folders"];
@@ -37,7 +40,7 @@ export const EntriesView = ({
     };
 
   return (
-    <VerticalFrame>
+    <Card bodyStyle={{ padding: 0, margin: "1rem" }} bordered={false}>
       {folders || files ? (
         <FolderScreenFrame ref={divRef}>
           {folders?.map(({ id }) => (
@@ -58,8 +61,18 @@ export const EntriesView = ({
           ))}
         </FolderScreenFrame>
       ) : (
-        <div>no entries</div>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Skeleton.Image />
+        </div>
       )}
-    </VerticalFrame>
+    </Card>
   );
 };

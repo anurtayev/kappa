@@ -136,6 +136,7 @@ export const SearchInputForm = ({
           sorter,
         },
         isSubmitting,
+        submitForm,
         errors,
       }) => {
         return (
@@ -296,7 +297,11 @@ export const SearchInputForm = ({
             />
 
             <Card>
-              <Button type="primary" disabled={isSubmitting}>
+              <Button
+                type="primary"
+                disabled={isSubmitting}
+                onClick={() => submitForm()}
+              >
                 Search
               </Button>
             </Card>
