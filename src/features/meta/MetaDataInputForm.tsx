@@ -1,27 +1,19 @@
+import { CheckOutlined, CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Card,
-  Space,
-  Tag,
-  Select,
-  Divider,
   Input,
   InputNumber,
-  Switch,
   Radio,
   RadioChangeEvent,
+  Select,
+  Space,
+  Tag,
 } from "antd";
-import type { InputRef } from "antd";
-import { PlusOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { AsyncImage } from "features/asyncImage";
-import { Attributes } from "features/attributes";
-import { Tags } from "features/tags";
-import { Field, FieldArray, Formik, FieldProps } from "formik";
-import React, { useEffect, useState, ChangeEvent, useRef } from "react";
-import type { CustomTagProps } from "rc-select/lib/BaseSelect";
+import { FieldArray, Formik } from "formik";
 import {
   Attribute,
-  AttributeValue,
   AttributeValueInput,
   InputType,
   isFolder,
@@ -29,26 +21,14 @@ import {
   MetaData,
   Scalars,
   UpdateMetaDataMutationFn,
+  tagSchema,
+  attributeSchema,
 } from "lib";
+import React, { ChangeEvent, useRef, useState } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { array, mixed, object, string } from "yup";
 
 const { Option } = Select;
-
-const attributeInputInitValue: AttributeValueInput = {
-  attribute: { name: "", type: InputType.String },
-  value: "",
-};
-
-const tagSchema = string().trim().lowercase().required();
-
-const attributeSchema = object({
-  attribute: object({
-    name: string().trim().lowercase().required(),
-    type: mixed().oneOf([InputType.String, InputType.Number]),
-  }),
-  value: string().trim().required(),
-});
 
 const validationSchema = object({
   attributes: array().of(attributeSchema),
@@ -67,8 +47,6 @@ type MetaDataInputFormParams = {
 type Values = {
   attributes: Array<AttributeValueInput>;
   tags: Array<Scalars["String"]>;
-  tagInput: string;
-  attributeInput: AttributeValueInput;
 };
 
 export const MetaDataInputForm = ({
@@ -102,8 +80,6 @@ export const MetaDataInputForm = ({
             value,
           })) || [],
         tags: metaData?.tags || [],
-        tagInput: "",
-        attributeInput: attributeInputInitValue,
       }}
       onSubmit={async ({ attributes, tags }, { setSubmitting }) => {
         try {
@@ -130,7 +106,7 @@ export const MetaDataInputForm = ({
       validationSchema={validationSchema}
     >
       {({
-        values: { tags, attributes, tagInput, attributeInput },
+        values: { tags, attributes },
         isSubmitting,
         setFieldValue,
         handleChange,
@@ -172,15 +148,17 @@ export const MetaDataInputForm = ({
             <FieldArray
               name="attributes"
               render={({ remove, push }) => {
-                const handleChange = () => {
-                  if (attributeName && attributeValue && !inputError) {
-                    push({
-                      attribute: {
-                        name: attributeName,
-                        type: attributeInputType,
-                      },
-                      value: attributeValue,
-                    });
+                const handleChange = async () => {
+                  const newAttr = {
+                    attribute: {
+                      name: attributeName,
+                      type: attributeInputType,
+                    },
+                    value: attributeValue,
+                  };
+
+                  if ((await attributeSchema.isValid(newAttr)) && !inputError) {
+                    push(newAttr);
                     setAttributeName("");
                     setAttributeInputType(InputType.String);
                     setAttributeValue("");
@@ -193,14 +171,7 @@ export const MetaDataInputForm = ({
                   <Card title="Attributes" bodyStyle={{ display: "flex" }}>
                     {attributes.map(({ attribute, value }) => {
                       return (
-                        <Card
-                          bodyStyle={{
-                            padding: "0px",
-                            display: "flex",
-                          }}
-                          style={{ marginRight: "5px" }}
-                          key={attribute.name}
-                        >
+                        <>
                           <Tag
                             color="purple"
                             style={{
@@ -225,11 +196,12 @@ export const MetaDataInputForm = ({
                               margin: "0px",
                               border: "0px",
                               height: "24px",
+                              marginRight: "1rem",
                             }}
                           >
                             {value}
                           </Tag>
-                        </Card>
+                        </>
                       );
                     })}
 
@@ -243,14 +215,7 @@ export const MetaDataInputForm = ({
                     )}
 
                     {inputVisible && (
-                      <Card
-                        bodyStyle={{
-                          display: "flex",
-                          height: "24px",
-                          padding: 0,
-                          margin: 0,
-                        }}
-                      >
+                      <Space size="small" style={{ height: "24px" }}>
                         <Select
                           value={attributeName}
                           status={inputError}
@@ -264,7 +229,7 @@ export const MetaDataInputForm = ({
                               label: attribute.name,
                             })
                           )}
-                          style={{ width: "100%", marginRight: "1rem" }}
+                          style={{ width: "8rem", marginRight: "1rem" }}
                           onChange={(value) => {}}
                           onSelect={(value: any) => {
                             setAttributeName(value);
@@ -280,10 +245,8 @@ export const MetaDataInputForm = ({
                                 (att) => att.attribute.name === value
                               )
                             ) {
-                              console.log("==> onChange err");
                               setInputError("error");
                             } else {
-                              console.log("==> onChange ok");
                               setInputError("");
                             }
                           }}
@@ -311,6 +274,7 @@ export const MetaDataInputForm = ({
                         </Radio.Group>
                         {attributeInputType === InputType.String ? (
                           <Input
+                            size="small"
                             ref={inputRef}
                             value={attributeValue}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -348,14 +312,14 @@ export const MetaDataInputForm = ({
                           />
                         )}
                         <CheckOutlined
-                          style={{ fontSize: 24 }}
+                          style={{ fontSize: 22 }}
                           onClick={handleChange}
                         />
                         <CloseOutlined
-                          style={{ fontSize: 24 }}
+                          style={{ fontSize: 22 }}
                           onClick={handleCancel}
                         />
-                      </Card>
+                      </Space>
                     )}
                   </Card>
                 );

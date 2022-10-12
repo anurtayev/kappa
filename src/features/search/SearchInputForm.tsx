@@ -1,37 +1,36 @@
-import { Button, Card, Image, Space, Tag } from "antd";
-import { Attributes } from "features/attributes";
+import { CheckOutlined, CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Input,
+  InputNumber,
+  Radio,
+  RadioChangeEvent,
+  Select,
+  Space,
+  Tag,
+} from "antd";
 import { Loading } from "features/loading";
-import { Tags } from "features/tags";
-import { Field, FieldArray, Formik } from "formik";
+import { FieldArray, Formik } from "formik";
 import {
   AppContext,
+  attributeSchema,
   AttributeSortTerm,
   AttributeValueInput,
-  Characters,
-  FormBrick,
   InputType,
   Scalars,
   SearchInput,
-  SmallButton,
   SortOrder,
+  tagSchema,
   useGetAllTagsAndAttributesQuery,
 } from "lib";
-import { useContext } from "react";
+import React, { ChangeEvent, useContext, useRef, useState } from "react";
 import { array, mixed, object, string, ValidationError } from "yup";
-import { ButtonContainer, FlexForm, SubmitButton } from "./styles";
 
-const tagSchema = string().trim().required();
-
-const attributeSchema = object({
-  attribute: object({
-    name: string().trim().required(),
-    type: mixed().oneOf([InputType.String, InputType.Number]),
-  }),
-  value: string().trim().required(),
-});
+const { Option } = Select;
 
 const sorterSchema = object({
-  attribute: string().trim().required(),
+  attribute: string().trim().lowercase().required(),
   sortOrder: mixed().oneOf([SortOrder.Asc, SortOrder.Desc]),
 });
 
@@ -60,9 +59,6 @@ type SearchInputFormType = {
     tags: Array<Scalars["String"]>;
   };
   sorter: Array<AttributeSortTerm>;
-  tagInput: string;
-  attributeInput: AttributeValueInput;
-  sortInput: AttributeSortTerm;
 };
 
 type SearchInputFormParams = {
@@ -84,6 +80,33 @@ export const SearchInputForm = ({
   searchInput,
   setSearchInput,
 }: SearchInputFormParams) => {
+  const inputRef = useRef(null);
+  const [typeSelectionEnabled, setTypeSelectionEnabled] =
+    useState<boolean>(true);
+
+  const [attributeInputVisible, setAttributeInputVisible] =
+    useState<boolean>(false);
+  const [attributeInputError, setAttributeInputError] = useState<
+    "" | "error" | "warning" | undefined
+  >();
+  const [attributeName, setAttributeName] = useState<string>();
+  const [attributeInputType, setAttributeInputType] = useState<InputType>(
+    InputType.String
+  );
+  const [attributeValue, setAttributeValue] = useState<string | number>();
+
+  const [sorterInputVisible, setSorterInputVisible] = useState<boolean>(false);
+  const [sorterInputError, setSorterInputError] = useState<
+    "" | "error" | "warning" | undefined
+  >();
+  const [sorterName, setSorterName] = useState<string>();
+  const [sorterInputType, setSorterInputType] = useState<SortOrder>(
+    SortOrder.Asc
+  );
+
+  const [tagName, setTagName] = useState<string>("");
+  const [tagInputVisible, setTagInputVisible] = useState<boolean>(false);
+
   const { session } = useContext(AppContext);
 
   const { data, loading, error } = useGetAllTagsAndAttributesQuery({
@@ -109,9 +132,6 @@ export const SearchInputForm = ({
           tags: searchInput.filter.tags || [],
         },
         sorter: searchInput.sorter || [],
-        tagInput: "",
-        attributeInput: attributeInputInitValue,
-        sortInput: sortInputInitValue,
       }}
       onSubmit={(
         { filter: { attributes, tags }, sorter },
@@ -132,212 +152,409 @@ export const SearchInputForm = ({
         values: {
           filter: { attributes, tags },
           sorter,
-          attributeInput,
-          tagInput,
-          sortInput,
         },
         isSubmitting,
         setFieldValue,
         errors,
       }) => {
+        console.log("==> renderer", tags);
+
         return (
-          <FlexForm>
-            <div>
-              {errors.filter &&
-                typeof errors.filter === "string" &&
-                errors.filter}
+          <Space
+            size="middle"
+            direction="vertical"
+            style={{ width: "100%", padding: "1rem" }}
+          >
+            {errors.filter && typeof errors.filter === "string" && (
+              <p style={{ marginRight: "1rem", marginLeft: "1rem" }}>
+                {errors.filter}
+              </p>
+            )}
 
-              <p>filter</p>
+            <FieldArray
+              name="filter.tags"
+              render={({ remove, push }) => {
+                return (
+                  <Card title="Tags" bodyStyle={{ display: "flex" }}>
+                    {tags.map((tag, index) => {
+                      return (
+                        <Tag
+                          color="magenta"
+                          style={{
+                            margin: "0px",
+                            border: "0px",
+                            height: "24px",
+                            marginRight: "1rem",
+                          }}
+                          closable
+                          onClose={() => {
+                            console.log("==> remove tag", index, tag);
 
-              <p>tags</p>
-              {errors.filter?.tags && JSON.stringify(errors.filter?.tags)}
-              <FieldArray
-                name="filter.tags"
-                render={({ remove, push }) => (
-                  <>
-                    {tags.map((tag, index) => (
-                      <FormBrick key={index}>
-                        <Tag>{tag}</Tag>
-                        <SmallButton onClick={() => remove(index)}>
-                          {Characters.multiply}
-                        </SmallButton>
-                      </FormBrick>
-                    ))}
+                            remove(index);
+                          }}
+                        >
+                          {tag}
+                        </Tag>
+                      );
+                    })}
 
-                    <Field name="tagInput" autoComplete="off" />
-                    <button
-                      type="button"
-                      onClick={() => setFieldValue("tagInput", "")}
-                    >
-                      {Characters.multiply}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (await tagSchema.isValid(tagInput)) {
-                          push(tagInput);
-                          setFieldValue("tagInput", "");
-                        }
-                      }}
-                    >
-                      {Characters.check}
-                    </button>
+                    {!tagInputVisible && (
+                      <PlusOutlined
+                        style={{ fontSize: 24 }}
+                        onClick={() => {
+                          setTagInputVisible(true);
+                        }}
+                      />
+                    )}
 
-                    <Tags
-                      tags={availableTags
-                        ?.filter(
-                          (availableTag) =>
-                            !tags.includes(availableTag) &&
-                            availableTag.startsWith(tagInput) &&
-                            availableTag !== tagInput
-                        )
-                        .sort()}
-                      onClick={(tag) => push(tag)}
-                    />
-                  </>
-                )}
-              />
+                    {tagInputVisible && (
+                      <Select
+                        value={tagName}
+                        allowClear
+                        showSearch
+                        showArrow={false}
+                        size="small"
+                        options={(availableTags || []).map((tag) => ({
+                          value: tag,
+                        }))}
+                        style={{ width: "8rem", marginRight: "1rem" }}
+                        onSelect={async (value: any) => {
+                          if (
+                            (await tagSchema.isValid(value)) &&
+                            !tags.find((tag) => tag === value)
+                          ) {
+                            push(value);
+                          }
+                          setTagInputVisible(false);
+                        }}
+                        onInputKeyDown={async (
+                          e: React.KeyboardEvent<HTMLInputElement>
+                        ) => {
+                          const newTag = e.currentTarget.value;
+                          if (e.key === "Enter") {
+                            if (
+                              (await tagSchema.isValid(newTag)) &&
+                              !tags.find((tag) => tag === newTag)
+                            ) {
+                              push(newTag);
+                            }
+                            setTagInputVisible(false);
+                          }
+                        }}
+                      />
+                    )}
+                  </Card>
+                );
+              }}
+            />
 
-              <p>attributes</p>
-              {JSON.stringify(errors.filter?.attributes)}
-              <FieldArray
-                name="filter.attributes"
-                render={({ remove, push }) => (
-                  <>
-                    {attributes.map((attributeValueInput, index) => (
-                      <Tag key={index}>
-                        {attributeValueInput.attribute.name}:
-                        {attributeValueInput.value}
-                      </Tag>
-                    ))}
+            <FieldArray
+              name="filter.attributes"
+              render={({ remove, push }) => {
+                const handleChange = async () => {
+                  const newAttr = {
+                    attribute: {
+                      name: attributeName,
+                      type: attributeInputType,
+                    },
+                    value: attributeValue,
+                  };
 
-                    <Field name="attributeInput.attribute.name" />
-                    <Field name="attributeInput.attribute.type" as="select">
-                      <option value={InputType.String}>
-                        {InputType.String}
-                      </option>
-                      <option value={InputType.Number}>
-                        {InputType.Number}
-                      </option>
-                    </Field>
-                    <Field name="attributeInput.value" />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFieldValue("attributeInput", attributeInputInitValue)
-                      }
-                    >
-                      {Characters.multiply}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (await attributeSchema.isValid(attributeInput)) {
-                          push(attributeInput);
-                          setFieldValue(
-                            "attributeInput",
-                            attributeInputInitValue
-                          );
-                        }
-                      }}
-                    >
-                      {Characters.check}
-                    </button>
+                  if (
+                    (await attributeSchema.isValid(newAttr)) &&
+                    !attributeInputError
+                  ) {
+                    console.log("==> 32");
 
-                    <Attributes
-                      attributes={availableAttributes
-                        ?.filter(
-                          (availableAttribute) =>
-                            !attributes.find(
-                              (attributeValueInput: AttributeValueInput) =>
-                                attributeValueInput.attribute.name ===
-                                availableAttribute.name
-                            ) &&
-                            availableAttribute.name.includes(
-                              attributeInput.attribute.name
-                            ) &&
-                            availableAttribute.name !==
-                              attributeInput.attribute.name
-                        )
-                        .sort()}
-                      onClick={(attribute) =>
-                        setFieldValue("attributeInput", {
-                          attribute,
-                          value: "",
-                        })
-                      }
-                    />
-                  </>
-                )}
-              />
+                    push(newAttr);
+                    setAttributeName("");
+                    setAttributeInputType(InputType.String);
+                    setAttributeValue("");
+                    setAttributeInputVisible(false);
+                  }
+                };
+                const handleCancel = () => setAttributeInputVisible(false);
 
-              <p>sorter</p>
-              {JSON.stringify(errors.sorter)}
-              <FieldArray
-                name="sorter"
-                render={({ remove, push }) => (
-                  <>
+                return (
+                  <Card title="Attributes" bodyStyle={{ display: "flex" }}>
+                    {attributes.map(({ attribute, value }) => {
+                      return (
+                        <>
+                          <Tag
+                            color="purple"
+                            style={{
+                              margin: "0px",
+                              border: "0px",
+                              height: "24px",
+                            }}
+                          >
+                            {attribute.name}
+                          </Tag>
+                          <Tag
+                            closable
+                            onClose={(e) => {
+                              remove(
+                                attributes.findIndex(
+                                  ({ attribute: { name } }) =>
+                                    name === attribute.name
+                                )
+                              );
+                            }}
+                            style={{
+                              margin: "0px",
+                              border: "0px",
+                              height: "24px",
+                              marginRight: "1rem",
+                            }}
+                          >
+                            {value}
+                          </Tag>
+                        </>
+                      );
+                    })}
+
+                    {!attributeInputVisible && (
+                      <PlusOutlined
+                        style={{ fontSize: 24 }}
+                        onClick={() => {
+                          setAttributeInputVisible(true);
+                        }}
+                      />
+                    )}
+
+                    {attributeInputVisible && (
+                      <Space size="small" style={{ height: "24px" }}>
+                        <Select
+                          value={attributeName}
+                          status={attributeInputError}
+                          allowClear
+                          showSearch
+                          showArrow={false}
+                          size="small"
+                          options={(availableAttributes || []).map(
+                            (attribute) => ({
+                              value: attribute.name,
+                              label: attribute.name,
+                            })
+                          )}
+                          style={{ width: "8rem", marginRight: "1rem" }}
+                          onChange={(value) => {}}
+                          onSelect={(value: any) => {
+                            setAttributeName(value);
+                            setTypeSelectionEnabled(false);
+                            setAttributeInputType(
+                              availableAttributes?.find(
+                                (att) => att.name === value
+                              )?.type || InputType.String
+                            );
+
+                            if (
+                              attributes.find(
+                                (att) => att.attribute.name === value
+                              )
+                            ) {
+                              console.log("==> onChange err");
+                              setAttributeInputError("error");
+                            } else {
+                              console.log("==> onChange ok");
+                              setAttributeInputError("");
+                            }
+                          }}
+                          onInputKeyDown={(
+                            e: React.KeyboardEvent<HTMLInputElement>
+                          ) => {
+                            if (e.key === "Enter") {
+                              setAttributeName(e.currentTarget.value);
+                              setTypeSelectionEnabled(true);
+                            }
+                          }}
+                        />
+                        <Radio.Group
+                          disabled={!typeSelectionEnabled}
+                          onChange={(e: RadioChangeEvent) => {
+                            setAttributeInputType(e.target.value);
+                          }}
+                          style={{
+                            display: "flex",
+                          }}
+                          value={attributeInputType}
+                        >
+                          <Radio value={InputType.String}>STR</Radio>
+                          <Radio value={InputType.Number}>NUM</Radio>
+                        </Radio.Group>
+                        {attributeInputType === InputType.String ? (
+                          <Input
+                            size="small"
+                            ref={inputRef}
+                            value={attributeValue}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                              setAttributeValue(e.target.value);
+                            }}
+                            onKeyDown={(
+                              e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                              if (e.key === "Enter") {
+                                handleChange();
+                              } else if (e.key === "Escape") {
+                                handleCancel();
+                              }
+                            }}
+                          />
+                        ) : (
+                          <InputNumber
+                            style={{ width: "100%" }}
+                            size="small"
+                            ref={inputRef}
+                            value={attributeValue}
+                            onChange={(value) => {
+                              setAttributeValue(value);
+                            }}
+                            onKeyDown={(
+                              e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                              if (e.key === "Enter") {
+                                handleChange();
+                              } else if (e.key === "Escape") {
+                                handleCancel();
+                              }
+                            }}
+                          />
+                        )}
+                        <CheckOutlined
+                          style={{ fontSize: 22 }}
+                          onClick={handleChange}
+                        />
+                        <CloseOutlined
+                          style={{ fontSize: 22 }}
+                          onClick={handleCancel}
+                        />
+                      </Space>
+                    )}
+                  </Card>
+                );
+              }}
+            />
+
+            <FieldArray
+              name="sorter"
+              render={({ remove, push }) => {
+                const handleChange = async () => {
+                  const newSorter = {
+                    attribute: sorterName,
+                    sortOrder: sorterInputType,
+                  };
+
+                  const isValid = await sorterSchema.isValid(newSorter);
+
+                  if (isValid && !sorterInputError) {
+                    console.log("==> handleChange", newSorter);
+                    push(newSorter);
+                    setSorterName("");
+                    setSorterInputType(SortOrder.Asc);
+                    setSorterInputVisible(false);
+                  }
+                };
+
+                const handleCancel = () => setSorterInputVisible(false);
+
+                return (
+                  <Card title="Sorter" bodyStyle={{ display: "flex" }}>
+                    {JSON.stringify(errors.sorter)}
                     {sorter.map((attributeSortTerm, index) => (
-                      <Tag key={index} closable>
-                        {attributeSortTerm.attribute}:{" "}
-                        {attributeSortTerm.sortOrder}
-                      </Tag>
+                      <>
+                        <Tag
+                          key={1}
+                          color="green"
+                          style={{
+                            margin: "0px",
+                            border: "0px",
+                            height: "24px",
+                          }}
+                        >
+                          {attributeSortTerm.attribute}
+                        </Tag>
+                        <Tag
+                          key={2}
+                          closable
+                          style={{
+                            margin: "0px",
+                            border: "0px",
+                            height: "24px",
+                            marginRight: "1rem",
+                          }}
+                        >
+                          {attributeSortTerm.sortOrder}
+                        </Tag>
+                      </>
                     ))}
 
-                    <Field name="sortInput.attribute" />
-                    <Field name="sortInput.sortOrder" as="select">
-                      <option value={SortOrder.Asc}>{SortOrder.Asc}</option>
-                      <option value={SortOrder.Desc}>{SortOrder.Desc}</option>
-                    </Field>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFieldValue("sortInput", sortInputInitValue)
-                      }
-                    >
-                      {Characters.multiply}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (await sorterSchema.isValid(sortInput)) {
-                          push(sortInput);
-                          setFieldValue("sortInput", sortInputInitValue);
-                        }
-                      }}
-                    >
-                      {Characters.check}
-                    </button>
+                    {!sorterInputVisible && (
+                      <PlusOutlined
+                        style={{ fontSize: 24 }}
+                        onClick={() => {
+                          setSorterInputVisible(true);
+                        }}
+                      />
+                    )}
 
-                    <Attributes
-                      attributes={availableAttributes
-                        ?.filter(
-                          (availableAttribute) =>
-                            !sorter.find(
-                              (existingAttributeSortTerm) =>
-                                existingAttributeSortTerm.attribute ===
-                                availableAttribute.name
-                            )
-                        )
-                        .sort()}
-                      onClick={(attribute) =>
-                        setFieldValue("sortInput", {
-                          attribute: attribute.name,
-                          sortOrder: sortInput.sortOrder,
-                        })
-                      }
-                    />
-                  </>
-                )}
-              />
-            </div>
+                    {sorterInputVisible && (
+                      <Space size="small" style={{ height: "24px" }}>
+                        <Select
+                          value={sorterName}
+                          status={sorterInputError}
+                          allowClear
+                          showSearch
+                          showArrow={false}
+                          size="small"
+                          options={(attributes || []).map((attribute) => ({
+                            value: attribute.attribute.name,
+                            label: attribute.attribute.name,
+                          }))}
+                          style={{ width: "8rem", marginRight: "1rem" }}
+                          onChange={(value) => {}}
+                          onSelect={(value: any) => {
+                            if (
+                              !sorter.find(
+                                (sorter) => sorter.attribute === value
+                              )
+                            ) {
+                              setSorterName(value);
+                            }
+                          }}
+                        />
+                        <Radio.Group
+                          onChange={(e: RadioChangeEvent) => {
+                            setSorterInputType(e.target.value);
+                          }}
+                          style={{
+                            display: "flex",
+                          }}
+                          value={sorterInputType}
+                        >
+                          <Radio value={SortOrder.Asc}>Asc</Radio>
+                          <Radio value={SortOrder.Desc}>Desc</Radio>
+                        </Radio.Group>
+                        <CheckOutlined
+                          style={{ fontSize: 22 }}
+                          onClick={handleChange}
+                        />
+                        <CloseOutlined
+                          style={{ fontSize: 22 }}
+                          onClick={handleCancel}
+                        />
+                      </Space>
+                    )}
+                  </Card>
+                );
+              }}
+            />
 
-            <ButtonContainer>
-              <SubmitButton type="submit" disabled={isSubmitting}>
+            <Card>
+              <Button type="primary" disabled={isSubmitting}>
                 Search
-              </SubmitButton>
-            </ButtonContainer>
-          </FlexForm>
+              </Button>
+            </Card>
+          </Space>
         );
       }}
     </Formik>

@@ -1,6 +1,7 @@
 import { slides } from "cache";
 import { EntriesView } from "features/entries";
 import { Loading } from "features/loading";
+import { Typography } from "antd";
 import {
   AppContext,
   appRoutes,
@@ -12,14 +13,20 @@ import {
   useScrollRef,
   useSearchQuery,
 } from "lib";
-import { useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { SearchInputForm } from "./SearchInputForm";
+
+const { Title } = Typography;
 
 export const SearchContainer = () => {
   const [searchParams] = useSearchParams();
   const { key: locationKey } = useLocation();
-  const { session } = useContext(AppContext);
+  const { session, setTitle } = useContext(AppContext);
+
+  useEffect(() => {
+    setTitle(<Title>Search</Title>);
+  }, []);
 
   const pageSize = getPageSizeFromURLSearchParams(searchParams);
   const nextToken = searchParams.get(PARAM_NEXT_TOKEN);

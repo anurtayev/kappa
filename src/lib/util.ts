@@ -1,4 +1,6 @@
 import { useLocation } from "react-router-dom";
+import { array, mixed, object, string } from "yup";
+import { InputType } from "./graphqlTypes";
 
 export enum EntryType {
   folder = "Folder",
@@ -69,3 +71,13 @@ export const useLocationFrom = () => {
   const state: any = location.state;
   return state?.from?.pathname || "/";
 };
+
+export const tagSchema = string().trim().lowercase().required();
+
+export const attributeSchema = object({
+  attribute: object({
+    name: string().trim().lowercase().required(),
+    type: mixed().oneOf([InputType.String, InputType.Number]),
+  }),
+  value: string().trim().required(),
+});
