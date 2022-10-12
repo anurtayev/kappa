@@ -297,7 +297,6 @@ export const MetaDataInputForm = ({
                             ref={inputRef}
                             value={attributeValue}
                             onChange={(value) => {
-                              console.log(value);
                               setAttributeValue(value);
                             }}
                             onKeyDown={(

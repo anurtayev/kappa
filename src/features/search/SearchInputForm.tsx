@@ -154,11 +154,8 @@ export const SearchInputForm = ({
           sorter,
         },
         isSubmitting,
-        setFieldValue,
         errors,
       }) => {
-        console.log("==> renderer", tags);
-
         return (
           <Space
             size="middle"
@@ -187,9 +184,8 @@ export const SearchInputForm = ({
                             marginRight: "1rem",
                           }}
                           closable
-                          onClose={() => {
-                            console.log("==> remove tag", index, tag);
-
+                          onClose={(e) => {
+                            e.preventDefault();
                             remove(index);
                           }}
                         >
@@ -264,8 +260,6 @@ export const SearchInputForm = ({
                     (await attributeSchema.isValid(newAttr)) &&
                     !attributeInputError
                   ) {
-                    console.log("==> 32");
-
                     push(newAttr);
                     setAttributeName("");
                     setAttributeInputType(InputType.String);
@@ -277,7 +271,7 @@ export const SearchInputForm = ({
 
                 return (
                   <Card title="Attributes" bodyStyle={{ display: "flex" }}>
-                    {attributes.map(({ attribute, value }) => {
+                    {attributes.map(({ attribute, value }, index) => {
                       return (
                         <>
                           <Tag
@@ -293,12 +287,8 @@ export const SearchInputForm = ({
                           <Tag
                             closable
                             onClose={(e) => {
-                              remove(
-                                attributes.findIndex(
-                                  ({ attribute: { name } }) =>
-                                    name === attribute.name
-                                )
-                              );
+                              e.preventDefault();
+                              remove(index);
                             }}
                             style={{
                               margin: "0px",
@@ -338,7 +328,6 @@ export const SearchInputForm = ({
                             })
                           )}
                           style={{ width: "8rem", marginRight: "1rem" }}
-                          onChange={(value) => {}}
                           onSelect={(value: any) => {
                             setAttributeName(value);
                             setTypeSelectionEnabled(false);
@@ -353,10 +342,8 @@ export const SearchInputForm = ({
                                 (att) => att.attribute.name === value
                               )
                             ) {
-                              console.log("==> onChange err");
                               setAttributeInputError("error");
                             } else {
-                              console.log("==> onChange ok");
                               setAttributeInputError("");
                             }
                           }}
@@ -447,7 +434,6 @@ export const SearchInputForm = ({
                   const isValid = await sorterSchema.isValid(newSorter);
 
                   if (isValid && !sorterInputError) {
-                    console.log("==> handleChange", newSorter);
                     push(newSorter);
                     setSorterName("");
                     setSorterInputType(SortOrder.Asc);
@@ -476,6 +462,10 @@ export const SearchInputForm = ({
                         <Tag
                           key={2}
                           closable
+                          onClose={(e) => {
+                            e.preventDefault();
+                            remove(index);
+                          }}
                           style={{
                             margin: "0px",
                             border: "0px",
