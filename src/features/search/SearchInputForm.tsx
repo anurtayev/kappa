@@ -17,7 +17,6 @@ import {
   attributeSchema,
   AttributeSortTerm,
   AttributeValueInput,
-  InputType,
   Scalars,
   SearchInput,
   SortOrder,
@@ -26,8 +25,6 @@ import {
 } from "lib";
 import React, { useContext, useState } from "react";
 import { array, mixed, object, string, ValidationError } from "yup";
-
-const { Option } = Select;
 
 const sorterSchema = object({
   attribute: string().trim().lowercase().required(),
@@ -64,16 +61,6 @@ type SearchInputFormType = {
 type SearchInputFormParams = {
   setSearchInput: React.Dispatch<React.SetStateAction<SearchInput>>;
   searchInput: SearchInput;
-};
-
-const attributeInputInitValue: AttributeValueInput = {
-  attribute: { name: "", type: InputType.String },
-  value: "",
-};
-
-const sortInputInitValue: AttributeSortTerm = {
-  attribute: "",
-  sortOrder: SortOrder.Asc,
 };
 
 export const SearchInputForm = ({
