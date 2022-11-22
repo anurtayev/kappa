@@ -43,12 +43,14 @@ export const EntriesView = ({
     <Card bodyStyle={{ padding: 0, margin: "1rem" }} bordered={false}>
       {folders || files ? (
         <FolderScreenFrame ref={divRef}>
-          {folders?.map(({ id }) => (
-            <Entry key={id} onClick={onClickFolder(id)}>
-              <PaddedSpan>{id.split("/").slice(1, -1)}</PaddedSpan>
-              <MetaLink onClickMeta={onClickMetaHof(id)} />
-            </Entry>
-          ))}
+          {folders?.map(({ id }) => {
+            return (
+              <Entry key={id} onClick={onClickFolder(id)}>
+                <PaddedSpan>{id.split("/").slice(-2)[0]}</PaddedSpan>
+                <MetaLink onClickMeta={onClickMetaHof(id)} />
+              </Entry>
+            );
+          })}
           {files?.map(({ id }, index) => (
             <Entry key={id} onClick={onClickSlides(index)}>
               <AsyncImage
